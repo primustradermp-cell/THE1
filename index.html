@@ -3,131 +3,217 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mīqāt · Preston, Lancashire Prayer Times &amp; Tracker</title>
-  <meta name="description" content="Live Preston, Lancashire prayer times, celestial prayer arc, daily salah tracker, and monthly timetable powered by AlAdhan API." />
+  <title>SalahSync · Preston, Lancashire Prayer Telemetry &amp; Timetable</title>
+  <meta name="description" content="Live Preston, Lancashire prayer times, monthly timetable, and biometric-inspired salah telemetry tracker powered by the AlAdhan API." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Minimal App Header with Centered Segmented Tabs -->
-  <header class="app-header">
-    <div class="container header-inner">
-      <div class="brand">
-        <span class="brand-emblem" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M12 3.2c-2.6 2.1-5 4.8-5 8.5v7.8h10v-7.8c0-3.7-2.4-6.4-5-8.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-            <circle cx="12" cy="12" r="2.1" fill="currentColor" />
-          </svg>
-        </span>
-        <div>
-          <div class="brand-title">Mīqāt <span class="brand-city" id="header-city">Preston</span></div>
-          <div class="brand-sub mono" id="header-hijri">Loading Hijri…</div>
+  <div class="viewport-frame">
+    <!-- LEFT MAIN WORKSPACE (~72%) -->
+    <div class="left-column">
+      <!-- Top HUD Bar -->
+      <header class="hud-topbar">
+        <div class="hud-left">
+          <span class="mode-pill">
+            <span class="pill-dot" id="api-dot"></span>
+            <span id="api-status-text">Preston Live</span>
+          </span>
+          <nav class="hud-nav" role="tablist" aria-label="Dashboard views">
+            <button class="hud-tab is-active" role="tab" aria-selected="true" data-tab="overview" type="button">Overview</button>
+            <button class="hud-tab" role="tab" aria-selected="false" data-tab="timetable" type="button">Timetable</button>
+            <button class="hud-tab" role="tab" aria-selected="false" data-tab="analytics" type="button">Activity</button>
+            <button class="hud-tab" role="tab" aria-selected="false" data-tab="settings" type="button">Calculation</button>
+          </nav>
         </div>
-      </div>
 
-      <nav class="tab-bar" role="tablist" aria-label="App views">
-        <button class="tab-btn is-active" role="tab" aria-selected="true" data-tab="overview" type="button">Today</button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-tab="timetable" type="button">Timetable</button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-tab="analytics" type="button">Tracker</button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-tab="settings" type="button">Settings</button>
-      </nav>
-
-      <div class="header-right">
-        <div class="live-indicator" id="api-status">
-          <span class="live-dot"></span>
-          <span id="api-status-text">Syncing…</span>
-        </div>
-        <div class="uk-clock mono" id="clock-preston">--:--:--</div>
-      </div>
-    </div>
-  </header>
-
-  <main class="container main-content">
-    <!-- TAB 1: TODAY OVERVIEW -->
-    <section class="tab-panel is-active" id="tab-overview" role="tabpanel">
-      <!-- Celestial Horizon & Next Prayer Centerpiece -->
-      <div class="celestial-card">
-        <div class="celestial-top">
-          <div class="celestial-meta">
-            <span class="tag-pill" id="loc-badge">PRESTON, LANCASHIRE · UK</span>
-            <span class="tag-pill tag-muted" id="sunrise-badge">SUNRISE --:--</span>
-            <span class="tag-pill tag-muted" id="method-badge">CUSTOM ANGLES · HANAFI</span>
+        <!-- Floating Device/Sync Card (mirrors "My GymSync") -->
+        <div class="sync-widget">
+          <div class="sync-top">
+            <div class="sync-brand">My SalahSync</div>
+            <span class="sync-check" aria-hidden="true"></span>
           </div>
-          <div class="celestial-date mono" id="gregorian-date">Loading date…</div>
+          <div class="sync-meta">
+            <span class="mono" id="widget-clock">--:--:--</span>
+            <span class="sync-loc" id="widget-city">Preston, UK</span>
+          </div>
+          <div class="sync-bar-row">
+            <span class="mono" id="day-pct-label">0%</span>
+            <div class="sync-bar"><div class="sync-bar-fill" id="day-pct-fill"></div></div>
+          </div>
         </div>
+      </header>
 
-        <div class="celestial-center">
-          <div class="countdown-block">
-            <div class="micro-label" id="next-prayer-label">NEXT PRAYER</div>
-            <div class="next-prayer-name" id="next-prayer-name">—</div>
-            <div class="countdown-timer mono" id="countdown-timer">--:--:--</div>
-            <div class="countdown-sub" id="countdown-sub">Fetching live Preston timings from AlAdhan…</div>
+      <!-- TAB 1: OVERVIEW STAGE + 3-CARD BOTTOM BENTO -->
+      <div class="stage-view is-active" id="tab-overview">
+        <!-- Main Atmospheric HUD Stage -->
+        <section class="hud-stage">
+          <div class="stage-bg-pattern" aria-hidden="true"></div>
+
+          <!-- Hero Progress Greeting -->
+          <div class="stage-greeting">
+            <p class="greeting-line">
+              Assalamu Alaikum, you’ve <strong id="hero-pct-text">Completed 0%</strong> of your daily prayers in <span id="hero-city-span">Preston</span>.
+            </p>
+            <div class="greeting-sub mono" id="hero-hijri-line">LOADING HIJRI DATE · 53.7632° N, 2.7031° W</div>
           </div>
 
-          <!-- Interactive SVG Solar / Prayer Day Arc -->
-          <div class="arc-visual" aria-hidden="true">
-            <svg viewBox="0 0 460 155" class="solar-svg">
-              <defs>
-                <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="rgba(207,232,169,0.18)" />
-                  <stop offset="50%" stop-color="#cfe8a9" />
-                  <stop offset="100%" stop-color="rgba(207,232,169,0.18)" />
-                </linearGradient>
-                <linearGradient id="arcFill" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stop-color="rgba(207,232,169,0.14)" />
-                  <stop offset="100%" stop-color="rgba(207,232,169,0)" />
-                </linearGradient>
-              </defs>
-              <!-- Horizon Line -->
-              <line x1="20" y1="126" x2="440" y2="126" stroke="rgba(255,255,255,0.1)" stroke-dasharray="3 4" />
-              <!-- Subtle Filled Area -->
-              <path d="M 36 126 Q 230 -18 424 126 Z" fill="url(#arcFill)" />
-              <!-- Main Arc -->
-              <path id="solar-path" d="M 36 126 Q 230 -18 424 126" fill="none" stroke="url(#arcGrad)" stroke-width="2" />
-              <!-- Prayer Milestone Dots -->
-              <g id="arc-milestones"></g>
-              <!-- Live Sun/Time Marker -->
-              <g id="solar-marker" transform="translate(230, 54)">
-                <circle r="11" fill="rgba(207,232,169,0.18)" />
-                <circle r="5" fill="#cfe8a9" />
-              </g>
-            </svg>
-            <div class="arc-caption">
-              <span class="mono" id="arc-fajr">FAJR --:--</span>
-              <span class="mono" id="arc-dhuhr">DHUHR --:--</span>
-              <span class="mono" id="arc-isha">ISHA --:--</span>
+          <!-- Middle Telemetry Area: Vertical Ruler + Interactive Prayer HUD Nodes -->
+          <div class="stage-middle">
+            <!-- Left Vertical Ruler Scale (mirrors "Target Height: 52 inches") -->
+            <div class="vertical-ruler">
+              <div class="ruler-label">Next Prayer</div>
+              <div class="ruler-kpi">
+                <span class="kpi-num" id="ruler-countdown">--:--</span>
+                <span class="kpi-unit" id="ruler-unit">hrs</span>
+              </div>
+              <div class="ruler-scale" id="ruler-scale">
+                <div class="ruler-track">
+                  <div class="ruler-needle" id="ruler-needle"></div>
+                </div>
+                <div class="ruler-ticks" id="ruler-ticks">
+                  <span>Fajr</span>
+                  <span>Dhuhr</span>
+                  <span>Asr</span>
+                  <span>Maghrib</span>
+                  <span>Isha</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Center Interactive Prayer HUD Cards (mirrors AR wrist/body badges) -->
+            <div class="hud-prayer-grid" id="hud-prayer-grid" role="group" aria-label="Today's five prayers">
+              <!-- Populated by script.js -->
             </div>
           </div>
-        </div>
 
-        <!-- 5 Architectural Prayer Columns -->
-        <div class="prayer-colonnade" id="prayer-row" role="group" aria-label="Today's five prayers">
-          <!-- Populated by script.js -->
-        </div>
+          <!-- Bottom Day Timeline Scrubber (mirrors "Simulation" transport bar) -->
+          <div class="transport-bar">
+            <div class="transport-controls">
+              <button class="sq-btn" id="btn-jump-tt" type="button" title="Open Monthly Timetable">
+                <svg viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3" width="11" height="10.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 6.5h11M5.5 1.8v2.2M10.5 1.8v2.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </button>
+              <button class="sq-btn" id="btn-quick-csv" type="button" title="Export Preston Timetable CSV">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M8 2.5v7.5m0 0L5.2 7.2M8 10l2.8-2.8M3 12.8h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+
+            <div class="scrubber-wrap">
+              <div class="scrubber-head">
+                <span>Preston Solar Cycle</span>
+                <span class="mono" id="scrubber-time">00:00:00 / 24:00:00</span>
+              </div>
+              <div class="scrubber-track" id="scrubber-track">
+                <div class="scrubber-progress" id="scrubber-progress"></div>
+                <div class="scrubber-markers" id="scrubber-markers"></div>
+              </div>
+            </div>
+
+            <div class="transport-right">
+              <div class="school-toggle" role="group" aria-label="Asr Madhab quick switch">
+                <button type="button" class="mini-mode-btn" data-school="1">Hanafi</button>
+                <button type="button" class="mini-mode-btn" data-school="0">Shafi</button>
+              </div>
+              <span class="boost-pill mono" id="sunrise-pill">Sunrise --:--</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bottom 3-Column Bento Grid (mirrors GymSync's 3 bottom cards) -->
+        <section class="bento-3">
+          <!-- Card 1: Total Prayers Logged (mirrors "Total Volume Lifted") -->
+          <div class="bento-card">
+            <div class="bento-title">Total Prayers (30d)</div>
+            <div class="bento-kpi-row">
+              <div class="big-metric">
+                <span id="bento-total-30">0</span>
+                <span class="metric-unit">salah</span>
+              </div>
+              <div class="side-metrics">
+                <div><span class="m-lbl">Streak</span><span class="mono" id="bento-streak">0 d</span></div>
+                <div><span class="m-lbl">Week</span><span class="mono" id="bento-week">0/35</span></div>
+              </div>
+            </div>
+
+            <div class="legend-row">
+              <span class="m-lbl">Consistency</span>
+              <span class="legend-item"><span class="l-dot l-white"></span>Completed</span>
+              <span class="legend-item"><span class="l-dot l-orange"></span>Focus</span>
+            </div>
+
+            <div class="stepper-footer">
+              <span class="m-lbl">Fajr Angle</span>
+              <div class="micro-scale mono" id="bento-angle-readout">15.5° / 15.0°</div>
+              <div class="mini-stepper">
+                <button type="button" class="step-btn" data-step="fajr" data-delta="-0.5" aria-label="Decrease Fajr angle">−</button>
+                <button type="button" class="step-btn" data-step="fajr" data-delta="0.5" aria-label="Increase Fajr angle">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Prayer Breakdown Spark-Bars (mirrors "Muscle Fatigue") -->
+          <div class="bento-card">
+            <div class="bento-title">Prayer Rhythm (30d)</div>
+            <div class="spark-bars" id="spark-bars">
+              <!-- Populated by script.js -->
+            </div>
+            <div class="spark-scale mono">
+              <span>Fajr</span>
+              <span>Dhuhr</span>
+              <span>Asr</span>
+              <span>Maghrib</span>
+              <span>Isha</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Daylight / Prayer Arc Gauge (mirrors "Hydration Level") -->
+          <div class="bento-card gauge-card">
+            <div class="bento-title">Daylight Progress</div>
+            <div class="arc-gauge-wrap">
+              <svg viewBox="0 0 220 118" class="arc-gauge-svg">
+                <path d="M 24 102 A 86 86 0 0 1 196 102" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="2" />
+                <path id="gauge-arc-active" d="M 24 102 A 86 86 0 0 1 196 102" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="270" stroke-dashoffset="135" />
+                <g id="gauge-needle" transform="translate(110, 102) rotate(0)">
+                  <line x1="0" y1="-74" x2="0" y2="-94" stroke="#e85d2a" stroke-width="2.6" stroke-linecap="round" />
+                </g>
+              </svg>
+              <div class="gauge-center-label" id="gauge-status-text">On Track</div>
+            </div>
+            <div class="gauge-scale mono">
+              <span id="g-fajr">05:00</span>
+              <span id="g-dhuhr">12:15</span>
+              <span id="g-isha">18:30</span>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <!-- Bento Grid: Quick Week Schedule + Right Companion Stack -->
-      <div class="bento-grid">
-        <!-- Left: Preston Upcoming 7-Day Timetable Preview -->
-        <div class="card bento-table-card">
-          <div class="card-header">
+      <!-- TAB 2: PRESTON, LANCASHIRE MONTHLY TIMETABLE -->
+      <div class="stage-view" id="tab-timetable">
+        <section class="panel-dark timetable-panel">
+          <div class="panel-toolbar">
             <div>
-              <div class="micro-label">PRESTON, LANCASHIRE</div>
-              <h2 class="card-title">Upcoming 7-Day Timetable</h2>
+              <div class="panel-heading" id="tt-heading">Preston, Lancashire — Monthly Timetable</div>
+              <div class="panel-sub mono" id="tt-subheading">53.7632° N, 2.7031° W · Europe/London · AlAdhan API</div>
             </div>
-            <div class="card-actions">
-              <button class="btn-ghost" id="btn-view-full-tt" type="button">Full month →</button>
-              <button class="btn-sage-sm" id="btn-quick-csv" type="button">CSV</button>
+            <div class="toolbar-btns">
+              <button class="sq-btn" id="tt-prev" type="button" aria-label="Previous month">‹</button>
+              <span class="month-readout mono" id="tt-month">Loading…</span>
+              <button class="sq-btn" id="tt-next" type="button" aria-label="Next month">›</button>
+              <button class="hud-btn" id="tt-today" type="button">Today</button>
+              <button class="hud-btn" id="tt-print" type="button">Print</button>
+              <button class="hud-btn hud-btn-accent" id="tt-csv" type="button">Export CSV</button>
             </div>
           </div>
 
-          <div class="table-wrap">
-            <table class="timetable" aria-label="Upcoming 7-day prayer times for Preston, Lancashire">
+          <div class="table-scroll">
+            <table class="timetable" aria-label="Preston Lancashire monthly prayer timetable">
               <thead>
                 <tr>
                   <th>Date</th>
+                  <th>Hijri</th>
                   <th>Fajr</th>
                   <th>Sunrise</th>
                   <th>Dhuhr</th>
@@ -136,292 +222,248 @@
                   <th>Isha</th>
                 </tr>
               </thead>
-              <tbody id="tt-body-preview">
-                <tr><td colspan="7" class="table-loading">Loading Preston timetable…</td></tr>
+              <tbody id="tt-body">
+                <tr><td colspan="8" class="table-loading">Loading Preston, Lancashire timetable…</td></tr>
               </tbody>
             </table>
           </div>
-        </div>
-
-        <!-- Right: Compact Salah Progress + Qibla & Verse -->
-        <div class="bento-side">
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <div class="micro-label">TODAY'S SALAH</div>
-                <h2 class="card-title" id="today-summary-title">0 of 5 completed</h2>
-              </div>
-              <button class="btn-ghost" id="btn-open-analytics" type="button">Stats →</button>
-            </div>
-
-            <div class="day-bars" id="today-five-bars" aria-hidden="true"></div>
-
-            <div class="mini-stats-row">
-              <div class="mini-stat">
-                <div class="micro-label">STREAK</div>
-                <div class="mini-stat-val mono" id="mini-streak">0d</div>
-              </div>
-              <div class="mini-stat">
-                <div class="micro-label">THIS WEEK</div>
-                <div class="mini-stat-val mono" id="mini-week">0/35</div>
-              </div>
-              <div class="mini-stat">
-                <div class="micro-label">30-DAY RATE</div>
-                <div class="mini-stat-val mono" id="mini-rate">0%</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card qibla-verse-card">
-            <div class="qibla-inline">
-              <div class="mini-compass" aria-hidden="true">
-                <div class="mini-needle" id="qibla-needle"></div>
-                <span class="mini-n">N</span>
-              </div>
-              <div>
-                <div class="micro-label">QIBLA FROM PRESTON</div>
-                <div class="qibla-val mono" id="qibla-deg">117.7° ESE</div>
-                <div class="muted-sm" id="makkah-clock-line">Makkah · --:--:--</div>
-              </div>
-            </div>
-
-            <div class="verse-box">
-              <p class="arabic-verse" id="ref-arabic" lang="ar" dir="rtl">الْحَمْدُ لِلَّهِ</p>
-              <p class="english-verse" id="ref-quote">“Verily, in the remembrance of Allah do hearts find rest.”</p>
-              <div class="verse-foot">
-                <span class="muted-sm" id="ref-source">Qur’an 13:28</span>
-                <button class="btn-ghost" id="ref-next-btn" type="button">Next ↻</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        </section>
       </div>
-    </section>
 
-    <!-- TAB 2: FULL MONTHLY TIMETABLE -->
-    <section class="tab-panel" id="tab-timetable" role="tabpanel">
-      <div class="card timetable-full-card">
-        <div class="timetable-toolbar">
+      <!-- TAB 3: YEARLY ACTIVITY HEATMAP & STREAK -->
+      <div class="stage-view" id="tab-analytics">
+        <section class="panel-dark analytics-panel">
+          <div class="panel-toolbar">
+            <div>
+              <div class="panel-heading">52-Week Salah Activity</div>
+              <div class="panel-sub">Click any prayer on Today or the Inspector to update your yearly telemetry</div>
+            </div>
+            <div class="mono" id="analytics-best-streak">Best streak · 0 days</div>
+          </div>
+
+          <div class="heatmap-scroll">
+            <div class="heatmap-months" id="heatmap-months"></div>
+            <div class="heatmap-body">
+              <div class="heatmap-days">
+                <span>Mon</span>
+                <span>Wed</span>
+                <span>Fri</span>
+              </div>
+              <div class="heatmap-grid" id="heatmap-grid"></div>
+            </div>
+          </div>
+
+          <div class="heatmap-legend mono">
+            <span>Less</span>
+            <span class="cell lvl-0"></span>
+            <span class="cell lvl-1"></span>
+            <span class="cell lvl-2"></span>
+            <span class="cell lvl-3"></span>
+            <span class="cell lvl-4"></span>
+            <span>More</span>
+          </div>
+
+          <div class="breakdown-table" id="breakdown-list"></div>
+        </section>
+      </div>
+
+      <!-- TAB 4: CALCULATION & LOCATION SETTINGS -->
+      <div class="stage-view" id="tab-settings">
+        <section class="panel-dark settings-panel">
+          <div class="panel-toolbar">
+            <div>
+              <div class="panel-heading">Calculation &amp; Location</div>
+              <div class="panel-sub">Adjust AlAdhan parameters — Preston timings and timetable update live</div>
+            </div>
+          </div>
+
+          <div class="settings-list">
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Calculation Method</div>
+                <div class="panel-sub">Authority or Custom Fajr / Isha Angles</div>
+              </div>
+              <select class="dark-select" id="setting-method" aria-label="Calculation method">
+                <option value="99">Custom Angles</option>
+                <option value="15">Moonsighting Committee</option>
+                <option value="3">Muslim World League (MWL)</option>
+                <option value="2">ISNA</option>
+                <option value="1">Karachi</option>
+                <option value="5">Egyptian</option>
+                <option value="4">Umm Al-Qura</option>
+              </select>
+            </div>
+
+            <div class="setting-item" id="row-fajr-angle">
+              <div>
+                <div class="setting-label">Fajr Angle</div>
+                <div class="panel-sub">Twilight depression angle (degrees)</div>
+              </div>
+              <div class="mini-stepper">
+                <button type="button" class="step-btn" data-step="fajr" data-delta="-0.5">−</button>
+                <span class="step-val mono" id="val-fajr-angle">15.5°</span>
+                <button type="button" class="step-btn" data-step="fajr" data-delta="0.5">+</button>
+              </div>
+            </div>
+
+            <div class="setting-item" id="row-isha-angle">
+              <div>
+                <div class="setting-label">Isha Angle</div>
+                <div class="panel-sub">Nightfall depression angle (degrees)</div>
+              </div>
+              <div class="mini-stepper">
+                <button type="button" class="step-btn" data-step="isha" data-delta="-0.5">−</button>
+                <span class="step-val mono" id="val-isha-angle">15.0°</span>
+                <button type="button" class="step-btn" data-step="isha" data-delta="0.5">+</button>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Madhab (Asr)</div>
+                <div class="panel-sub">Hanafi (2x shadow) or Standard (1x shadow)</div>
+              </div>
+              <select class="dark-select" id="setting-school" aria-label="Madhab for Asr">
+                <option value="1">Hanafi</option>
+                <option value="0">Standard (Shafi / Maliki / Hanbali)</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">High Latitude Rule</div>
+                <div class="panel-sub">Recommended for Preston (53.76° N) summer nights</div>
+              </div>
+              <select class="dark-select" id="setting-lat-adj" aria-label="High latitude rule">
+                <option value="3">Angle-Based</option>
+                <option value="2">One Seventh of Night</option>
+                <option value="1">Middle of the Night</option>
+              </select>
+            </div>
+
+            <div class="setting-item setting-item-col">
+              <div>
+                <div class="setting-label">Lancashire &amp; UK Location Presets</div>
+                <div class="panel-sub mono" id="settings-coords">Preston, Lancashire · 53.7632° N, 2.7031° W</div>
+              </div>
+              <div class="city-row" id="city-chips">
+                <button class="city-btn is-selected" data-city="Preston, Lancashire" data-lat="53.7632" data-lng="-2.7031" type="button">Preston</button>
+                <button class="city-btn" data-city="Blackburn, Lancashire" data-lat="53.7488" data-lng="-2.4820" type="button">Blackburn</button>
+                <button class="city-btn" data-city="Burnley, Lancashire" data-lat="53.7893" data-lng="-2.2480" type="button">Burnley</button>
+                <button class="city-btn" data-city="Lancaster, Lancashire" data-lat="54.0466" data-lng="-2.8007" type="button">Lancaster</button>
+                <button class="city-btn" data-city="Manchester, UK" data-lat="53.4808" data-lng="-2.2426" type="button">Manchester</button>
+                <button class="city-btn" data-city="London, UK" data-lat="51.5074" data-lng="-0.1278" type="button">London</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- RIGHT KHAKI-TAUPE INSPECTOR SIDEBAR (~28%, mirrors GymSync's iconic right panel) -->
+    <aside class="inspector-sidebar" aria-label="Active Prayer Inspector">
+      <div class="inspector-body">
+        <div class="inspector-header">
+          <div class="inspector-title" id="insp-next-title">Next Prayer</div>
+          <div class="inspector-kpis">
+            <div>
+              <div class="insp-big mono" id="insp-next-time">--:--</div>
+              <div class="insp-unit" id="insp-city-unit">Preston time</div>
+            </div>
+            <div>
+              <div class="insp-big mono" id="insp-done-num">0</div>
+              <div class="insp-unit">of 5 prayed</div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="dashed-divider" />
+
+        <!-- Salah Completion Blocks + Qibla Wireframe -->
+        <div class="insp-split-section">
           <div>
-            <div class="micro-label">MONTHLY SCHEDULE</div>
-            <h2 class="card-title-lg" id="tt-heading">Preston, Lancashire — Prayer Timetable</h2>
-            <div class="muted-sm mono" id="tt-subheading">53.7632° N, 2.7031° W · Europe/London</div>
+            <div class="insp-label">Today’s Salah:</div>
+            <div class="block-meter" id="insp-block-meter"></div>
+
+            <div class="insp-label" style="margin-top: 16px;">Qibla Bearing:</div>
+            <div class="glyph-row" id="qibla-glyphs" aria-hidden="true">
+              <span class="glyph g-full"></span>
+              <span class="glyph g-half"></span>
+              <span class="glyph g-half"></span>
+              <span class="glyph g-orange"></span>
+            </div>
+            <div class="insp-qibla-readout mono" id="insp-qibla-deg">117.7° ESE</div>
           </div>
-          <div class="toolbar-controls">
-            <button class="icon-btn" id="tt-prev" type="button" aria-label="Previous month">‹</button>
-            <span class="month-pill mono" id="tt-month">Loading…</span>
-            <button class="icon-btn" id="tt-next" type="button" aria-label="Next month">›</button>
-            <button class="btn-outline-sm" id="tt-today" type="button">Today</button>
-            <button class="btn-outline-sm" id="tt-print" type="button">Print</button>
-            <button class="btn-sage-sm" id="tt-csv" type="button">Export CSV</button>
+
+          <!-- Minimal Architectural Qibla Wireframe Compass -->
+          <div class="wireframe-compass" aria-hidden="true">
+            <svg viewBox="0 0 110 110" class="compass-svg">
+              <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1" stroke-dasharray="3 3" />
+              <circle cx="55" cy="55" r="32" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1" />
+              <line x1="55" y1="6" x2="55" y2="104" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+              <line x1="6" y1="55" x2="104" y2="55" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+              <g id="wire-needle" transform="rotate(117.7 55 55)">
+                <line x1="55" y1="55" x2="55" y2="18" stroke="#e85d2a" stroke-width="2.2" stroke-linecap="round" />
+                <polygon points="55,12 51,21 59,21" fill="#e85d2a" />
+              </g>
+              <circle cx="55" cy="55" r="3.5" fill="#ffffff" />
+            </svg>
           </div>
         </div>
 
-        <div class="table-wrap table-wrap-full">
-          <table class="timetable" aria-label="Full monthly prayer timetable for Preston, Lancashire">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Hijri</th>
-                <th>Fajr</th>
-                <th>Sunrise</th>
-                <th>Dhuhr</th>
-                <th>Asr</th>
-                <th>Maghrib</th>
-                <th>Isha</th>
-              </tr>
-            </thead>
-            <tbody id="tt-body-full">
-              <tr><td colspan="8" class="table-loading">Loading Preston, Lancashire monthly timetable…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+        <hr class="dashed-divider" />
 
-    <!-- TAB 3: PRAYER TRACKER & ANALYTICS -->
-    <section class="tab-panel" id="tab-analytics" role="tabpanel">
-      <div class="analytics-grid">
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="micro-label">BREAKDOWN · LAST 30 DAYS</div>
-              <h2 class="card-title">Prayer Consistency</h2>
-            </div>
-            <div class="stat-pill mono" id="breakdown-total">0/150</div>
+        <!-- Daily Reminder (mirrors "Info: Technic Alert") -->
+        <div class="insp-info-row">
+          <div class="insp-label">Reminder:</div>
+          <div class="insp-info-text">
+            <div class="insp-info-title" id="ref-source">Qur’an 13:28</div>
+            <div class="insp-info-body" id="ref-quote">“Verily, in the remembrance of Allah do hearts find rest.”</div>
+            <button class="insp-cycle-btn" id="ref-next-btn" type="button">Next reminder ↻</button>
           </div>
-          <div class="breakdown-list" id="breakdown-list"></div>
         </div>
 
-        <div class="analytics-side">
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <div class="micro-label">6-MONTH TREND</div>
-                <h2 class="card-title">Monthly Completion</h2>
-              </div>
-            </div>
-            <div class="monthly-bars" id="monthly-bars"></div>
-            <div class="trend-footer">
-              <span>Best: <strong id="best-prayer">—</strong></span>
-              <span>Focus: <strong id="focus-prayer">—</strong></span>
-            </div>
+        <hr class="dashed-divider" />
+
+        <!-- 30-Day Barcode Timeline (mirrors "Bar Velocity") -->
+        <div class="insp-velocity">
+          <div class="insp-label">30-Day Telemetry:</div>
+          <div class="barcode-track" id="barcode-track"></div>
+          <div class="barcode-scale mono">
+            <span>30d ago</span>
+            <span>Today</span>
+          </div>
+        </div>
+
+        <hr class="dashed-divider" />
+
+        <!-- Bottom 2-Column Split (mirrors "Effectiveness" + "Balance") -->
+        <div class="insp-bottom-grid">
+          <div class="insp-mini-card">
+            <div class="insp-label">Consistency:</div>
+            <svg viewBox="0 0 90 50" class="dotted-arc-svg" aria-hidden="true">
+              <path d="M 10 44 A 35 35 0 0 1 80 44" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="2 4" />
+              <path id="insp-eff-arc" d="M 10 44 A 35 35 0 0 1 80 44" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-dasharray="110" stroke-dashoffset="55" />
+            </svg>
+            <div class="insp-stat-big" id="insp-eff-label">Building</div>
+            <div class="insp-stat-sub" id="insp-eff-sub">0% over 30 days</div>
           </div>
 
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <div class="micro-label">THIS WEEK</div>
-                <h2 class="card-title">Daily Prayers</h2>
-              </div>
-              <div class="stat-pill mono" id="week-total">0/35</div>
-            </div>
-            <div class="week-bars" id="week-bars"></div>
+          <div class="insp-mini-card">
+            <div class="insp-label">Day Balance:</div>
+            <div class="balance-glyphs" id="insp-balance-glyphs" aria-hidden="true"></div>
+            <div class="insp-stat-big mono" id="insp-balance-val">0 / 5</div>
+            <div class="insp-stat-sub">Daily prayers logged</div>
           </div>
         </div>
       </div>
 
-      <div class="card streak-card">
-        <div>
-          <div class="micro-label">7-DAY STREAK GOAL</div>
-          <div class="streak-num"><span id="streak-current">0</span> <span class="muted">/ 7 days</span></div>
-        </div>
-        <div class="streak-segments" id="streak-segments" aria-hidden="true"></div>
-        <div class="streak-right">
-          <div class="streak-msg" id="streak-msg">7 days to a 7-day streak</div>
-          <div class="muted-sm" id="streak-best">All-time best · 0 days</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="micro-label">YEARLY ACTIVITY</div>
-            <h2 class="card-title">52-Week Salah Heatmap</h2>
-          </div>
-          <span class="tag-pill">THIS YEAR</span>
-        </div>
-
-        <div class="heatmap-scroll">
-          <div class="heatmap-months" id="heatmap-months"></div>
-          <div class="heatmap-body">
-            <div class="heatmap-days">
-              <span>Mon</span>
-              <span>Wed</span>
-              <span>Fri</span>
-            </div>
-            <div class="heatmap-grid" id="heatmap-grid"></div>
-          </div>
-        </div>
-
-        <div class="heatmap-legend">
-          <span>Less</span>
-          <span class="cell lvl-0"></span>
-          <span class="cell lvl-1"></span>
-          <span class="cell lvl-2"></span>
-          <span class="cell lvl-3"></span>
-          <span class="cell lvl-4"></span>
-          <span>More</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 4: SETTINGS & LOCATION -->
-    <section class="tab-panel" id="tab-settings" role="tabpanel">
-      <div class="settings-grid">
-        <div class="card settings-card">
-          <div class="settings-head">
-            <div class="micro-label">ALADHAN API RULES</div>
-            <h2 class="card-title">Calculation Settings</h2>
-          </div>
-
-          <div class="setting-row">
-            <div>
-              <div class="setting-name">Method</div>
-              <div class="muted-sm">Authority or custom Fajr/Isha angles</div>
-            </div>
-            <select class="select-input" id="setting-method" aria-label="Calculation method">
-              <option value="99">Custom Angles</option>
-              <option value="15">Moonsighting Committee</option>
-              <option value="3">Muslim World League (MWL)</option>
-              <option value="2">ISNA</option>
-              <option value="1">Karachi</option>
-              <option value="5">Egyptian</option>
-              <option value="4">Umm Al-Qura</option>
-            </select>
-          </div>
-
-          <div class="setting-row" id="row-fajr-angle">
-            <div>
-              <div class="setting-name">Fajr Angle</div>
-              <div class="muted-sm">Degrees below horizon</div>
-            </div>
-            <div class="stepper">
-              <button type="button" class="stepper-btn" data-step="fajr" data-delta="-0.5" aria-label="Decrease Fajr angle">−</button>
-              <span class="stepper-val mono" id="val-fajr-angle">15.5°</span>
-              <button type="button" class="stepper-btn" data-step="fajr" data-delta="0.5" aria-label="Increase Fajr angle">+</button>
-            </div>
-          </div>
-
-          <div class="setting-row" id="row-isha-angle">
-            <div>
-              <div class="setting-name">Isha Angle</div>
-              <div class="muted-sm">Degrees below horizon</div>
-            </div>
-            <div class="stepper">
-              <button type="button" class="stepper-btn" data-step="isha" data-delta="-0.5" aria-label="Decrease Isha angle">−</button>
-              <span class="stepper-val mono" id="val-isha-angle">15.0°</span>
-              <button type="button" class="stepper-btn" data-step="isha" data-delta="0.5" aria-label="Increase Isha angle">+</button>
-            </div>
-          </div>
-
-          <div class="setting-row">
-            <div>
-              <div class="setting-name">Madhab (Asr)</div>
-              <div class="muted-sm">Shadow factor for Asr</div>
-            </div>
-            <select class="select-input" id="setting-school" aria-label="Madhab for Asr">
-              <option value="1">Hanafi</option>
-              <option value="0">Standard (Shafi / Maliki / Hanbali)</option>
-            </select>
-          </div>
-
-          <div class="setting-row">
-            <div>
-              <div class="setting-name">High Latitude Rule</div>
-              <div class="muted-sm">For northern UK summer nights</div>
-            </div>
-            <select class="select-input" id="setting-lat-adj" aria-label="High latitude rule">
-              <option value="3">Angle-Based</option>
-              <option value="2">One Seventh of Night</option>
-              <option value="1">Middle of the Night</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="micro-label">ACTIVE LOCATION</div>
-          <h2 class="card-title-lg" id="loc-name">Preston, Lancashire</h2>
-          <div class="muted-sm mono" id="loc-coords">53.7632° N, 2.7031° W · Europe/London</div>
-
-          <div class="micro-label" style="margin-top: 24px;">LANCASHIRE &amp; UK PRESETS</div>
-          <div class="city-chips" id="city-chips">
-            <button class="city-chip is-selected" data-city="Preston, Lancashire" data-lat="53.7632" data-lng="-2.7031" type="button">Preston</button>
-            <button class="city-chip" data-city="Blackburn, Lancashire" data-lat="53.7488" data-lng="-2.4820" type="button">Blackburn</button>
-            <button class="city-chip" data-city="Burnley, Lancashire" data-lat="53.7893" data-lng="-2.2480" type="button">Burnley</button>
-            <button class="city-chip" data-city="Lancaster, Lancashire" data-lat="54.0466" data-lng="-2.8007" type="button">Lancaster</button>
-            <button class="city-chip" data-city="Manchester, UK" data-lat="53.4808" data-lng="-2.2426" type="button">Manchester</button>
-            <button class="city-chip" data-city="London, UK" data-lat="51.5074" data-lng="-0.1278" type="button">London</button>
-          </div>
-
-          <div class="credit-note">
-            Live prayer calculations via <a href="https://aladhan.com/prayer-times-api" target="_blank" rel="noopener">AlAdhan Prayer Times API</a>.
-            All tracking data stays locally in your browser.
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+      <!-- Pinned Bottom CTA (mirrors "Start Training") -->
+      <button class="inspector-cta" id="inspector-cta-btn" type="button">
+        Open Monthly Timetable
+      </button>
+    </aside>
+  </div>
 
   <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
 
