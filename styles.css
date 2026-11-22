@@ -241,13 +241,14 @@ body {
 
 .stage-kaaba-bg {
   position: absolute;
-  inset: -16px;
-  background-image: url("kaaba-3d.jpg");
-  background-size: cover;
-  background-position: 54% 42%;
-  background-repeat: no-repeat;
-  opacity: 0.88;
+  inset: -14px;
+  width: calc(100% + 28px);
+  height: calc(100% + 28px);
+  object-fit: cover;
+  object-position: 54% 40%;
+  opacity: 0.96;
   pointer-events: none;
+  z-index: 0;
   transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
@@ -255,10 +256,11 @@ body {
 .stage-vignette {
   position: absolute;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(16, 15, 13, 0.86) 0%, rgba(16, 15, 13, 0.34) 36%, rgba(16, 15, 13, 0.22) 72%, rgba(16, 15, 13, 0.52) 100%),
-    linear-gradient(180deg, rgba(16, 15, 13, 0.62) 0%, rgba(16, 15, 13, 0.08) 38%, rgba(16, 15, 13, 0.36) 72%, rgba(16, 15, 13, 0.88) 100%);
+    linear-gradient(90deg, rgba(16, 15, 13, 0.72) 0%, rgba(16, 15, 13, 0.14) 35%, rgba(16, 15, 13, 0.08) 72%, rgba(16, 15, 13, 0.38) 100%),
+    linear-gradient(180deg, rgba(16, 15, 13, 0.45) 0%, rgba(16, 15, 13, 0.02) 38%, rgba(16, 15, 13, 0.22) 72%, rgba(16, 15, 13, 0.82) 100%);
 }
 
 .stage-bg-pattern {
