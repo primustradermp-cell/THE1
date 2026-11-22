@@ -782,9 +782,27 @@ function refreshAllFromApi() {
   fetchMonthlyCalendar(state.calendarYear, state.calendarMonth);
 }
 
+function initParallax() {
+  const stage = document.getElementById("hud-stage");
+  const bg = document.getElementById("stage-kaaba-bg");
+  if (!stage || !bg) return;
+
+  stage.addEventListener("mousemove", (e) => {
+    const rect = stage.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    bg.style.transform = `translate3d(${(-x * 14).toFixed(1)}px, ${(-y * 10).toFixed(1)}px, 0) scale(1.03)`;
+  });
+
+  stage.addEventListener("mouseleave", () => {
+    bg.style.transform = "translate3d(0, 0, 0) scale(1)";
+  });
+}
+
 function init() {
   syncSettingsUI();
   bindEvents();
+  initParallax();
   renderAll();
   refreshAllFromApi();
   window.setInterval(updateLiveTelemetry, 1000);

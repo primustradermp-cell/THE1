@@ -227,27 +227,48 @@ body {
 .hud-stage {
   position: relative;
   flex: 1;
+  min-height: 440px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 20px;
   padding: 20px 22px 16px;
   border-radius: 8px;
-  background:
-    radial-gradient(circle at 55% 40%, rgba(138, 128, 106, 0.18), transparent 62%),
-    linear-gradient(180deg, rgba(24, 23, 19, 0.72) 0%, rgba(16, 15, 13, 0.9) 100%);
+  background: var(--bg-stage);
   border: 1px solid var(--border);
   overflow: hidden;
+}
+
+.stage-kaaba-bg {
+  position: absolute;
+  inset: -16px;
+  background-image: url("kaaba-3d.jpg");
+  background-size: cover;
+  background-position: 54% 42%;
+  background-repeat: no-repeat;
+  opacity: 0.88;
+  pointer-events: none;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.stage-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(16, 15, 13, 0.86) 0%, rgba(16, 15, 13, 0.34) 36%, rgba(16, 15, 13, 0.22) 72%, rgba(16, 15, 13, 0.52) 100%),
+    linear-gradient(180deg, rgba(16, 15, 13, 0.62) 0%, rgba(16, 15, 13, 0.08) 38%, rgba(16, 15, 13, 0.36) 72%, rgba(16, 15, 13, 0.88) 100%);
 }
 
 .stage-bg-pattern {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.18;
+  opacity: 0.1;
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
@@ -285,7 +306,9 @@ body {
   display: grid;
   grid-template-columns: 148px minmax(0, 1fr);
   gap: 24px;
-  align-items: center;
+  align-items: end;
+  margin-top: auto;
+  padding-top: 96px;
 }
 
 /* Vertical Ruler (mirrors Target Height: 52 inches) */
@@ -369,16 +392,17 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 14px;
-  padding: 14px 12px;
+  gap: 12px;
+  padding: 12px 12px;
   border-radius: 6px;
-  background: rgba(20, 19, 16, 0.72);
-  border: 1px solid var(--border);
+  background: rgba(16, 15, 13, 0.64);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   color: var(--text);
   font: inherit;
   cursor: pointer;
   text-align: left;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transition: border-color 0.16s ease, background-color 0.16s ease, transform 0.12s ease;
 }
 
