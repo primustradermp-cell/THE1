@@ -3,179 +3,443 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>A Life of Peace — How Amazing Life Is as a Muslim</title>
-  <meta name="description" content="A simple, warm celebration of the peace, purpose, gratitude, and community found in living life as a Muslim." />
+  <title>PRIMUS PRAYER — Preston, Lancashire Prayer Times &amp; Tracker</title>
+  <meta name="description" content="Live Preston, Lancashire prayer times, monthly timetable, and daily salah tracker powered by the AlAdhan API." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
+  <!-- Top Navigation (Primus style) -->
+  <header class="topnav">
+    <div class="container topnav-inner">
       <a href="#top" class="brand">
-        <span class="brand-mark" aria-hidden="true">✦</span>
-        <span>A Life of Peace</span>
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.5" />
+            <path d="M13.8 7.5a5 5 0 1 0 2.7 7.6 3.8 3.8 0 0 1-4.8-5.1c.4-1 1.2-1.9 2.1-2.5Z" fill="currentColor" />
+          </svg>
+        </span>
+        <span class="brand-wordmark"><strong>PRIMUS</strong> PRAYER</span>
       </a>
-      <nav class="nav" aria-label="Main navigation">
-        <a href="#beauty">The Beauty</a>
-        <a href="#rhythm">Daily Rhythm</a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#today">Today</a>
+        <a href="#progress">Progress</a>
+        <a href="#timetable">Timetable <span class="nav-pill">LIVE</span></a>
         <a href="#reflections">Reflections</a>
+        <a href="#settings">Calculation</a>
       </nav>
+
+      <div class="topnav-right">
+        <div class="status-pill" id="api-status">
+          <span class="status-dot"></span>
+          <span id="api-status-text">Syncing Preston…</span>
+        </div>
+      </div>
     </div>
   </header>
 
   <main id="top">
-    <!-- Hero -->
-    <section class="hero">
-      <div class="hero-pattern" aria-hidden="true"></div>
-      <div class="container hero-content">
-        <p class="eyebrow">Assalamu Alaikum &bull; Peace be upon you</p>
-        <h1>How Amazing Life Is as a Muslim</h1>
-        <p class="hero-subtitle">
-          A life anchored in purpose, quiet gratitude, and sincere mercy—where even the smallest
-          ordinary moments become meaningful, and your heart always has a place to rest.
-        </p>
-        <div class="hero-actions">
-          <a href="#beauty" class="btn btn-primary">Explore the Beauty</a>
-          <a href="#reflections" class="btn btn-ghost">Daily Reminder</a>
-        </div>
-      </div>
-    </section>
+    <!-- Hero Split Section -->
+    <section id="today" class="hero">
+      <div class="container hero-grid">
+        <!-- Left Copy -->
+        <div class="hero-copy">
+          <div class="micro-kicker">
+            <span class="kicker-dot"></span>
+            <span id="hero-loc-kicker">PRESTON, LANCASHIRE · 53.7632° N, 2.7031° W</span>
+          </div>
 
-    <!-- Core Pillars of Joy -->
-    <section id="beauty" class="section">
-      <div class="container">
-        <div class="section-heading">
-          <p class="section-label">Why It Feels So Fulfilling</p>
-          <h2>Everyday Gifts of Living with Faith</h2>
-          <p class="section-lead">
-            Beyond grand milestones, the beauty of being Muslim shines in the gentle habits that shape each day.
+          <h1 class="hero-title">
+            Less noise.<br />
+            More <em>presence.</em>
+          </h1>
+
+          <p class="hero-subtitle">
+            Live prayer times for Preston, Lancashire, a daily salah tracker, and a full monthly
+            timetable — anchored in calm discipline and powered by the AlAdhan API.
           </p>
+
+          <div class="hero-actions">
+            <a href="#timetable" class="btn-sage">
+              Open Timetable <span aria-hidden="true">↗</span>
+            </a>
+            <a href="#progress" class="btn-link">
+              View your progress <span aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <div class="hero-meta-strip">
+            <span class="meta-chip" id="hijri-date-text">LOADING HIJRI DATE…</span>
+            <span class="meta-chip" id="sunrise-pill">SUNRISE --:--</span>
+            <span class="meta-chip" id="method-badge">CUSTOM ANGLES · HANAFI</span>
+          </div>
         </div>
 
-        <div class="card-grid">
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">☽</div>
-            <h3>Clear Purpose</h3>
-            <p>
-              Waking up knowing you were created with intention, and that every sincere effort—work,
-              learning, caring for loved ones—counts as worship.
-            </p>
-          </article>
+        <!-- Right Interactive Prayer Card (Primus Study Card style) -->
+        <div class="study-card">
+          <div class="study-grid-bg" aria-hidden="true"></div>
+          <div class="study-card-inner">
+            <div class="study-top">
+              <div>
+                <div class="micro-label">TODAY'S SALAH</div>
+                <h2 class="study-heading" id="today-count">0 of 5 prayers today.</h2>
+              </div>
+              <div class="ring-wrap" aria-label="Today's prayer completion">
+                <svg class="progress-ring" viewBox="0 0 100 100">
+                  <circle class="ring-track" cx="50" cy="50" r="40" />
+                  <circle class="ring-fill" id="ring-fill" cx="50" cy="50" r="40" />
+                </svg>
+                <div class="ring-center">
+                  <span id="ring-num">0</span><span class="ring-den">/5</span>
+                </div>
+              </div>
+            </div>
 
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">✧</div>
-            <h3>Five Daily Pauses of Peace</h3>
-            <p>
-              In a busy world, <em>Salah</em> invites you five times a day to step away from the noise,
-              breathe, stand before Allah, and reset your heart.
-            </p>
-          </article>
+            <div class="next-banner" id="next-prayer-banner">
+              <span class="next-badge" id="next-prayer-tag">NEXT / --</span>
+              <span class="next-detail" id="next-prayer-text">Fetching live Preston times…</span>
+            </div>
 
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">❀</div>
-            <h3>A Heart of Gratitude</h3>
-            <p>
-              Saying <em>Alhamdulillah</em> trains the soul to notice blessings everywhere—warm sunlight,
-              a shared meal, good health, and quiet ease.
-            </p>
-          </article>
+            <div class="prayer-list" id="prayer-row" role="group" aria-label="Mark today's prayers">
+              <!-- Populated by script.js -->
+            </div>
 
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">◈</div>
-            <h3>A Global Family</h3>
-            <p>
-              Walk into any masjid anywhere on earth and you are home—greeted with a smile and
-              <em>Assalamu Alaikum</em>, standing shoulder to shoulder as one Ummah.
-            </p>
-          </article>
-
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">♡</div>
-            <h3>Kindness as Charity</h3>
-            <p>
-              Even a warm smile, a gentle word, or removing harm from a path is <em>Sadaqah</em>.
-              Generosity and mercy are woven into daily life.
-            </p>
-          </article>
-
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">☼</div>
-            <h3>Deep Tranquility</h3>
-            <p>
-              With <em>Tawakkul</em>, you tie your camel, do your best, and let go of anxiety—trusting
-              that Allah is the Best of Planners.
-            </p>
-          </article>
+            <div class="study-footer">
+              <span>Click any prayer to mark completed</span>
+              <span class="mono" id="study-coords">PRESTON · UK</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Daily Rhythm -->
-    <section id="rhythm" class="section section-tinted">
-      <div class="container">
-        <div class="section-heading">
-          <p class="section-label">From Dawn to Dusk</p>
-          <h2>The Gentle Rhythm of a Muslim’s Day</h2>
-          <p class="section-lead">
-            Time isn’t just rushed through—it is punctuated by moments of stillness and remembrance.
-          </p>
+    <!-- Thin Editorial Timezone Bar (mirrors Primus London / New York bar) -->
+    <div class="ticker-bar">
+      <div class="container ticker-inner">
+        <span class="ticker-note">PRAYER ANCHORS EVERY HOUR OF THE DAY.</span>
+        <div class="ticker-clocks">
+          <span class="clock-item">PRESTON <strong id="clock-preston">--:--:--</strong></span>
+          <span class="clock-item">MAKKAH <strong id="clock-makkah">--:--:--</strong></span>
+          <span class="clock-item">QIBLA <strong id="ticker-qibla">117.7° ESE</strong></span>
         </div>
+      </div>
+    </div>
 
-        <ol class="timeline">
-          <li class="timeline-item">
-            <span class="time-badge">Fajr</span>
-            <div>
-              <h3>Quiet Dawn</h3>
-              <p>Starting the morning before the world wakes, with a clear mind and a whispered prayer for barakah.</p>
-            </div>
-          </li>
-          <li class="timeline-item">
-            <span class="time-badge">Dhuhr</span>
-            <div>
-              <h3>Midday Reset</h3>
-              <p>Stepping away from the rush of work or study to realign your intentions and breathe.</p>
-            </div>
-          </li>
-          <li class="timeline-item">
-            <span class="time-badge">Asr</span>
-            <div>
-              <h3>Golden Afternoon</h3>
-              <p>A reminder to cherish the passing hours and finish the day’s efforts with excellence (<em>Ihsan</em>).</p>
-            </div>
-          </li>
-          <li class="timeline-item">
-            <span class="time-badge">Maghrib</span>
-            <div>
-              <h3>Sunset Gratitude</h3>
-              <p>Welcoming the evening with family, warmth, and thanks for the day that just unfolded.</p>
-            </div>
-          </li>
-          <li class="timeline-item">
-            <span class="time-badge">Isha</span>
-            <div>
-              <h3>Peaceful Rest</h3>
-              <p>Closing the night with forgiveness, du’a, and a heart light enough to sleep in peace.</p>
-            </div>
-          </li>
-        </ol>
+    <!-- Quick Action Strip (mirrors Primus "YOUR NEXT SESSION") -->
+    <section class="session-strip">
+      <div class="container session-inner">
+        <div>
+          <div class="micro-label">DAILY DISCIPLINE</div>
+          <div class="session-title">Pick up where you left off.</div>
+          <div class="session-sub">Check today’s times → mark each salah → build your streak.</div>
+        </div>
+        <div class="session-actions">
+          <a href="#timetable" class="btn-sage btn-sm">Monthly Timetable</a>
+          <button type="button" class="btn-outline btn-sm" id="quick-export-csv">Export CSV</button>
+          <a href="#settings" class="btn-outline btn-sm">Calculation Rules</a>
+        </div>
       </div>
     </section>
 
-    <!-- Interactive Reflection -->
-    <section id="reflections" class="section">
+    <!-- 01 / YOUR PROGRESS -->
+    <section id="progress" class="section">
       <div class="container">
-        <div class="reflection-box">
-          <p class="section-label">A Moment of Reflection</p>
-          <p id="reflection-arabic" class="reflection-arabic" lang="ar" dir="rtl">الْحَمْدُ لِلَّهِ</p>
-          <blockquote id="reflection-quote" class="reflection-quote">
-            “Verily, in the remembrance of Allah do hearts find rest.”
-          </blockquote>
-          <p id="reflection-source" class="reflection-source">Qur’an 13:28 &bull; Alhamdulillah — All praise is due to Allah</p>
-          <button id="next-reflection" class="btn btn-primary" type="button">
-            Another Reminder
-          </button>
+        <div class="section-header">
+          <span class="watermark-num" aria-hidden="true">01</span>
+          <div class="micro-label">01 / YOUR PROGRESS</div>
+          <h2 class="section-title">Consistency, <em>measured.</em></h2>
+        </div>
+
+        <div class="progress-grid">
+          <!-- Breakdown 30 Days -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="micro-label">BREAKDOWN · LAST 30 DAYS</div>
+              <div class="panel-stat mono" id="breakdown-total">0<span class="muted">/150</span></div>
+            </div>
+            <div class="breakdown-list" id="breakdown-list"></div>
+          </div>
+
+          <!-- Side Column -->
+          <div class="progress-side">
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">Monthly trend</div>
+                  <div class="panel-sub">Completion rate per month</div>
+                </div>
+              </div>
+              <div class="monthly-bars" id="monthly-bars"></div>
+              <div class="trend-footer">
+                <span><span class="dot-inline dot-sage"></span> Best: <strong id="best-prayer">—</strong></span>
+                <span><span class="dot-inline dot-muted"></span> Focus: <strong id="focus-prayer">—</strong></span>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">This week</div>
+                  <div class="panel-sub">Prayers per day</div>
+                </div>
+                <div class="panel-stat mono" id="week-total">0<span class="muted">/35</span></div>
+              </div>
+              <div class="week-bars" id="week-bars"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Streak Goal -->
+        <div class="panel streak-panel">
+          <div>
+            <div class="micro-label">STREAK GOAL</div>
+            <div class="streak-value"><span id="streak-current">0</span> <span class="muted">/ 7 days</span></div>
+          </div>
+          <div class="streak-segments" id="streak-segments" aria-hidden="true"></div>
+          <div class="streak-right">
+            <div class="streak-msg" id="streak-msg">7 days to a 7-day streak</div>
+            <div class="panel-sub" id="streak-best">All-time best · 0 days</div>
+          </div>
+        </div>
+
+        <!-- Yearly Heatmap -->
+        <div class="panel heatmap-panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Activity</div>
+              <div class="panel-sub">Prayer completion across the last 52 weeks</div>
+            </div>
+            <span class="meta-chip">THIS YEAR</span>
+          </div>
+
+          <div class="heatmap-scroll">
+            <div class="heatmap-months" id="heatmap-months"></div>
+            <div class="heatmap-body">
+              <div class="heatmap-days">
+                <span>Mon</span>
+                <span>Wed</span>
+                <span>Fri</span>
+              </div>
+              <div class="heatmap-grid" id="heatmap-grid"></div>
+            </div>
+          </div>
+
+          <div class="heatmap-legend">
+            <span>Less</span>
+            <span class="cell lvl-0"></span>
+            <span class="cell lvl-1"></span>
+            <span class="cell lvl-2"></span>
+            <span class="cell lvl-3"></span>
+            <span class="cell lvl-4"></span>
+            <span>More</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 / PRESTON LANCASHIRE MONTHLY TIMETABLE -->
+    <section id="timetable" class="section section-border">
+      <div class="container">
+        <div class="section-header">
+          <span class="watermark-num" aria-hidden="true">02</span>
+          <div class="micro-label">02 / PRESTON, LANCASHIRE TIMETABLE</div>
+          <h2 class="section-title">Monthly <em>schedule.</em></h2>
+        </div>
+
+        <div class="panel timetable-panel">
+          <div class="timetable-toolbar">
+            <div>
+              <div class="panel-title" id="tt-heading">Preston, Lancashire — Prayer Timetable</div>
+              <div class="panel-sub mono" id="tt-subheading">53.7632° N, 2.7031° W · Europe/London</div>
+            </div>
+            <div class="toolbar-actions">
+              <button class="icon-btn" id="tt-prev" type="button" aria-label="Previous month">‹</button>
+              <span class="month-label mono" id="tt-month">Loading…</span>
+              <button class="icon-btn" id="tt-next" type="button" aria-label="Next month">›</button>
+              <button class="btn-outline btn-sm" id="tt-today" type="button">Today</button>
+              <button class="btn-outline btn-sm" id="tt-print" type="button">Print</button>
+              <button class="btn-sage btn-sm" id="tt-csv" type="button">Export CSV</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="timetable" aria-label="Preston, Lancashire monthly prayer timetable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Hijri</th>
+                  <th>Fajr</th>
+                  <th>Sunrise</th>
+                  <th>Dhuhr</th>
+                  <th>Asr</th>
+                  <th>Maghrib</th>
+                  <th>Isha</th>
+                </tr>
+              </thead>
+              <tbody id="tt-body">
+                <tr><td colspan="8" class="table-loading">Loading Preston, Lancashire timetable…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 / REFLECTIONS & QIBLA -->
+    <section id="reflections" class="section section-border">
+      <div class="container">
+        <div class="section-header">
+          <span class="watermark-num" aria-hidden="true">03</span>
+          <div class="micro-label">03 / REFLECTIONS &amp; ORIENTATION</div>
+          <h2 class="section-title">Stillness &amp; <em>direction.</em></h2>
+        </div>
+
+        <div class="two-col-grid">
+          <div class="panel reflection-panel">
+            <div class="micro-label">DAILY REMINDER</div>
+            <p class="arabic-text" id="ref-arabic" lang="ar" dir="rtl">الْحَمْدُ لِلَّهِ</p>
+            <blockquote class="ref-quote" id="ref-quote">
+              “Verily, in the remembrance of Allah do hearts find rest.”
+            </blockquote>
+            <div class="ref-footer">
+              <span class="panel-sub" id="ref-source">Qur’an 13:28</span>
+              <button class="btn-outline btn-sm" id="ref-next-btn" type="button">Next reminder →</button>
+            </div>
+          </div>
+
+          <div class="panel qibla-panel">
+            <div class="micro-label">QIBLA BEARING · PRESTON, LANCASHIRE</div>
+            <div class="compass-wrap">
+              <div class="compass-ring">
+                <span class="compass-dir n">N</span>
+                <span class="compass-dir e">E</span>
+                <span class="compass-dir s">S</span>
+                <span class="compass-dir w">W</span>
+                <div class="compass-needle" id="qibla-needle">
+                  <div class="needle-tip"></div>
+                </div>
+                <div class="compass-center"></div>
+              </div>
+              <div>
+                <div class="qibla-deg mono" id="qibla-deg">117.7° ESE</div>
+                <p class="panel-sub" id="qibla-desc">
+                  Great-circle bearing from Preston (53.7632° N, 2.7031° W) to the Kaaba in Makkah.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 / CALCULATION & LOCATION -->
+    <section id="settings" class="section section-border">
+      <div class="container">
+        <div class="section-header">
+          <span class="watermark-num" aria-hidden="true">04</span>
+          <div class="micro-label">04 / PRAYER SETTINGS</div>
+          <h2 class="section-title">Calculation &amp; <em>location.</em></h2>
+        </div>
+
+        <div class="settings-grid">
+          <!-- Calculation Panel -->
+          <div class="panel settings-panel">
+            <div class="settings-header">
+              <div class="panel-title">Calculation Rules</div>
+              <div class="panel-sub">Changes immediately re-fetch live times from AlAdhan API</div>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-name">Method</div>
+                <div class="setting-desc">Calculation authority or custom Fajr/Isha angles</div>
+              </div>
+              <select class="select-input" id="setting-method" aria-label="Calculation method">
+                <option value="99">Custom Angles</option>
+                <option value="15">Moonsighting Committee</option>
+                <option value="3">Muslim World League (MWL)</option>
+                <option value="2">ISNA (North America)</option>
+                <option value="1">Univ. of Islamic Sciences, Karachi</option>
+                <option value="5">Egyptian General Authority</option>
+                <option value="4">Umm Al-Qura, Makkah</option>
+              </select>
+            </div>
+
+            <div class="setting-row" id="row-fajr-angle">
+              <div>
+                <div class="setting-name">Fajr Angle</div>
+                <div class="setting-desc">Twilight angle below horizon (degrees)</div>
+              </div>
+              <div class="stepper">
+                <button type="button" class="stepper-btn" data-step="fajr" data-delta="-0.5" aria-label="Decrease Fajr angle">−</button>
+                <span class="stepper-val mono" id="val-fajr-angle">15.5°</span>
+                <button type="button" class="stepper-btn" data-step="fajr" data-delta="0.5" aria-label="Increase Fajr angle">+</button>
+              </div>
+            </div>
+
+            <div class="setting-row" id="row-isha-angle">
+              <div>
+                <div class="setting-name">Isha Angle</div>
+                <div class="setting-desc">Nightfall angle below horizon (degrees)</div>
+              </div>
+              <div class="stepper">
+                <button type="button" class="stepper-btn" data-step="isha" data-delta="-0.5" aria-label="Decrease Isha angle">−</button>
+                <span class="stepper-val mono" id="val-isha-angle">15.0°</span>
+                <button type="button" class="stepper-btn" data-step="isha" data-delta="0.5" aria-label="Increase Isha angle">+</button>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-name">Madhab (Asr)</div>
+                <div class="setting-desc">Shadow factor for Asr calculation</div>
+              </div>
+              <select class="select-input" id="setting-school" aria-label="Madhab for Asr">
+                <option value="1">Hanafi</option>
+                <option value="0">Standard (Shafi / Maliki / Hanbali)</option>
+              </select>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-name">High Latitude Rule</div>
+                <div class="setting-desc">Recommended for Preston (53.76° N) summer nights</div>
+              </div>
+              <select class="select-input" id="setting-lat-adj" aria-label="High latitude adjustment">
+                <option value="3">Angle-Based</option>
+                <option value="2">One Seventh of Night</option>
+                <option value="1">Middle of the Night</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Location Panel -->
+          <div class="panel location-panel">
+            <div class="micro-label">ACTIVE LOCATION</div>
+            <div class="loc-headline" id="loc-name">Preston, Lancashire</div>
+            <div class="loc-coords mono" id="loc-coords">53.7632° N, 2.7031° W · Europe/London</div>
+
+            <div class="micro-label" style="margin-top: 22px;">LANCASHIRE &amp; UK PRESETS</div>
+            <div class="city-chips" id="city-chips">
+              <button class="city-chip is-selected" data-city="Preston, Lancashire" data-lat="53.7632" data-lng="-2.7031" type="button">Preston</button>
+              <button class="city-chip" data-city="Blackburn, Lancashire" data-lat="53.7488" data-lng="-2.4820" type="button">Blackburn</button>
+              <button class="city-chip" data-city="Burnley, Lancashire" data-lat="53.7893" data-lng="-2.2480" type="button">Burnley</button>
+              <button class="city-chip" data-city="Lancaster, Lancashire" data-lat="54.0466" data-lng="-2.8007" type="button">Lancaster</button>
+              <button class="city-chip" data-city="Manchester, UK" data-lat="53.4808" data-lng="-2.2426" type="button">Manchester</button>
+              <button class="city-chip" data-city="London, UK" data-lat="51.5074" data-lng="-0.1278" type="button">London</button>
+            </div>
+
+            <div class="api-credit">
+              <div class="micro-label">DATA SOURCE</div>
+              <p class="panel-sub">
+                Live timings &amp; monthly calendars via <a href="https://aladhan.com/prayer-times-api" target="_blank" rel="noopener">AlAdhan Prayer Times API</a>.
+                Your daily prayer logs are stored privately in your browser.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -183,10 +447,12 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p class="footer-greeting">Assalamu Alaikum wa Rahmatullahi wa Barakatuh</p>
-      <p class="footer-note">May peace, mercy, and blessings fill your days.</p>
+      <span class="mono">PRIMUS PRAYER · PRESTON, LANCASHIRE</span>
+      <span>Assalamu Alaikum wa Rahmatullahi wa Barakatuh</span>
     </div>
   </footer>
+
+  <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
 
   <script src="script.js"></script>
 </body>
