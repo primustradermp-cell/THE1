@@ -227,16 +227,22 @@ body {
 .hud-stage {
   position: relative;
   flex: 1;
-  min-height: 440px;
+  min-height: 460px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 20px;
   padding: 20px 22px 16px;
   border-radius: 8px;
-  background: var(--bg-stage);
+  background: radial-gradient(circle at 54% 38%, rgba(122, 113, 94, 0.22), #151411 72%);
   border: 1px solid var(--border);
   overflow: hidden;
+  cursor: grab;
+  user-select: none;
+}
+
+.hud-stage.is-dragging {
+  cursor: grabbing;
 }
 
 .stage-kaaba-bg {
@@ -246,39 +252,102 @@ body {
   height: calc(100% + 28px);
   object-fit: cover;
   object-position: 54% 40%;
-  opacity: 0.96;
+  opacity: 0.9;
   pointer-events: none;
   z-index: 0;
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
+  transition: opacity 0.4s ease;
+}
+
+.kaaba-3d-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.kaaba-3d-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .stage-vignette {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 2;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(16, 15, 13, 0.72) 0%, rgba(16, 15, 13, 0.14) 35%, rgba(16, 15, 13, 0.08) 72%, rgba(16, 15, 13, 0.38) 100%),
-    linear-gradient(180deg, rgba(16, 15, 13, 0.45) 0%, rgba(16, 15, 13, 0.02) 38%, rgba(16, 15, 13, 0.22) 72%, rgba(16, 15, 13, 0.82) 100%);
+    linear-gradient(90deg, rgba(16, 15, 13, 0.72) 0%, rgba(16, 15, 13, 0.08) 32%, rgba(16, 15, 13, 0.05) 75%, rgba(16, 15, 13, 0.35) 100%),
+    linear-gradient(180deg, rgba(16, 15, 13, 0.42) 0%, rgba(16, 15, 13, 0) 36%, rgba(16, 15, 13, 0.14) 70%, rgba(16, 15, 13, 0.78) 100%);
 }
 
 .stage-bg-pattern {
   position: absolute;
   inset: 0;
+  z-index: 2;
   pointer-events: none;
-  opacity: 0.1;
+  opacity: 0.08;
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
+.stage-top-row,
 .stage-greeting,
 .stage-middle,
 .transport-bar {
   position: relative;
-  z-index: 1;
+  z-index: 3;
+}
+
+.stage-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.controls-3d {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.hint-3d {
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.btns-3d {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-3d {
+  padding: 4px 9px;
+  border-radius: 4px;
+  background: rgba(20, 19, 16, 0.72);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-3d:hover {
+  background: rgba(36, 34, 28, 0.85);
+  border-color: var(--border-strong);
+}
+
+.btn-3d.is-active {
+  border-color: rgba(232, 93, 42, 0.55);
+  color: #ffffff;
 }
 
 .greeting-line {

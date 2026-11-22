@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 <body>
   <div class="viewport-frame">
@@ -51,15 +51,26 @@
         <!-- Main Atmospheric HUD Stage -->
         <section class="hud-stage" id="hud-stage">
           <img class="stage-kaaba-bg" id="stage-kaaba-bg" src="./kaaba-3d.jpg" alt="" aria-hidden="true" />
+          <div class="kaaba-3d-canvas" id="kaaba-3d-canvas" aria-label="Interactive 3D Kaaba Model"></div>
           <div class="stage-vignette" aria-hidden="true"></div>
           <div class="stage-bg-pattern" aria-hidden="true"></div>
 
-          <!-- Hero Progress Greeting -->
-          <div class="stage-greeting">
-            <p class="greeting-line">
-              Assalamu Alaikum, you’ve <strong id="hero-pct-text">Completed 0%</strong> of your daily prayers in <span id="hero-city-span">Preston</span>.
-            </p>
-            <div class="greeting-sub mono" id="hero-hijri-line">LOADING HIJRI DATE · 53.7632° N, 2.7031° W</div>
+          <!-- Top Stage Row: Hero Greeting + 3D Orbit Controls -->
+          <div class="stage-top-row">
+            <div class="stage-greeting">
+              <p class="greeting-line">
+                Assalamu Alaikum, you’ve <strong id="hero-pct-text">Completed 0%</strong> of your daily prayers in <span id="hero-city-span">Preston</span>.
+              </p>
+              <div class="greeting-sub mono" id="hero-hijri-line">LOADING HIJRI DATE · 53.7632° N, 2.7031° W</div>
+            </div>
+
+            <div class="controls-3d">
+              <span class="hint-3d mono">3D MODEL · DRAG TO ORBIT</span>
+              <div class="btns-3d">
+                <button type="button" class="btn-3d is-active" id="btn-3d-spin">Auto-Orbit: On</button>
+                <button type="button" class="btn-3d" id="btn-3d-reset">Reset</button>
+              </div>
+            </div>
           </div>
 
           <!-- Middle Telemetry Area: Vertical Ruler + Interactive Prayer HUD Nodes -->
@@ -469,6 +480,8 @@
 
   <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
 
-  <script src="script.js?v=3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
+  <script src="kaaba3d.js?v=4"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
