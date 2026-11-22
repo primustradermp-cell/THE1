@@ -1,11 +1,11 @@
-/* PRIMUS PRAYER — Preston, Lancashire Prayer Times & Tracker (AlAdhan API) */
+/* Mīqāt — Preston, Lancashire Prayer Companion & Timetable (AlAdhan API) */
 
 const PRAYERS = [
-  { key: "Fajr", label: "Fajr", icon: "☾" },
-  { key: "Dhuhr", label: "Dhuhr", icon: "☀" },
-  { key: "Asr", label: "Asr", icon: "☼" },
-  { key: "Maghrib", label: "Maghrib", icon: "◐" },
-  { key: "Isha", label: "Isha", icon: "✦" },
+  { key: "Fajr", label: "Fajr", arabic: "الفجر" },
+  { key: "Dhuhr", label: "Dhuhr", arabic: "الظهر" },
+  { key: "Asr", label: "Asr", arabic: "العصر" },
+  { key: "Maghrib", label: "Maghrib", arabic: "المغرب" },
+  { key: "Isha", label: "Isha", arabic: "العشاء" },
 ];
 
 const METHOD_LABELS = {
@@ -20,7 +20,7 @@ const METHOD_LABELS = {
 
 const REFLECTIONS = [
   {
-    arabic: "الْحَمْدُ لِلَّهِ",
+    arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
     quote: "“Verily, in the remembrance of Allah do hearts find rest.”",
     source: "Qur’an 13:28",
   },
@@ -95,7 +95,7 @@ function saveLogs() {
   localStorage.setItem(STORAGE_LOGS_KEY, JSON.stringify(state.logs));
 }
 
-/* ---------- Helpers ---------- */
+/* ---------- Date & Time Helpers ---------- */
 
 function toDateKey(date) {
   const y = date.getFullYear();
@@ -112,10 +112,10 @@ function cleanTime(t) {
   return t ? t.split(" ")[0] : "--:--";
 }
 
-function parseMinutes(hhmm) {
+function parseSeconds(hhmm) {
   const [h, m] = cleanTime(hhmm).split(":").map(Number);
   if (Number.isNaN(h) || Number.isNaN(m)) return null;
-  return h * 60 + m;
+  return h * 3600 + m * 60;
 }
 
 function getTimeInZone(timeZone) {
@@ -132,13 +132,21 @@ function getTimeInZone(timeZone) {
   const h = Number(get("hour"));
   const m = Number(get("minute"));
   const s = Number(get("second"));
-  return { h, m, s, text: `${get("hour")}:${get("minute")}:${get("second")}`, totalMinutes: h * 60 + m };
+  return {
+    h,
+    m,
+    s,
+    text: `${get("hour")}:${get("minute")}:${get("second")}`,
+    totalSeconds: h * 3600 + m * 60 + s,
+  };
 }
 
-function formatDuration(totalMins) {
-  const h = Math.floor(totalMins / 60);
-  const m = totalMins % 60;
-  return h <= 0 ? `${m}m` : `${h}h ${m}m`;
+function formatHMS(totalSec) {
+  const sec = Math.max(0, Math.floor(totalSec));
+  const h = String(Math.floor(sec / 3600)).padStart(2, "0");
+  const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+  const s = String(sec % 60).padStart(2, "0");
+  return `${h}:${m}:${s}`;
 }
 
 /* ---------- AlAdhan API ---------- */
@@ -159,11 +167,11 @@ function buildAlAdhanQuery() {
 }
 
 function setApiStatus(text, isError = false) {
-  const chip = document.getElementById("api-status");
+  const el = document.getElementById("api-status");
   const label = document.getElementById("api-status-text");
-  if (!chip || !label) return;
+  if (!el || !label) return;
   label.textContent = text;
-  chip.classList.toggle("is-error", isError);
+  el.classList.toggle("is-error", isError);
 }
 
 async function fetchTodayTimings() {
@@ -184,17 +192,23 @@ async function fetchTodayTimings() {
 
     state.todayTimings = json.data.timings;
     const h = json.data.date.hijri;
-    state.todayHijri = `${h.day} ${h.month.en.toUpperCase()} ${h.year}`;
+    const g = json.data.date.gregorian;
+    state.todayHijri = `${h.day} ${h.month.en} ${h.year} AH`;
 
-    document.getElementById("hijri-date-text").textContent = state.todayHijri;
-    document.getElementById("sunrise-pill").textContent = `SUNRISE ${cleanTime(state.todayTimings.Sunrise)}`;
+    document.getElementById("header-hijri").textContent = state.todayHijri;
+    document.getElementById("gregorian-date").textContent = `${g.weekday.en}, ${g.day} ${g.month.en} ${g.year}`;
+    document.getElementById("sunrise-badge").textContent = `SUNRISE ${cleanTime(state.todayTimings.Sunrise)}`;
+    document.getElementById("arc-fajr").textContent = `FAJR ${cleanTime(state.todayTimings.Fajr)}`;
+    document.getElementById("arc-dhuhr").textContent = `DHUHR ${cleanTime(state.todayTimings.Dhuhr)}`;
+    document.getElementById("arc-isha").textContent = `ISHA ${cleanTime(state.todayTimings.Isha)}`;
     setApiStatus(`LIVE · ${shortCity.toUpperCase()}`);
 
-    renderTodayHero();
+    renderColonnade();
+    updateCountdownAndArc();
   } catch (err) {
     console.error("AlAdhan today fetch failed:", err);
     setApiStatus("API OFFLINE", true);
-    document.getElementById("next-prayer-text").textContent =
+    document.getElementById("countdown-sub").textContent =
       "Unable to reach api.aladhan.com — check your connection.";
   }
 }
@@ -208,7 +222,7 @@ async function fetchMonthlyCalendar(year = state.calendarYear, month = state.cal
     year: "numeric",
   });
   document.getElementById("tt-month").textContent = monthName;
-  document.getElementById("tt-body").innerHTML =
+  document.getElementById("tt-body-full").innerHTML =
     `<tr><td colspan="8" class="table-loading">Loading ${monthName} timetable for ${state.settings.city}…</td></tr>`;
 
   const url = `https://api.aladhan.com/v1/calendar/${year}/${month}?${buildAlAdhanQuery()}`;
@@ -219,41 +233,98 @@ async function fetchMonthlyCalendar(year = state.calendarYear, month = state.cal
     if (json.code !== 200 || !Array.isArray(json.data)) throw new Error("Invalid calendar");
 
     state.calendarData = json.data;
-    renderTimetable();
+    renderTimetables();
   } catch (err) {
     console.error("AlAdhan calendar fetch failed:", err);
-    document.getElementById("tt-body").innerHTML =
-      `<tr><td colspan="8" class="table-loading">Could not load monthly timetable from AlAdhan API.</td></tr>`;
+    document.getElementById("tt-body-full").innerHTML =
+      `<tr><td colspan="8" class="table-loading">Could not load monthly timetable.</td></tr>`;
+    document.getElementById("tt-body-preview").innerHTML =
+      `<tr><td colspan="7" class="table-loading">Could not load 7-day preview.</td></tr>`;
   }
 }
 
-/* ---------- Hero & Prayer Toggles ---------- */
+/* ---------- Celestial Arc & Live Countdown ---------- */
+
+function quadPoint(t) {
+  // Matches SVG path: M 36 126 Q 230 -18 424 126
+  const x0 = 36, y0 = 126;
+  const x1 = 230, y1 = -18;
+  const x2 = 424, y2 = 126;
+  const mt = 1 - t;
+  return {
+    x: mt * mt * x0 + 2 * mt * t * x1 + t * t * x2,
+    y: mt * mt * y0 + 2 * mt * t * y1 + t * t * y2,
+  };
+}
 
 function getNextPrayerInfo() {
   if (!state.todayTimings) return null;
-  const nowMin = getTimeInZone(state.settings.tz).totalMinutes;
+  const nowSec = getTimeInZone(state.settings.tz).totalSeconds;
 
   for (const p of PRAYERS) {
-    const pMin = parseMinutes(state.todayTimings[p.key]);
-    if (pMin !== null && pMin > nowMin) {
+    const pSec = parseSeconds(state.todayTimings[p.key]);
+    if (pSec !== null && pSec > nowSec) {
       return {
         key: p.key,
+        arabic: p.arabic,
         time: cleanTime(state.todayTimings[p.key]),
-        diffText: formatDuration(pMin - nowMin),
+        remainingSec: pSec - nowSec,
       };
     }
   }
 
-  const fajrMin = parseMinutes(state.todayTimings.Fajr);
-  if (fajrMin !== null) {
+  const fajrSec = parseSeconds(state.todayTimings.Fajr);
+  if (fajrSec !== null) {
     return {
       key: "Fajr",
+      arabic: "الفجر",
       time: cleanTime(state.todayTimings.Fajr),
-      diffText: formatDuration(24 * 60 - nowMin + fajrMin),
+      remainingSec: 86400 - nowSec + fajrSec,
+      tomorrow: true,
     };
   }
   return null;
 }
+
+function updateCountdownAndArc() {
+  if (!state.todayTimings) return;
+
+  const info = getNextPrayerInfo();
+  if (info) {
+    document.getElementById("next-prayer-label").textContent = info.tomorrow ? "NEXT PRAYER · TOMORROW" : "NEXT PRAYER";
+    document.getElementById("next-prayer-name").textContent = `${info.key} · ${info.time}`;
+    document.getElementById("countdown-timer").textContent = formatHMS(info.remainingSec);
+    document.getElementById("countdown-sub").textContent = `Time remaining until ${info.key} in ${state.settings.city}`;
+  }
+
+  // Update SVG arc position between Fajr (t=0) and Isha (t=1)
+  const fajrSec = parseSeconds(state.todayTimings.Fajr) ?? 5 * 3600;
+  const ishaSec = parseSeconds(state.todayTimings.Isha) ?? 20 * 3600;
+  const nowSec = getTimeInZone(state.settings.tz).totalSeconds;
+  const span = Math.max(1, ishaSec - fajrSec);
+  const progress = Math.min(1, Math.max(0, (nowSec - fajrSec) / span));
+
+  const pos = quadPoint(progress);
+  const marker = document.getElementById("solar-marker");
+  if (marker) {
+    marker.setAttribute("transform", `translate(${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`);
+  }
+
+  const milestones = document.getElementById("arc-milestones");
+  if (milestones) {
+    milestones.innerHTML = PRAYERS.map((p) => {
+      const pSec = parseSeconds(state.todayTimings[p.key]);
+      const t = pSec === null ? 0 : Math.min(1, Math.max(0, (pSec - fajrSec) / span));
+      const pt = quadPoint(t);
+      const isNext = info && info.key === p.key;
+      return `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="${isNext ? 4.2 : 2.8}" fill="${
+        isNext ? "#cfe8a9" : "rgba(255,255,255,0.35)"
+      }" />`;
+    }).join("");
+  }
+}
+
+/* ---------- Prayer Colonnade & Tracking ---------- */
 
 function getDayLog(key) {
   return state.logs[key] || {};
@@ -264,65 +335,64 @@ function countDayPrayers(key) {
   return PRAYERS.reduce((acc, p) => acc + (log[p.key] ? 1 : 0), 0);
 }
 
-function renderTodayHero() {
+function renderColonnade() {
   const key = todayKey();
   const log = getDayLog(key);
-  const doneCount = countDayPrayers(key);
   const nextInfo = getNextPrayerInfo();
-
-  document.getElementById("today-count").textContent = `${doneCount} of 5 prayers today.`;
-  document.getElementById("ring-num").textContent = String(doneCount);
-
-  const circumference = 2 * Math.PI * 40;
-  document.getElementById("ring-fill").style.strokeDashoffset = String(circumference * (1 - doneCount / 5));
-
-  if (nextInfo) {
-    document.getElementById("next-prayer-tag").textContent = `NEXT / ${nextInfo.key.toUpperCase()}`;
-    document.getElementById("next-prayer-text").textContent = `${nextInfo.time} · in ${nextInfo.diffText}`;
-  }
-
   const row = document.getElementById("prayer-row");
   row.innerHTML = "";
 
   for (const p of PRAYERS) {
     const isDone = Boolean(log[p.key]);
-    const isNext = nextInfo && nextInfo.key === p.key;
+    const isNext = nextInfo && nextInfo.key === p.key && !nextInfo.tomorrow;
     const timeStr = state.todayTimings ? cleanTime(state.todayTimings[p.key]) : "--:--";
 
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = `prayer-pill${isDone ? " is-done" : ""}${isNext ? " is-next" : ""}`;
+    btn.className = `prayer-col${isDone ? " is-done" : ""}${isNext ? " is-next" : ""}`;
     btn.setAttribute("aria-pressed", String(isDone));
     btn.innerHTML = `
-      <span class="prayer-pill-top">
-        <span class="prayer-check" aria-hidden="true">
+      <div class="col-top">
+        <span class="col-arabic" lang="ar">${p.arabic}</span>
+        <span class="col-check" aria-hidden="true">
           <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
-        ${isNext ? `<span class="next-dot" title="Next prayer"></span>` : ""}
-      </span>
-      <span class="prayer-name">${p.label}</span>
-      <span class="prayer-time">${timeStr}</span>
+      </div>
+      <div>
+        <div class="col-name">${p.label}${isNext ? `<span class="next-chip">NEXT</span>` : ""}</div>
+        <div class="col-time">${timeStr}</div>
+      </div>
+      <div class="col-status">${isDone ? "Completed ✓" : "Tap to mark done"}</div>
     `;
-    btn.addEventListener("click", () => togglePrayer(p.key));
+    btn.addEventListener("click", () => {
+      if (!state.logs[key]) state.logs[key] = {};
+      state.logs[key][p.key] = !state.logs[key][p.key];
+      saveLogs();
+      renderAllAnalytics();
+    });
     row.appendChild(btn);
   }
 }
 
-function togglePrayer(prayerKey) {
+/* ---------- Analytics & Mini Summary ---------- */
+
+function renderAllAnalytics() {
+  renderColonnade();
+
   const key = todayKey();
-  if (!state.logs[key]) state.logs[key] = {};
-  state.logs[key][prayerKey] = !state.logs[key][prayerKey];
-  saveLogs();
-  renderAllAnalytics();
-}
+  const todayLog = getDayLog(key);
+  const doneToday = countDayPrayers(key);
+  document.getElementById("today-summary-title").textContent = `${doneToday} of 5 completed`;
 
-/* ---------- Progress & Analytics ---------- */
+  const bars = document.getElementById("today-five-bars");
+  bars.innerHTML = PRAYERS.map(
+    (p) => `<div class="day-seg${todayLog[p.key] ? " is-on" : ""}" title="${p.label}"></div>`
+  ).join("");
 
-function renderBreakdown30Days() {
+  // 30-day breakdown
   const now = new Date();
   const counts = { Fajr: 0, Dhuhr: 0, Asr: 0, Maghrib: 0, Isha: 0 };
-  let total = 0;
-
+  let total30 = 0;
   for (let i = 0; i < 30; i++) {
     const d = new Date(now);
     d.setDate(now.getDate() - i);
@@ -330,12 +400,13 @@ function renderBreakdown30Days() {
     for (const p of PRAYERS) {
       if (log[p.key]) {
         counts[p.key]++;
-        total++;
+        total30++;
       }
     }
   }
 
-  document.getElementById("breakdown-total").innerHTML = `${total}<span class="muted">/150</span>`;
+  document.getElementById("mini-rate").textContent = `${Math.round((total30 / 150) * 100)}%`;
+  document.getElementById("breakdown-total").textContent = `${total30}/150`;
 
   const list = document.getElementById("breakdown-list");
   list.innerHTML = "";
@@ -351,10 +422,7 @@ function renderBreakdown30Days() {
     const row = document.createElement("div");
     row.className = "breakdown-row";
     row.innerHTML = `
-      <div class="breakdown-label">
-        <span class="p-icon" aria-hidden="true">${p.icon}</span>
-        <span>${p.label}</span>
-      </div>
+      <div>${p.label}</div>
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
       <div class="breakdown-count">${c}/30</div>
       <div class="breakdown-pct">${pct}%</div>
@@ -364,123 +432,100 @@ function renderBreakdown30Days() {
 
   document.getElementById("best-prayer").textContent = `${best.label} ${Math.round((counts[best.key] / 30) * 100)}%`;
   document.getElementById("focus-prayer").textContent = `${focus.label} ${Math.round((counts[focus.key] / 30) * 100)}%`;
-}
 
-function renderMonthlyTrend() {
-  const now = new Date();
-  const container = document.getElementById("monthly-bars");
-  container.innerHTML = "";
-
+  // Monthly Trend
+  const mWrap = document.getElementById("monthly-bars");
+  mWrap.innerHTML = "";
   for (let offset = 5; offset >= 0; offset--) {
     const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
-    const year = d.getFullYear();
-    const month = d.getMonth();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const y = d.getFullYear();
+    const m = d.getMonth();
+    const dim = new Date(y, m + 1, 0).getDate();
     const label = d.toLocaleString("en-GB", { month: "short" });
-
-    let totalPrayed = 0;
-    for (let day = 1; day <= daysInMonth; day++) {
-      const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-      totalPrayed += countDayPrayers(key);
+    let sum = 0;
+    for (let day = 1; day <= dim; day++) {
+      sum += countDayPrayers(`${y}-${String(m + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
     }
-
-    const pct = Math.round((totalPrayed / (daysInMonth * 5)) * 100);
-    const barH = Math.max(pct > 0 ? 18 : 0, Math.min(100, pct));
-
+    const pct = Math.round((sum / (dim * 5)) * 100);
     const col = document.createElement("div");
     col.className = "m-col";
     col.innerHTML = `
       <span class="m-pct">${pct}%</span>
-      <div class="m-box"><div class="m-fill" style="height:${barH}%"></div></div>
+      <div class="m-box"><div class="m-fill" style="height:${pct > 0 ? Math.max(16, pct) : 0}%"></div></div>
       <span class="m-label">${label}</span>
     `;
-    container.appendChild(col);
+    mWrap.appendChild(col);
   }
-}
 
-function renderThisWeek() {
-  const now = new Date();
+  // This Week
   const dayOfWeek = (now.getDay() + 6) % 7;
   const monday = new Date(now);
   monday.setDate(now.getDate() - dayOfWeek);
-
-  const labels = ["M", "T", "W", "T", "F", "S", "S"];
-  const container = document.getElementById("week-bars");
-  container.innerHTML = "";
-
+  const wLabels = ["M", "T", "W", "T", "F", "S", "S"];
+  const wWrap = document.getElementById("week-bars");
+  wWrap.innerHTML = "";
   let weekSum = 0;
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
     const c = countDayPrayers(toDateKey(d));
     weekSum += c;
-
     const col = document.createElement("div");
     col.className = "w-col";
     col.innerHTML = `
       <span class="w-count">${c > 0 ? c : ""}</span>
       <div class="w-bar-wrap"><div class="w-bar" style="height:${(c / 5) * 100}%"></div></div>
-      <span class="w-day">${labels[i]}</span>
+      <span class="w-day">${wLabels[i]}</span>
     `;
-    container.appendChild(col);
+    wWrap.appendChild(col);
   }
+  document.getElementById("week-total").textContent = `${weekSum}/35`;
+  document.getElementById("mini-week").textContent = `${weekSum}/35`;
 
-  document.getElementById("week-total").innerHTML = `${weekSum}<span class="muted">/35</span>`;
-}
-
-function renderStreak() {
-  const now = new Date();
-  let current = 0;
-
+  // Streak
+  let currentStreak = 0;
   for (let i = 0; i < 365; i++) {
     const d = new Date(now);
     d.setDate(now.getDate() - i);
     const c = countDayPrayers(toDateKey(d));
-    if (c === 5) {
-      current++;
-    } else if (i === 0) {
-      continue;
-    } else {
-      break;
-    }
+    if (c === 5) currentStreak++;
+    else if (i === 0) continue;
+    else break;
   }
 
-  const sortedKeys = Object.keys(state.logs).sort();
-  let best = current;
+  const keys = Object.keys(state.logs).sort();
+  let bestStreak = currentStreak;
   let run = 0;
-  let prevDate = null;
-  for (const k of sortedKeys) {
+  let prev = null;
+  for (const k of keys) {
     if (countDayPrayers(k) === 5) {
       const dt = new Date(k + "T00:00:00");
-      run = prevDate && (dt - prevDate) / 86400000 === 1 ? run + 1 : 1;
-      if (run > best) best = run;
-      prevDate = dt;
+      run = prev && (dt - prev) / 86400000 === 1 ? run + 1 : 1;
+      if (run > bestStreak) bestStreak = run;
+      prev = dt;
     } else {
       run = 0;
-      prevDate = null;
+      prev = null;
     }
   }
 
-  document.getElementById("streak-current").textContent = String(current);
-  const segWrap = document.getElementById("streak-segments");
-  segWrap.innerHTML = "";
-  for (let i = 0; i < 7; i++) {
-    const seg = document.createElement("div");
-    seg.className = `streak-seg${i < Math.min(current, 7) ? " is-filled" : ""}`;
-    segWrap.appendChild(seg);
-  }
-
-  const remaining = Math.max(0, 7 - current);
+  document.getElementById("mini-streak").textContent = `${currentStreak}d`;
+  document.getElementById("streak-current").textContent = String(currentStreak);
+  document.getElementById("streak-segments").innerHTML = Array.from({ length: 7 }, (_, i) =>
+    `<div class="streak-seg${i < Math.min(currentStreak, 7) ? " is-filled" : ""}"></div>`
+  ).join("");
+  const rem = Math.max(0, 7 - currentStreak);
   document.getElementById("streak-msg").textContent =
-    remaining === 0 ? "7-day streak goal achieved" : `${remaining} days to a 7-day streak`;
-  document.getElementById("streak-best").textContent = `All-time best · ${best} days`;
+    rem === 0 ? "7-day streak goal achieved" : `${rem} days to a 7-day streak`;
+  document.getElementById("streak-best").textContent = `All-time best · ${bestStreak} days`;
+
+  renderHeatmap();
 }
 
 function renderHeatmap() {
   const grid = document.getElementById("heatmap-grid");
   const monthsRow = document.getElementById("heatmap-months");
   const tooltip = document.getElementById("heatmap-tooltip");
-
   grid.innerHTML = "";
   monthsRow.innerHTML = "";
 
@@ -493,33 +538,25 @@ function renderHeatmap() {
   for (let i = 0; i < 53 * 7; i++) {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
-
     if (i % 7 === 0) {
-      const mSpan = document.createElement("span");
+      const span = document.createElement("span");
       if (d.getMonth() !== lastMonth) {
-        mSpan.textContent = d.toLocaleString("en-GB", { month: "short" });
+        span.textContent = d.toLocaleString("en-GB", { month: "short" });
         lastMonth = d.getMonth();
       }
-      monthsRow.appendChild(mSpan);
+      monthsRow.appendChild(span);
     }
 
     const key = toDateKey(d);
-    const count = countDayPrayers(key);
-    const lvl = count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : count === 4 ? 3 : 4;
-
+    const c = countDayPrayers(key);
+    const lvl = c === 0 ? 0 : c === 1 ? 1 : c <= 3 ? 2 : c === 4 ? 3 : 4;
     const cell = document.createElement("span");
     cell.className = `cell lvl-${lvl}${key === todayStr ? " is-today" : ""}`;
     if (d > today) cell.style.opacity = "0.28";
 
-    const prettyDate = d.toLocaleDateString("en-GB", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-
+    const pretty = d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
     cell.addEventListener("mouseenter", (e) => {
-      tooltip.textContent = `${prettyDate} · ${count}/5 prayers`;
+      tooltip.textContent = `${pretty} · ${c}/5 prayers`;
       tooltip.hidden = false;
       tooltip.style.left = `${e.clientX + 12}px`;
       tooltip.style.top = `${e.clientY - 34}px`;
@@ -531,47 +568,33 @@ function renderHeatmap() {
     cell.addEventListener("mouseleave", () => {
       tooltip.hidden = true;
     });
-
     grid.appendChild(cell);
   }
 }
 
-function renderAllAnalytics() {
-  renderTodayHero();
-  renderBreakdown30Days();
-  renderMonthlyTrend();
-  renderThisWeek();
-  renderStreak();
-  renderHeatmap();
-}
+/* ---------- Timetables ---------- */
 
-/* ---------- Timetable ---------- */
-
-function renderTimetable() {
+function renderTimetables() {
   const now = new Date();
   const todayDay = now.getDate();
   const isCurrentMonth =
     now.getFullYear() === state.calendarYear && now.getMonth() + 1 === state.calendarMonth;
 
-  const html = state.calendarData
+  const fullRows = state.calendarData
     .map((entry) => {
       const g = entry.date.gregorian;
       const h = entry.date.hijri;
       const t = entry.timings;
       const isToday = isCurrentMonth && Number(g.day) === todayDay;
       const isFriday = g.weekday.en === "Friday";
-
-      const cls = [isToday ? "is-today-row" : "", isFriday ? "is-friday-row" : ""]
-        .filter(Boolean)
-        .join(" ");
-
+      const cls = [isToday ? "is-today-row" : "", isFriday ? "is-friday-row" : ""].filter(Boolean).join(" ");
       const tags = [
         isToday ? `<span class="row-tag tag-today">TODAY</span>` : "",
         isFriday ? `<span class="row-tag tag-jumuah">JUMU’AH</span>` : "",
       ].join("");
 
       return `
-        <tr class="${cls}" ${isToday ? 'data-today-row="true"' : ""}>
+        <tr class="${cls}">
           <td>${g.weekday.en.slice(0, 3)}, ${g.day} ${g.month.en.slice(0, 3)}${tags}</td>
           <td>${h.day} ${h.month.en}</td>
           <td class="t-time">${cleanTime(t.Fajr)}</td>
@@ -585,16 +608,42 @@ function renderTimetable() {
     })
     .join("");
 
-  document.getElementById("tt-body").innerHTML = html;
+  document.getElementById("tt-body-full").innerHTML = fullRows;
+
+  // 7-day preview starting from today (or day 1 if viewing another month)
+  const startIdx = isCurrentMonth ? Math.max(0, todayDay - 1) : 0;
+  const slice = state.calendarData.slice(startIdx, startIdx + 7);
+  document.getElementById("tt-body-preview").innerHTML = slice
+    .map((entry) => {
+      const g = entry.date.gregorian;
+      const t = entry.timings;
+      const isToday = isCurrentMonth && Number(g.day) === todayDay;
+      const isFriday = g.weekday.en === "Friday";
+      const cls = [isToday ? "is-today-row" : "", isFriday ? "is-friday-row" : ""].filter(Boolean).join(" ");
+      const tag = isToday
+        ? `<span class="row-tag tag-today">TODAY</span>`
+        : isFriday
+        ? `<span class="row-tag tag-jumuah">FRI</span>`
+        : "";
+      return `
+        <tr class="${cls}">
+          <td>${g.weekday.en.slice(0, 3)}, ${g.day} ${g.month.en.slice(0, 3)}${tag}</td>
+          <td class="t-time">${cleanTime(t.Fajr)}</td>
+          <td class="t-time">${cleanTime(t.Sunrise)}</td>
+          <td class="t-time">${cleanTime(t.Dhuhr)}</td>
+          <td class="t-time">${cleanTime(t.Asr)}</td>
+          <td class="t-time">${cleanTime(t.Maghrib)}</td>
+          <td class="t-time">${cleanTime(t.Isha)}</td>
+        </tr>
+      `;
+    })
+    .join("");
 
   const coordText = `${state.settings.lat.toFixed(4)}° N, ${Math.abs(state.settings.lng).toFixed(4)}° ${
     state.settings.lng < 0 ? "W" : "E"
   } · ${state.settings.tz}`;
   document.getElementById("tt-heading").textContent = `${state.settings.city} — Prayer Timetable`;
   document.getElementById("tt-subheading").textContent = coordText;
-
-  const todayRow = document.querySelector('#tt-body tr[data-today-row="true"]');
-  if (todayRow) todayRow.scrollIntoView({ block: "center", behavior: "instant" });
 }
 
 function exportTimetableCSV() {
@@ -627,7 +676,19 @@ function exportTimetableCSV() {
   URL.revokeObjectURL(a.href);
 }
 
-/* ---------- Qibla & Settings ---------- */
+/* ---------- Tabs, Qibla & Settings ---------- */
+
+function switchTab(tabName) {
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    const active = btn.dataset.tab === tabName;
+    btn.classList.toggle("is-active", active);
+    btn.setAttribute("aria-selected", String(active));
+  });
+  document.querySelectorAll(".tab-panel").forEach((panel) => {
+    panel.classList.toggle("is-active", panel.id === `tab-${tabName}`);
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
 function updateQibla() {
   const toRad = (deg) => (deg * Math.PI) / 180;
@@ -644,9 +705,6 @@ function updateQibla() {
 
   document.getElementById("qibla-needle").style.transform = `rotate(${bearing.toFixed(1)}deg)`;
   document.getElementById("qibla-deg").textContent = `${bearing.toFixed(1)}° ESE`;
-  document.getElementById("ticker-qibla").textContent = `${bearing.toFixed(1)}° ESE`;
-  document.getElementById("qibla-desc").textContent =
-    `Great-circle bearing from ${state.settings.city} (${state.settings.lat.toFixed(4)}° N, ${Math.abs(state.settings.lng).toFixed(4)}° W) to the Kaaba in Makkah.`;
 }
 
 function syncSettingsUI() {
@@ -661,11 +719,13 @@ function syncSettingsUI() {
   document.getElementById("row-fajr-angle").classList.toggle("is-disabled", !isCustom);
   document.getElementById("row-isha-angle").classList.toggle("is-disabled", !isCustom);
 
-  const coordShort = `${s.lat.toFixed(4)}° N, ${Math.abs(s.lng).toFixed(4)}° ${s.lng < 0 ? "W" : "E"}`;
-  document.getElementById("hero-loc-kicker").textContent = `${s.city.toUpperCase()} · ${coordShort}`;
-  document.getElementById("study-coords").textContent = `${s.city.split(",")[0].toUpperCase()} · UK`;
+  const shortCity = s.city.split(",")[0];
+  document.getElementById("header-city").textContent = shortCity;
+  document.getElementById("loc-badge").textContent = `${s.city.toUpperCase()} · UK`;
   document.getElementById("loc-name").textContent = s.city;
-  document.getElementById("loc-coords").textContent = `${coordShort} · ${s.tz}`;
+  document.getElementById("loc-coords").textContent = `${s.lat.toFixed(4)}° N, ${Math.abs(s.lng).toFixed(4)}° ${
+    s.lng < 0 ? "W" : "E"
+  } · ${s.tz}`;
 
   const methodLabel = METHOD_LABELS[s.method] || "CUSTOM";
   const schoolLabel = Number(s.school) === 1 ? "HANAFI" : "STANDARD";
@@ -692,6 +752,14 @@ function changeMonth(delta) {
 }
 
 function bindEvents() {
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+  });
+
+  document.getElementById("btn-view-full-tt").addEventListener("click", () => switchTab("timetable"));
+  document.getElementById("btn-open-analytics").addEventListener("click", () => switchTab("analytics"));
+  document.getElementById("btn-quick-csv").addEventListener("click", exportTimetableCSV);
+
   document.getElementById("tt-prev").addEventListener("click", () => changeMonth(-1));
   document.getElementById("tt-next").addEventListener("click", () => changeMonth(1));
   document.getElementById("tt-today").addEventListener("click", () => {
@@ -700,7 +768,6 @@ function bindEvents() {
   });
   document.getElementById("tt-print").addEventListener("click", () => window.print());
   document.getElementById("tt-csv").addEventListener("click", exportTimetableCSV);
-  document.getElementById("quick-export-csv").addEventListener("click", exportTimetableCSV);
 
   document.getElementById("setting-method").addEventListener("change", (e) => {
     state.settings.method = Number(e.target.value);
@@ -767,9 +834,9 @@ function startClocks() {
     const preston = getTimeInZone(state.settings.tz);
     const makkah = getTimeInZone("Asia/Riyadh");
     document.getElementById("clock-preston").textContent = preston.text;
-    document.getElementById("clock-makkah").textContent = makkah.text;
-    if (preston.s === 0 && state.todayTimings) {
-      renderTodayHero();
+    document.getElementById("makkah-clock-line").textContent = `Makkah · ${makkah.text}`;
+    if (state.todayTimings) {
+      updateCountdownAndArc();
     }
   };
   tick();
