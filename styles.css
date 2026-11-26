@@ -1,129 +1,35 @@
 /* ==========================================================================
-   SALAHSYNC / GYMSYNC — UNIFIED DESIGN SYSTEM
-   Dark Charcoal · Warm Bronze & Orange · Apple × Linear Hierarchy
+   SALAH / GYM SYNC — COMPONENT & LAYOUT STYLESHEET
+   Built exclusively on tokens.css · Unified Prayer & Fitness Product Shell
    ========================================================================== */
 
-:root {
-  /* Core Surfaces (Dark Default) */
-  --bg-canvas: #0b0b0c;
-  --bg-surface: #121214;
-  --bg-panel: rgba(20, 20, 22, 0.84);
-  --bg-elevated: #1a1a1d;
-  --bg-hover: #222226;
-  --bg-input: #0f0f11;
-
-  /* Elevated Right Inspector (Refined Obsidian-Bronze) */
-  --sidebar-top: #171513;
-  --sidebar-mid: #141311;
-  --sidebar-bot: #11100f;
-  --sidebar-cta: #1f1c18;
-  --sidebar-cta-hover: #29241e;
-
-  /* Borders & Dividers */
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --dashed: rgba(255, 255, 255, 0.12);
-
-  /* Typography Colors */
-  --text: #f5f4f0;
-  --text-soft: #d4d1c9;
-  --text-muted: #98938a;
-  --sidebar-muted: #a69f93;
-
-  /* Accents — Warm Orange/Bronze + Functional Emerald */
-  --orange: #e56a35;
-  --orange-hover: #ee7a47;
-  --orange-soft: rgba(229, 106, 53, 0.14);
-  --orange-border: rgba(229, 106, 53, 0.42);
-  --bronze-glow: rgba(196, 146, 92, 0.12);
-
-  --green: #2fb36d;
-  --green-soft: rgba(47, 179, 109, 0.14);
-  --green-border: rgba(47, 179, 109, 0.42);
-
-  /* Unified Geometry & Rhythm */
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 16px;
-  --ctrl-h: 34px;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 24px rgba(0, 0, 0, 0.28);
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  background: var(--bg-canvas);
-  color: var(--text);
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.mono {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  font-variant-numeric: tabular-nums;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid var(--orange);
-  outline-offset: 2px;
-}
-
 /* ==========================================================================
-   APP SHELL & UNIFIED TOP BAR
+   1. APP SHELL & UNIFIED TOP BAR
    ========================================================================== */
 .viewport-frame {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 332px;
+  grid-template-columns: minmax(0, 1fr) var(--sidebar-width);
   min-height: 100vh;
   background:
-    radial-gradient(ellipse 65% 40% at 35% 0%, var(--bronze-glow), transparent 65%),
+    radial-gradient(ellipse 64% 38% at 34% 0%, var(--bronze-glow), transparent 64%),
     var(--bg-canvas);
 }
 
 .left-column {
   display: flex;
   flex-direction: column;
-  padding: 16px 24px 32px;
-  gap: 16px;
+  padding: var(--shell-pad-y) var(--shell-pad-x) var(--space-8);
+  gap: var(--section-gap);
   min-width: 0;
 }
 
-/* Single-Row Apple × Linear Top Bar */
 .hud-topbar {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 16px;
-  min-height: 44px;
-  padding-bottom: 12px;
+  gap: var(--space-4);
+  min-height: 46px;
+  padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--border);
 }
 
@@ -142,27 +48,27 @@ textarea:focus-visible {
 .status-cluster {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: var(--ctrl-h);
-  padding: 0 12px;
+  gap: var(--space-2);
+  height: var(--ctrl-md);
+  padding: 0 var(--space-3);
   border-radius: var(--r-sm);
   background: var(--bg-panel);
   border: 1px solid var(--border);
-  font-size: 12.5px;
+  font-size: var(--text-xs);
   font-weight: 500;
   color: var(--text-soft);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
 }
 
 .cluster-sep {
   color: var(--text-muted);
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
 .cluster-clock {
   color: var(--text);
-  font-size: 12px;
+  font-size: var(--text-xs);
 }
 
 .pill-dot {
@@ -170,8 +76,14 @@ textarea:focus-visible {
   height: 7px;
   border-radius: 50%;
   background: var(--green);
-  box-shadow: 0 0 8px rgba(47, 179, 109, 0.7);
+  box-shadow: 0 0 8px rgba(47, 179, 109, 0.55);
   flex-shrink: 0;
+  transition: background-color var(--dur-base) var(--ease);
+}
+
+.pill-dot.is-loading {
+  background: var(--bronze);
+  box-shadow: 0 0 8px var(--bronze-border);
 }
 
 .pill-dot.is-error {
@@ -179,124 +91,334 @@ textarea:focus-visible {
   box-shadow: none;
 }
 
-/* Centered Segmented Page Switcher (Prayer | Fitness) */
-.hud-nav {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px;
-  border-radius: var(--r-md);
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-.hud-tab,
-.hud-page-link {
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 28px;
-  padding: 0 16px;
-  border-radius: var(--r-sm);
-  color: var(--text-muted);
-  font-size: 13px;
-  font-weight: 500;
-  transition: color 180ms var(--ease), background-color 180ms var(--ease);
-}
-
-.hud-tab:hover {
-  color: var(--text);
-}
-
-.hud-tab.is-active {
-  background: var(--bg-elevated);
-  color: var(--text);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-/* Theme Switcher */
-.theme-switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 3px;
-  border-radius: var(--r-md);
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.theme-opt {
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 500;
-  height: 28px;
-  padding: 0 11px;
-  border-radius: var(--r-sm);
-  cursor: pointer;
-  transition: background-color 180ms var(--ease), color 180ms var(--ease);
-}
-
-.theme-opt:hover {
-  color: var(--text);
-}
-
-.theme-opt.is-active {
-  background: var(--orange);
-  color: #ffffff;
-}
-
-/* ==========================================================================
-   PRAYER SUB-NAV & SECTIONS
-   ========================================================================== */
+/* Segmented Controls (Primary Page Switcher, Theme Switcher, Prayer Sub-Nav) */
+.hud-nav,
+.theme-switch,
 .subnav-bar {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  width: fit-content;
+  gap: 3px;
   padding: 3px;
   border-radius: var(--r-md);
-  background: var(--bg-surface);
+  background: var(--bg-panel);
   border: 1px solid var(--border);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
 }
 
+.hud-nav {
+  box-shadow: var(--shadow-sm);
+}
+
+.subnav-bar {
+  width: fit-content;
+  background: var(--bg-surface);
+}
+
+.hud-tab,
+.hud-page-link,
+.theme-opt,
 .subnav-link {
   border: none;
   background: transparent;
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
-  padding: 6px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--ctrl-sm);
+  padding: 0 14px;
   border-radius: var(--r-sm);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
   cursor: pointer;
-  transition: color 180ms var(--ease), background-color 180ms var(--ease);
+  transition:
+    color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
 }
 
+.theme-opt {
+  font-size: var(--text-xs);
+  padding: 0 11px;
+}
+
+.hud-tab:hover,
+.theme-opt:hover,
 .subnav-link:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-subtle);
 }
 
+.hud-tab.is-active,
 .subnav-link.is-active {
-  color: var(--text);
   background: var(--bg-elevated);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
-/* Focused Prayer Views */
+.theme-opt.is-active {
+  background: var(--orange);
+  color: var(--text-inverse);
+}
+
+[data-theme="light"] .hud-tab.is-active,
+[data-theme="light"] .subnav-link.is-active {
+  background: var(--bg-panel-solid);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   2. UNIFIED RIGHT INSPECTOR SIDEBAR (Identical Rhythm on Prayer & Fitness)
+   ========================================================================== */
+.inspector-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background:
+    radial-gradient(ellipse 100% 34% at 50% 0%, var(--sidebar-glow), transparent 68%),
+    linear-gradient(180deg, var(--sidebar-top) 0%, var(--sidebar-mid) 52%, var(--sidebar-bot) 100%);
+  border-left: 1px solid var(--border);
+  color: var(--sidebar-text);
+}
+
+.inspector-body {
+  padding: var(--sidebar-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  flex: 1;
+}
+
+.inspector-sidebar .divider,
+.inspector-sidebar .dashed-divider {
+  border-top-color: var(--sidebar-border);
+}
+
+.sidebar-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.insp-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--sidebar-muted);
+}
+
+.insp-big {
+  font-size: 26px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--sidebar-text);
+}
+
+.insp-unit {
+  font-size: var(--text-xs);
+  color: var(--sidebar-muted);
+  margin-top: 3px;
+}
+
+.insp-info-title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--bronze);
+}
+
+[data-theme="light"] .inspector-sidebar .insp-info-title {
+  color: #ffd9a0;
+}
+
+.insp-info-body,
+.reflection-body {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--sidebar-text-soft);
+  line-height: var(--leading-relaxed);
+}
+
+.insp-cycle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  margin-top: var(--space-1);
+  background: none;
+  border: none;
+  padding: 2px 0;
+  color: var(--sidebar-muted);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.insp-cycle-btn:hover {
+  color: var(--sidebar-text);
+}
+
+.insp-ghost-btn {
+  width: 100%;
+  height: var(--ctrl-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--r-sm);
+  border: 1px dashed var(--sidebar-border);
+  background: transparent;
+  color: var(--sidebar-text-soft);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.insp-ghost-btn:hover {
+  background: var(--sidebar-surface-hover);
+  border-color: var(--sidebar-muted);
+  color: var(--sidebar-text);
+}
+
+.inspector-cta {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--sidebar-border);
+  background: var(--sidebar-cta);
+  color: var(--sidebar-text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: var(--space-4) var(--sidebar-pad);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.inspector-cta:hover {
+  background: var(--sidebar-cta-hover);
+}
+
+/* ==========================================================================
+   3. SHARED SUMMARY STRIP (Prayer Daily Progress & Fitness Weekly Progress)
+   ========================================================================== */
+.panel-dark.daily-progress-card,
+.panel-dark.fitness-summary-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) 1px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--card-pad-y) var(--card-pad-x);
+}
+
+.dp-left,
+.fs-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.dp-head,
+.fs-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.dp-headline {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.dp-count {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.dp-sub {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.dp-pct,
+.fs-week-count {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--orange);
+}
+
+.dp-segments {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-2);
+}
+
+.dp-seg {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--surface-track);
+  transition: background-color var(--dur-base) var(--ease);
+}
+
+.dp-seg.is-done {
+  background: var(--green);
+}
+
+.dp-seg.is-next {
+  background: var(--orange-border);
+}
+
+.dp-divider {
+  width: 1px;
+  height: 52px;
+  background: var(--border);
+}
+
+.dp-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.dp-metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.dp-metric-val {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: var(--tracking-snug);
+  color: var(--text);
+}
+
+/* ==========================================================================
+   4. PRAYER DASHBOARD — VIEWS, 3D KAABA HERO & 5-PRAYER TIMELINE
+   ========================================================================== */
 .prayer-view {
   display: none;
   flex-direction: column;
-  gap: 16px;
-  animation: fadeSlideIn 220ms var(--ease);
+  gap: var(--section-gap);
+  animation: fadeSlideIn var(--dur-base) var(--ease);
 }
 
 .prayer-view.is-active {
@@ -314,19 +436,73 @@ textarea:focus-visible {
   }
 }
 
-/* ==========================================================================
-   MINIMALIST PRAYER HERO, NEXT-PRAYER FOCAL & 5-PRAYER HORIZONTAL TIMELINE
-   ========================================================================== */
-.prayer-hero {
-  min-height: 468px;
-  padding: 24px 26px 24px;
-  gap: 24px;
+.hud-stage.prayer-hero {
+  position: relative;
+  min-height: 460px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  border-radius: var(--r-lg);
+  background: radial-gradient(circle at 54% 38%, var(--bronze-soft), var(--bg-surface) 74%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
 }
 
-.prayer-hero-vignette {
+.hud-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.stage-kaaba-bg {
+  position: absolute;
+  inset: -14px;
+  width: calc(100% + 28px);
+  height: calc(100% + 28px);
+  object-fit: cover;
+  object-position: 54% 40%;
+  opacity: 0.88;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity var(--dur-slow) var(--ease);
+}
+
+.kaaba-3d-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.kaaba-3d-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.stage-vignette.prayer-hero-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
   background:
-    linear-gradient(100deg, rgba(11, 11, 12, 0.9) 0%, rgba(11, 11, 12, 0.62) 40%, rgba(11, 11, 12, 0.24) 76%, rgba(11, 11, 12, 0.45) 100%),
-    linear-gradient(180deg, rgba(11, 11, 12, 0.54) 0%, rgba(11, 11, 12, 0.08) 38%, rgba(11, 11, 12, 0.36) 68%, rgba(11, 11, 12, 0.92) 100%);
+    linear-gradient(100deg, rgba(11, 11, 12, 0.9) 0%, rgba(11, 11, 12, 0.62) 40%, rgba(11, 11, 12, 0.22) 76%, rgba(11, 11, 12, 0.45) 100%),
+    linear-gradient(180deg, rgba(11, 11, 12, 0.52) 0%, rgba(11, 11, 12, 0.08) 38%, rgba(11, 11, 12, 0.36) 68%, rgba(11, 11, 12, 0.92) 100%);
+}
+
+[data-theme="light"] .hud-stage.prayer-hero {
+  background:
+    radial-gradient(circle at 54% 34%, rgba(255, 224, 163, 0.42), transparent 58%),
+    linear-gradient(180deg, #e7f0ec 0%, #f4efe3 100%);
+}
+
+[data-theme="light"] .stage-vignette.prayer-hero-vignette {
+  background:
+    linear-gradient(100deg, rgba(246, 249, 247, 0.94) 0%, rgba(246, 249, 247, 0.68) 42%, rgba(246, 249, 247, 0.16) 76%, rgba(246, 249, 247, 0.45) 100%),
+    linear-gradient(180deg, rgba(246, 249, 247, 0.78) 0%, rgba(246, 249, 247, 0.08) 38%, rgba(246, 249, 247, 0.34) 70%, rgba(246, 249, 247, 0.95) 100%);
 }
 
 .hero-context-row,
@@ -340,7 +516,7 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
@@ -348,8 +524,8 @@ textarea:focus-visible {
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  font-size: 12px;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
   color: var(--text-muted);
 }
 
@@ -357,42 +533,53 @@ textarea:focus-visible {
   opacity: 0.45;
 }
 
-/* Primary Focal Point: Next Prayer + Time + Live Countdown */
+.btns-3d {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: 3px;
+  border-radius: var(--r-md);
+  background: var(--surface-glass-chip);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+}
+
+.btns-3d .btn-3d {
+  height: var(--ctrl-sm);
+  padding: 0 11px;
+  font-size: var(--text-xs);
+  border-color: transparent;
+  background: transparent;
+}
+
+.btns-3d .btn-3d:hover {
+  background: var(--surface-subtle-hover);
+}
+
+.btns-3d .btn-3d.is-active {
+  background: var(--orange);
+  color: var(--text-inverse);
+}
+
+/* Hero Focal Point */
 .hero-focal {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
   margin: auto 0;
-  padding: 16px 0 8px;
+  padding: var(--space-4) 0 var(--space-2);
   max-width: 520px;
-}
-
-.focal-kicker {
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--orange);
 }
 
 .focal-headline {
   display: flex;
   align-items: baseline;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
-.focal-prayer-name {
-  margin: 0;
-  font-size: clamp(2.4rem, 4.4vw, 3.35rem);
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 1.05;
-  color: var(--text);
-}
-
 .focal-prayer-time {
-  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-size: clamp(1.4rem, 2.3vw, 1.95rem);
   font-weight: 500;
   color: var(--text-soft);
   letter-spacing: -0.02em;
@@ -401,36 +588,55 @@ textarea:focus-visible {
 .focal-countdown-row {
   display: inline-flex;
   align-items: baseline;
-  gap: 8px;
-  margin-top: 2px;
+  gap: var(--space-2);
 }
 
 .focal-countdown-prefix {
-  font-size: 14px;
+  font-size: var(--text-base);
   color: var(--text-muted);
 }
 
 .focal-countdown {
-  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-size: clamp(1.3rem, 2.1vw, 1.65rem);
   font-weight: 600;
   color: var(--orange);
-  letter-spacing: -0.015em;
+  letter-spacing: var(--tracking-snug);
+}
+
+/* Loading state on Hero Focal */
+.hero-focal.is-loading .focal-prayer-name,
+.hero-focal.is-loading .focal-prayer-time,
+.hero-focal.is-loading .focal-countdown {
+  color: transparent;
+  border-radius: var(--r-sm);
+  background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 50%, var(--skeleton-base) 75%);
+  background-size: 200% 100%;
+  animation: dsShimmer 1.6s linear infinite;
+  min-width: 110px;
+}
+
+[data-theme="light"] .hero-quiet-meta,
+[data-theme="light"] .focal-prayer-name,
+[data-theme="light"] .focal-prayer-time,
+[data-theme="light"] .focal-countdown-prefix {
+  color: var(--text);
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.9);
 }
 
 /* 5-Prayer Horizontal Timeline */
 .prayer-timeline-wrap {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-top: 8px;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
 }
 
 .timeline-rail {
   position: relative;
   height: 2px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  margin: 0 8px;
+  border-radius: var(--r-pill);
+  background: var(--surface-track);
+  margin: 0 var(--space-2);
   overflow: hidden;
 }
 
@@ -438,8 +644,8 @@ textarea:focus-visible {
   height: 100%;
   width: 0%;
   background: linear-gradient(90deg, var(--green), var(--orange));
-  border-radius: 999px;
-  transition: width 0.5s var(--ease);
+  border-radius: var(--r-pill);
+  transition: width var(--dur-slow) var(--ease);
 }
 
 .prayer-timeline-grid {
@@ -453,75 +659,93 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
   padding: 14px 15px;
   border-radius: var(--r-md);
-  background: rgba(15, 15, 17, 0.66);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--surface-glass-chip);
+  border: 1px solid var(--border);
   color: var(--text);
   text-align: left;
   cursor: pointer;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  transition: transform 160ms var(--ease), border-color 180ms var(--ease), background-color 180ms var(--ease), box-shadow 180ms var(--ease);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  transition:
+    transform var(--dur-fast) var(--ease),
+    border-color var(--dur-base) var(--ease),
+    background-color var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease);
 }
 
 .tl-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(24, 24, 28, 0.8);
+  border-color: var(--border-strong);
+  background: var(--bg-elevated);
 }
 
 .tl-card:active {
   transform: scale(0.985);
 }
 
-/* Distinct States: Completed / Current / Next / Upcoming */
 .tl-card.is-done {
-  background: rgba(47, 179, 109, 0.13);
-  border-color: rgba(47, 179, 109, 0.36);
+  background: var(--green-soft);
+  border-color: var(--green-border);
 }
 
 .tl-card.is-current:not(.is-done) {
-  background: rgba(196, 146, 92, 0.14);
-  border-color: rgba(196, 146, 92, 0.42);
+  background: var(--bronze-soft);
+  border-color: var(--bronze-border);
 }
 
 .tl-card.is-next:not(.is-done) {
-  background: rgba(229, 106, 53, 0.18);
-  border-color: rgba(229, 106, 53, 0.62);
-  box-shadow: 0 0 0 1px rgba(229, 106, 53, 0.2), 0 8px 22px rgba(229, 106, 53, 0.14);
+  background: var(--orange-soft);
+  border-color: var(--orange-border);
+  box-shadow: 0 0 0 1px var(--orange-glow), 0 8px 20px var(--orange-glow);
+}
+
+[data-theme="light"] .tl-card.is-done {
+  background: rgba(226, 248, 234, 0.94);
+}
+
+[data-theme="light"] .tl-card.is-current:not(.is-done) {
+  background: rgba(252, 244, 230, 0.94);
+}
+
+[data-theme="light"] .tl-card.is-next:not(.is-done) {
+  background: rgba(255, 236, 229, 0.94);
 }
 
 .tl-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: var(--space-2);
 }
 
 .tl-check {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  border: 1.5px solid var(--border-strong);
   display: grid;
   place-items: center;
   font-size: 11px;
   font-weight: 700;
   color: transparent;
-  transition: all 160ms var(--ease);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .tl-card.is-done .tl-check {
   background: var(--green);
   border-color: var(--green);
-  color: #061b0f;
+  color: var(--green-ink);
 }
 
 .tl-card.is-current:not(.is-done) .tl-check {
-  border-color: #d4a36a;
-  color: #d4a36a;
+  border-color: var(--bronze);
+  color: var(--bronze);
 }
 
 .tl-card.is-next:not(.is-done) .tl-check {
@@ -530,11 +754,11 @@ textarea:focus-visible {
 }
 
 .tl-badge {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--tracking-wide);
   color: var(--text-muted);
 }
 
@@ -543,7 +767,7 @@ textarea:focus-visible {
 }
 
 .tl-card.is-current:not(.is-done) .tl-badge {
-  color: #d4a36a;
+  color: var(--bronze);
 }
 
 .tl-card.is-next:not(.is-done) .tl-badge {
@@ -551,45 +775,33 @@ textarea:focus-visible {
 }
 
 .tl-name {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--text-soft);
 }
 
 .tl-time {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 19px;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--text);
   margin-top: 2px;
 }
 
 /* ==========================================================================
-   SINGLE CONSOLIDATED DAILY PROGRESS CARD
-   ========================================================================== */
-.panel-dark.daily-progress-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) 1px minmax(0, 1fr);
-  align-items: center;
-  gap: 24px;
-  padding: 20px 24px;
-}
-
-/* ==========================================================================
-   MONTHLY PRAYER LOG CALENDAR & PAST-DAY CATCH-UP
+   5. MONTHLY PRAYER LOG CALENDAR & PAST-DAY CATCH-UP
    ========================================================================== */
 .panel-dark.prayer-log-card {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.85fr);
-  overflow: hidden;
 }
 
 .plog-cal-col {
-  padding: 20px 22px;
+  padding: var(--card-pad-y) var(--card-pad-x);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-4);
   border-right: 1px solid var(--border);
 }
 
@@ -597,7 +809,7 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
@@ -610,7 +822,7 @@ textarea:focus-visible {
 .plog-month-label {
   min-width: 118px;
   text-align: center;
-  font-size: 12.5px;
+  font-size: var(--text-xs);
   font-weight: 500;
   color: var(--text);
 }
@@ -624,7 +836,7 @@ textarea:focus-visible {
 
 .plog-weekdays span {
   text-align: center;
-  font-size: 11px;
+  font-size: var(--text-2xs);
   color: var(--text-muted);
   padding-bottom: 2px;
 }
@@ -638,10 +850,12 @@ textarea:focus-visible {
   height: 50px;
   border-radius: var(--r-sm);
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.025);
+  background: var(--surface-subtle);
   color: var(--text-soft);
   cursor: pointer;
-  transition: border-color 150ms var(--ease), background-color 150ms var(--ease), transform 120ms var(--ease);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
 }
 
 .plog-cell.is-empty {
@@ -651,7 +865,7 @@ textarea:focus-visible {
 }
 
 .plog-cell.is-future {
-  opacity: 0.32;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
@@ -667,12 +881,12 @@ textarea:focus-visible {
 }
 
 .plog-cell.is-partial {
-  background: rgba(196, 146, 92, 0.11);
-  border-color: rgba(196, 146, 92, 0.32);
+  background: var(--bronze-soft);
+  border-color: var(--bronze-border);
 }
 
 .plog-cell.is-today {
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: var(--border-strong);
 }
 
 .plog-cell.is-selected {
@@ -682,8 +896,8 @@ textarea:focus-visible {
 }
 
 .plog-day-num {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
   font-weight: 500;
   line-height: 1;
 }
@@ -697,7 +911,7 @@ textarea:focus-visible {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--surface-track);
 }
 
 .plog-pip.is-on {
@@ -708,38 +922,37 @@ textarea:focus-visible {
   background: var(--orange);
 }
 
-/* Right Side: Selected Day Catch-Up Editor */
 .plog-day-col {
-  padding: 20px 22px;
+  padding: var(--card-pad-y) var(--card-pad-x);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 14px;
-  background: rgba(255, 255, 255, 0.015);
+  gap: var(--space-4);
+  background: var(--surface-band);
 }
 
 .plog-day-head {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 10px;
-  padding-bottom: 12px;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--border);
 }
 
 .plog-day-title {
-  font-size: 16px;
+  font-size: var(--text-md);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: var(--tracking-snug);
   color: var(--text);
   margin-top: 2px;
 }
 
 .plog-day-badge {
-  font-size: 12px;
+  font-size: var(--text-xs);
   font-weight: 600;
   color: var(--orange);
-  padding: 4px 9px;
+  padding: 3px 9px;
   border-radius: var(--r-sm);
   background: var(--orange-soft);
 }
@@ -747,7 +960,7 @@ textarea:focus-visible {
 .plog-day-prayers {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
   flex: 1;
 }
 
@@ -755,16 +968,18 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
   width: 100%;
-  padding: 10px 12px;
+  padding: 10px var(--space-3);
   border-radius: var(--r-sm);
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-subtle);
   color: var(--text);
   cursor: pointer;
   text-align: left;
-  transition: all 150ms var(--ease);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
 }
 
 .plog-prayer-btn:hover {
@@ -798,17 +1013,17 @@ textarea:focus-visible {
 .plog-prayer-btn.is-done .plog-check {
   background: var(--green);
   border-color: var(--green);
-  color: #061b0f;
+  color: var(--green-ink);
 }
 
 .plog-prayer-name {
-  font-size: 13.5px;
+  font-size: var(--text-sm);
   font-weight: 500;
 }
 
 .plog-prayer-state {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
   color: var(--text-muted);
 }
 
@@ -817,7 +1032,7 @@ textarea:focus-visible {
 }
 
 .plog-day-footer {
-  padding-top: 8px;
+  padding-top: var(--space-3);
   border-top: 1px solid var(--border);
 }
 
@@ -825,1212 +1040,43 @@ textarea:focus-visible {
   width: 100%;
 }
 
-[data-theme="light"] .plog-cell {
-  background: #f6faf8;
-  color: var(--text);
-}
-
-[data-theme="light"] .plog-pip {
-  background: rgba(10, 25, 19, 0.16);
-}
-
-[data-theme="light"] .plog-day-col {
-  background: #f8fbf9;
-}
-
-[data-theme="light"] .plog-prayer-btn {
-  background: #ffffff;
-}
-
-[data-theme="light"] .plog-prayer-btn.is-done {
-  background: rgba(226, 248, 234, 0.95);
-}
-
-[data-theme="light"] .plog-prayer-btn.is-done .plog-check {
-  color: #ffffff;
-}
-
-.dp-left {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.dp-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.dp-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
-  margin-bottom: 4px;
-}
-
-.dp-headline {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.dp-count {
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  color: var(--text);
-}
-
-.dp-sub {
-  font-size: 13.5px;
-  color: var(--text-muted);
-}
-
-.dp-pct {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--orange);
-}
-
-.dp-segments {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-
-.dp-seg {
-  height: 7px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  transition: background-color 220ms var(--ease);
-}
-
-.dp-seg.is-done {
-  background: var(--green);
-}
-
-.dp-seg.is-next {
-  background: rgba(229, 106, 53, 0.45);
-}
-
-.dp-divider {
-  width: 1px;
-  height: 54px;
-  background: var(--border);
-}
-
-.dp-metrics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
-.dp-metric {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.dp-metric-val {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
-
-/* Simplified Prayer Sidebar Modules */
-.prayer-sidebar .inspector-body {
-  gap: 22px;
-  padding: 24px 22px;
-}
-
-.sidebar-block {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
+/* Prayer Sidebar Specifics */
 .qibla-card-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-top: 4px;
+  gap: var(--space-3);
 }
 
 .makkah-time {
-  margin-top: 10px;
-  font-size: 12px;
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
   color: var(--sidebar-muted);
-}
-
-.reflection-body {
-  margin: 4px 0 0;
-  font-size: 13.5px;
-  line-height: 1.55;
-}
-
-.calc-summary-line {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  margin-top: 2px;
-}
-
-.table-scroll-tall {
-  max-height: calc(100vh - 230px);
-}
-
-.breakdown-section-title {
-  padding: 6px 20px 12px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text-soft);
-}
-
-/* ==========================================================================
-   SHARED BUTTONS, INPUTS & CONTROLS (Unified 34px Height)
-   ========================================================================== */
-.sq-btn,
-.hud-btn,
-.btn-3d,
-.step-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: var(--ctrl-h);
-  border-radius: var(--r-sm);
-  border: 1px solid var(--border-strong);
-  background: var(--bg-elevated);
-  color: var(--text-soft);
-  font-size: 12.5px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease), transform 120ms var(--ease);
-}
-
-.sq-btn {
-  width: var(--ctrl-h);
-  padding: 0;
-  font-size: 16px;
-}
-
-.sq-btn svg {
-  width: 15px;
-  height: 15px;
-}
-
-.hud-btn,
-.btn-3d {
-  padding: 0 13px;
-  gap: 6px;
-}
-
-.step-btn {
-  width: 28px;
-  height: 28px;
-  font-size: 14px;
-}
-
-.sq-btn:hover,
-.hud-btn:hover,
-.btn-3d:hover,
-.step-btn:hover {
-  background: var(--bg-hover);
-  border-color: rgba(255, 255, 255, 0.22);
-  color: var(--text);
-}
-
-.sq-btn:active,
-.hud-btn:active,
-.btn-3d:active {
-  transform: scale(0.98);
-}
-
-.hud-btn-accent,
-.btn-3d.is-active {
-  background: var(--orange);
-  border-color: var(--orange);
-  color: #ffffff;
-}
-
-.hud-btn-accent:hover,
-.btn-3d.is-active:hover {
-  background: var(--orange-hover);
-  border-color: var(--orange-hover);
-  color: #ffffff;
-}
-
-.dark-input,
-.dark-select {
-  height: var(--ctrl-h);
-  width: 100%;
-  padding: 0 12px;
-  border-radius: var(--r-sm);
-  background: var(--bg-input);
-  border: 1px solid var(--border-strong);
-  color: var(--text);
-  font-size: 13px;
-  outline: none;
-  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease);
-}
-
-.dark-select {
-  width: auto;
-  cursor: pointer;
-}
-
-.dark-input:focus,
-.dark-select:focus {
-  border-color: var(--orange);
-  box-shadow: 0 0 0 3px rgba(229, 106, 53, 0.16);
-}
-
-.dark-input::placeholder {
-  color: var(--text-muted);
-}
-
-.dark-textarea {
-  height: auto;
-  padding: 10px 12px;
-  resize: vertical;
-  min-height: 60px;
-}
-
-/* ==========================================================================
-   3D KAABA STAGE (PRAYER HERO)
-   ========================================================================== */
-.hud-stage {
-  position: relative;
-  min-height: 410px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 20px 22px 18px;
-  border-radius: var(--r-lg);
-  background: radial-gradient(circle at 54% 38%, rgba(164, 128, 86, 0.18), #121213 74%);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  cursor: grab;
-  user-select: none;
-}
-
-.hud-stage.is-dragging {
-  cursor: grabbing;
-}
-
-.stage-kaaba-bg {
-  position: absolute;
-  inset: -14px;
-  width: calc(100% + 28px);
-  height: calc(100% + 28px);
-  object-fit: cover;
-  object-position: 54% 40%;
-  opacity: 0.9;
-  pointer-events: none;
-  z-index: 0;
-  transition: opacity 0.4s ease;
-}
-
-.kaaba-3d-canvas {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.kaaba-3d-canvas canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.stage-vignette {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(11, 11, 12, 0.78) 0%, rgba(11, 11, 12, 0.12) 34%, rgba(11, 11, 12, 0.08) 74%, rgba(11, 11, 12, 0.42) 100%),
-    linear-gradient(180deg, rgba(11, 11, 12, 0.48) 0%, rgba(11, 11, 12, 0) 36%, rgba(11, 11, 12, 0.22) 70%, rgba(11, 11, 12, 0.84) 100%);
-}
-
-.stage-bg-pattern {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0.06;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 48px 48px;
-}
-
-.stage-top-row,
-.stage-middle,
-.transport-bar {
-  position: relative;
-  z-index: 3;
-}
-
-.stage-top-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.greeting-line {
-  margin: 0;
-  font-size: clamp(1.2rem, 2vw, 1.55rem);
-  font-weight: 400;
-  color: var(--text-soft);
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-}
-
-.greeting-line strong {
-  font-weight: 600;
-  color: var(--text);
-}
-
-.greeting-sub {
-  margin-top: 6px;
-  font-size: 11.5px;
-  letter-spacing: 0.07em;
-  color: var(--text-muted);
-}
-
-.btns-3d {
-  display: inline-flex;
-  gap: 6px;
-  padding: 4px;
-  border-radius: var(--r-md);
-  background: rgba(16, 16, 18, 0.62);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.btns-3d .btn-3d {
-  height: 28px;
-  padding: 0 10px;
-  font-size: 12px;
-}
-
-/* Middle Telemetry Area */
-.stage-middle {
-  display: grid;
-  grid-template-columns: 144px minmax(0, 1fr);
-  gap: 20px;
-  align-items: end;
-  margin-top: auto;
-  padding-top: 52px;
-}
-
-.vertical-ruler {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.ruler-label {
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.ruler-kpi {
-  display: flex;
-  align-items: baseline;
-  gap: 5px;
-}
-
-.kpi-num {
-  font-size: 30px;
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-  color: var(--text);
-  line-height: 1.05;
-}
-
-.kpi-unit {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.ruler-scale {
-  display: flex;
-  align-items: stretch;
-  gap: 10px;
-  margin-top: 8px;
-  height: 122px;
-}
-
-.ruler-track {
-  position: relative;
-  width: 10px;
-  border-left: 1px solid rgba(255, 255, 255, 0.22);
-  background-image: repeating-linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.22) 0 1px,
-    transparent 1px 10px
-  );
-}
-
-.ruler-needle {
-  position: absolute;
-  left: -3px;
-  top: 20%;
-  width: 14px;
-  height: 2px;
-  background: var(--orange);
-  box-shadow: 0 0 8px rgba(229, 106, 53, 0.8);
-  transition: top 0.4s var(--ease);
-}
-
-.ruler-ticks {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-/* Interactive 5 Prayer HUD Cards */
-.hud-prayer-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.hud-prayer-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 13px 14px;
-  border-radius: var(--r-md);
-  background: rgba(16, 16, 18, 0.68);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--text);
-  cursor: pointer;
-  text-align: left;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  transition: border-color 180ms var(--ease), background-color 180ms var(--ease), transform 140ms var(--ease);
-}
-
-.hud-prayer-card:hover {
-  background: rgba(28, 28, 32, 0.84);
-  border-color: rgba(255, 255, 255, 0.22);
-  transform: translateY(-2px);
-}
-
-.hud-prayer-card:active {
-  transform: scale(0.985);
-}
-
-.hud-prayer-card.is-done {
-  background: var(--green-soft);
-  border-color: var(--green-border);
-}
-
-.hud-prayer-card.is-next:not(.is-done) {
-  background: var(--orange-soft);
-  border-color: var(--orange-border);
-}
-
-.hud-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.hud-status-badge {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border-strong);
-  display: grid;
-  place-items: center;
-  font-size: 11px;
-  font-weight: 600;
-  color: transparent;
-}
-
-.hud-prayer-card.is-done .hud-status-badge {
-  background: var(--green);
-  border-color: var(--green);
-  color: #061b0f;
-}
-
-.hud-prayer-card.is-next:not(.is-done) .hud-status-badge {
-  border-color: var(--orange);
-  color: var(--orange);
-}
-
-.hud-tag {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-}
-
-.hud-prayer-card.is-next:not(.is-done) .hud-tag {
-  color: var(--orange);
-}
-
-.hud-prayer-card.is-done .hud-tag {
-  color: var(--green);
-}
-
-.hud-p-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-soft);
-}
-
-.hud-p-time {
-  font-family: "JetBrains Mono", monospace;
-  font-variant-numeric: tabular-nums;
-  font-size: 19px;
-  font-weight: 600;
-  color: var(--text);
-  margin-top: 2px;
-}
-
-/* Stage Bottom Transport Bar */
-.transport-bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-
-.transport-controls {
-  display: flex;
-  gap: 6px;
-}
-
-.scrubber-wrap {
-  flex: 1;
-  min-width: 180px;
-}
-
-.scrubber-head {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11.5px;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-}
-
-.scrubber-track {
-  position: relative;
-  height: 4px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.scrubber-progress {
-  height: 100%;
-  width: 0%;
-  background: var(--text);
-  border-radius: 999px;
-}
-
-.scrubber-markers {
-  position: absolute;
-  inset: 0;
-}
-
-.scrub-tick {
-  position: absolute;
-  top: -3px;
-  width: 2px;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.45);
-}
-
-.scrub-tick.is-next {
-  background: var(--orange);
-  width: 3px;
-}
-
-.transport-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.school-toggle {
-  display: inline-flex;
-  align-items: center;
-  height: var(--ctrl-h);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  padding: 3px;
-  gap: 2px;
-}
-
-.mini-mode-btn {
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 500;
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 160ms var(--ease), color 160ms var(--ease);
-}
-
-.mini-mode-btn.is-active {
-  background: var(--bg-hover);
-  color: var(--text);
-}
-
-.boost-pill {
-  display: inline-flex;
-  align-items: center;
-  height: var(--ctrl-h);
-  padding: 0 12px;
-  border-radius: var(--r-sm);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border);
-  font-size: 12px;
-  color: var(--text-soft);
-}
-
-/* ==========================================================================
-   3-COLUMN BENTO SUMMARY GRID
-   ========================================================================== */
-.bento-3 {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.bento-card {
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 18px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 14px;
-  min-height: 152px;
-  box-shadow: var(--shadow-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.bento-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-soft);
-}
-
-.bento-kpi-row {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.big-metric {
-  font-size: 32px;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  color: var(--text);
-}
-
-.metric-unit {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text-muted);
-  margin-left: 4px;
-}
-
-.side-metrics {
-  display: flex;
-  gap: 16px;
-  font-size: 12.5px;
-}
-
-.side-metrics > div {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.m-lbl {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.legend-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 11.5px;
-  color: var(--text-muted);
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
-.stepper-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
-.micro-scale {
-  font-size: 12px;
-  color: var(--text-soft);
-}
-
-.mini-stepper {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.step-val {
-  min-width: 44px;
-  text-align: center;
-  font-size: 12.5px;
-}
-
-/* Vertical Needle Spark-Bars */
-.spark-bars {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-  align-items: end;
-  height: 82px;
-  padding: 4px 2px;
-}
-
-.week-spark-bars {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  align-items: end;
-  height: 82px;
-  padding: 4px 2px;
-}
-
-.spark-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  height: 100%;
-  gap: 6px;
-}
-
-.spark-col-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
-
-.spark-pct {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.spark-track {
-  width: 5px;
-  height: 54px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
-}
-
-.spark-needle {
-  width: 100%;
-  border-radius: 999px;
-  background: var(--text);
-  transition: height 0.35s var(--ease);
-}
-
-.spark-needle.is-focus,
-.spark-needle.is-today-bar {
-  background: var(--orange);
-}
-
-.spark-needle.is-gym-bar {
-  background: var(--green);
-}
-
-.spark-needle.is-rest-bar {
-  background: rgba(255, 255, 255, 0.16);
-}
-
-.spark-scale,
-.week-spark-scale {
-  display: grid;
-  text-align: center;
-  font-size: 11px;
-  color: var(--text-muted);
-  padding-top: 8px;
-  border-top: 1px solid var(--border);
-}
-
-.spark-scale {
-  grid-template-columns: repeat(5, 1fr);
-}
-
-.week-spark-scale {
-  grid-template-columns: repeat(7, 1fr);
-}
-
-/* Semicircular Daylight Gauge */
-.arc-gauge-wrap {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  height: 92px;
-}
-
-.arc-gauge-svg {
-  width: 100%;
-  max-width: 200px;
-  height: auto;
-}
-
-.gauge-center-label {
-  position: absolute;
-  bottom: 10px;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-}
-
-.gauge-scale {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--text-muted);
-  padding-top: 8px;
-  border-top: 1px solid var(--border);
-}
-
-/* ==========================================================================
-   RIGHT INSPECTOR SIDEBAR (Refined Obsidian-Bronze Panel)
-   ========================================================================== */
-.inspector-sidebar {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background:
-    radial-gradient(ellipse 100% 35% at 50% 0%, rgba(229, 106, 53, 0.09), transparent 70%),
-    linear-gradient(180deg, var(--sidebar-top) 0%, var(--sidebar-mid) 50%, var(--sidebar-bot) 100%);
-  border-left: 1px solid var(--border);
-  color: var(--text);
-}
-
-.inspector-body {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex: 1;
-}
-
-.inspector-title {
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin-bottom: 12px;
-}
-
-.inspector-kpis {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.insp-big {
-  font-size: 26px;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-}
-
-.insp-unit {
-  font-size: 12px;
-  color: var(--sidebar-muted);
-  margin-top: 4px;
-}
-
-.dashed-divider {
-  border: none;
-  border-top: 1px dashed var(--dashed);
-  margin: 0;
-}
-
-.insp-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--sidebar-muted);
-  margin-bottom: 8px;
-}
-
-.insp-split-section {
-  display: grid;
-  grid-template-columns: 1fr 100px;
-  gap: 12px;
-  align-items: center;
-}
-
-.block-meter {
-  display: flex;
-  gap: 5px;
-  align-items: flex-end;
-  height: 24px;
-}
-
-.b-seg {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.14);
-  transition: all 200ms var(--ease);
-}
-
-.b-seg.is-on {
-  height: 22px;
-  background: var(--green);
-}
-
-.b-seg.is-next {
-  background: var(--orange);
-}
-
-.insp-qibla-readout {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
 }
 
 .compass-svg {
-  width: 96px;
-  height: 96px;
+  width: 92px;
+  height: 92px;
+  flex-shrink: 0;
 }
 
-.insp-info-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.insp-info-title {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--orange);
-  margin-bottom: 2px;
-}
-
-.insp-info-body {
-  font-size: 13px;
-  color: var(--text-soft);
-  line-height: 1.5;
-}
-
-.insp-cycle-btn {
-  margin-top: 8px;
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(--sidebar-muted);
-  font-size: 12px;
+.calc-summary-line {
+  font-size: var(--text-base);
   font-weight: 500;
-  cursor: pointer;
-  transition: color 160ms var(--ease);
-}
-
-.insp-cycle-btn:hover {
-  color: var(--text);
-}
-
-/* 30-Day Barcode Telemetry */
-.barcode-track {
-  display: grid;
-  grid-template-columns: repeat(30, 1fr);
-  gap: 3px;
-  align-items: center;
-  height: 22px;
-}
-
-.bc-tick {
-  width: 100%;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.12);
-  height: 7px;
-}
-
-.bc-tick.lvl-mid {
-  background: rgba(255, 255, 255, 0.48);
-  height: 14px;
-}
-
-.bc-tick.lvl-high {
-  background: var(--green);
-  height: 20px;
-}
-
-.bc-tick.is-today {
-  background: var(--orange);
-  height: 22px;
-}
-
-.barcode-scale {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--sidebar-muted);
-  margin-top: 6px;
-}
-
-/* Bottom 2-Column Inspector Split */
-.insp-bottom-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.dotted-arc-svg {
-  width: 76px;
-  height: 42px;
-  display: block;
-  margin: 2px 0 6px;
-}
-
-.balance-glyphs {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  min-height: 24px;
-}
-
-.glyph {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.16);
-}
-
-.glyph.g-full {
-  background: var(--green);
-}
-
-.glyph.g-orange {
-  background: var(--orange);
-}
-
-.insp-stat-big {
-  font-size: 18px;
-  font-weight: 600;
-  margin-top: 4px;
-}
-
-.insp-stat-sub {
-  font-size: 11.5px;
-  color: var(--sidebar-muted);
-  margin-top: 2px;
-}
-
-.inspector-cta {
-  width: 100%;
-  border: none;
-  border-top: 1px solid var(--border);
-  background: var(--sidebar-cta);
-  color: var(--text);
-  font-size: 13.5px;
-  font-weight: 500;
-  padding: 16px 20px;
-  cursor: pointer;
-  transition: background-color 160ms var(--ease), color 160ms var(--ease);
-}
-
-.inspector-cta:hover {
-  background: var(--sidebar-cta-hover);
-  color: #ffffff;
+  color: var(--sidebar-text);
 }
 
 /* ==========================================================================
-   CONTENT PANELS — TIMETABLE, ACTIVITY, CALCULATION
+   6. PRAYER SECONDARY VIEWS — TIMETABLE, ACTIVITY & CALCULATION
    ========================================================================== */
-.panel-dark {
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
 .panel-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  padding: 16px 20px;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--card-pad-x);
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
-}
-
-.panel-heading {
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.panel-sub {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 2px;
 }
 
 .toolbar-btns {
@@ -2043,20 +1089,23 @@ textarea:focus-visible {
 .month-readout {
   min-width: 124px;
   text-align: center;
-  font-size: 12.5px;
+  font-size: var(--text-xs);
   font-weight: 500;
 }
 
-/* Timetable */
 .table-scroll {
   overflow: auto;
   max-height: 440px;
 }
 
+.table-scroll-tall {
+  max-height: calc(100vh - 230px);
+}
+
 .timetable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: var(--text-sm);
 }
 
 .timetable thead th {
@@ -2065,32 +1114,32 @@ textarea:focus-visible {
   z-index: 2;
   background: var(--bg-surface);
   color: var(--text-muted);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-wide);
   text-align: left;
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border);
 }
 
 .timetable tbody td {
-  padding: 11px 16px;
+  padding: 11px var(--space-4);
   border-bottom: 1px solid var(--border-subtle);
   color: var(--text-soft);
   white-space: nowrap;
 }
 
 .timetable tbody td.t-time {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   color: var(--text);
   font-weight: 500;
 }
 
 .timetable tbody tr:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-subtle);
 }
 
 .timetable tbody tr.is-today-row {
@@ -2104,10 +1153,10 @@ textarea:focus-visible {
 
 .row-tag {
   display: inline-block;
-  margin-left: 8px;
+  margin-left: var(--space-2);
   padding: 2px 6px;
-  border-radius: 5px;
-  font-family: "JetBrains Mono", monospace;
+  border-radius: var(--r-xs);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   vertical-align: middle;
@@ -2115,28 +1164,27 @@ textarea:focus-visible {
 
 .tag-today {
   background: var(--orange);
-  color: #ffffff;
+  color: var(--text-inverse);
 }
 
 .tag-jumuah {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-soft);
+  background: var(--bronze-soft);
+  color: var(--bronze);
 }
 
 .table-loading {
-  text-align: center;
-  padding: 36px !important;
-  color: var(--text-muted) !important;
+  padding: 0 !important;
+  border-bottom: none !important;
 }
 
-/* 52-Week Activity Heatmap */
+/* 52-Week Activity */
 .analytics-panel {
-  padding-bottom: 20px;
+  padding-bottom: var(--card-pad-y);
 }
 
 .heatmap-scroll {
   overflow-x: auto;
-  padding: 18px 20px 8px;
+  padding: var(--space-5) var(--card-pad-x) var(--space-2);
 }
 
 .heatmap-months {
@@ -2145,23 +1193,23 @@ textarea:focus-visible {
   gap: 3px;
   margin-left: 34px;
   margin-bottom: 6px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
   color: var(--text-muted);
 }
 
 .heatmap-body {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .heatmap-days {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 12px 0;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
+  padding: var(--space-3) 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
   color: var(--text-muted);
   width: 26px;
 }
@@ -2181,9 +1229,9 @@ textarea:focus-visible {
   display: inline-block;
 }
 
-.cell.lvl-0 { background: rgba(255, 255, 255, 0.06); }
+.cell.lvl-0 { background: var(--surface-track); }
 .cell.lvl-1 { background: rgba(229, 106, 53, 0.35); }
-.cell.lvl-2 { background: rgba(229, 106, 53, 0.65); }
+.cell.lvl-2 { background: rgba(229, 106, 53, 0.68); }
 .cell.lvl-3 { background: rgba(47, 179, 109, 0.65); }
 .cell.lvl-4 { background: var(--green); }
 .cell.is-today { outline: 1.5px solid var(--text); }
@@ -2192,41 +1240,48 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 20px 18px;
-  font-size: 11px;
+  padding: var(--space-2) var(--card-pad-x) var(--space-5);
+  font-size: var(--text-2xs);
   color: var(--text-muted);
 }
 
+.breakdown-section-title {
+  padding: 4px var(--card-pad-x) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
 .breakdown-table {
-  padding: 0 20px;
+  padding: 0 var(--card-pad-x);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .bd-row {
   display: grid;
   grid-template-columns: 78px 1fr 52px 44px;
   align-items: center;
-  gap: 12px;
-  font-size: 13px;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
 }
 
 .bd-track {
   height: 6px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
+  border-radius: var(--r-pill);
+  background: var(--surface-track);
   overflow: hidden;
 }
 
 .bd-fill {
   height: 100%;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--orange);
-  transition: width 0.35s var(--ease);
+  transition: width var(--dur-slow) var(--ease);
 }
 
-/* Calculation Settings */
+/* Calculation & Calibration */
 .settings-list {
   display: flex;
   flex-direction: column;
@@ -2236,8 +1291,8 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 14px 20px;
+  gap: var(--space-4);
+  padding: 14px var(--card-pad-x);
   border-bottom: 1px solid var(--border);
 }
 
@@ -2246,25 +1301,32 @@ textarea:focus-visible {
 }
 
 .setting-item.is-disabled {
-  opacity: 0.4;
+  opacity: 0.38;
   pointer-events: none;
 }
 
 .setting-item-col {
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .setting-label {
-  font-size: 13.5px;
+  font-size: var(--text-sm);
   font-weight: 500;
+  color: var(--text);
 }
 
-.city-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.mini-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.step-val {
+  min-width: 44px;
+  text-align: center;
+  font-size: var(--text-xs);
 }
 
 .tune-head-row {
@@ -2272,7 +1334,7 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
@@ -2287,57 +1349,65 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 10px 12px;
+  padding: 10px var(--space-3);
   border-radius: var(--r-sm);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-subtle);
   border: 1px solid var(--border);
 }
 
-[data-theme="light"] .tune-box {
-  background: #f6faf8;
+.city-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
-.city-btn {
-  height: 32px;
-  padding: 0 13px;
+.city-btn,
+.preset-chip {
+  height: var(--ctrl-md);
+  padding: 0 12px;
   border-radius: var(--r-sm);
-  border: 1px solid var(--border-strong);
-  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
   color: var(--text-soft);
-  font-size: 12.5px;
+  font-size: var(--text-xs);
   font-weight: 500;
   cursor: pointer;
-  transition: all 160ms var(--ease);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
-.city-btn:hover {
+.city-btn:hover,
+.preset-chip:hover {
   background: var(--bg-hover);
+  border-color: var(--border-strong);
   color: var(--text);
 }
 
-.city-btn.is-selected {
+.city-btn.is-selected,
+.preset-chip.is-selected {
   background: var(--orange);
   border-color: var(--orange);
-  color: #ffffff;
+  color: var(--text-inverse);
 }
 
-/* Tooltip */
 .tooltip {
   position: fixed;
   z-index: 60;
   pointer-events: none;
-  background: #0d0d0f;
-  color: #ffffff;
+  background: var(--bg-panel-solid);
+  color: var(--text);
   border: 1px solid var(--border-strong);
   border-radius: var(--r-sm);
   padding: 6px 10px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  box-shadow: var(--shadow-card);
 }
 
 /* ==========================================================================
-   FITNESS PAGE — TRANSLUCENT GYM BACKDROP, WEEKLY PLAN & PER-SET LOGGING
+   7. FITNESS DASHBOARD — WORKOUT FOCAL STAGE, PER-SET LOGGER & SIDEBAR
    ========================================================================== */
 .fitness-left {
   position: relative;
@@ -2358,8 +1428,8 @@ textarea:focus-visible {
   object-position: 64% 46%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.42;
-  transition: opacity 0.3s ease, filter 0.3s ease;
+  opacity: 0.34;
+  transition: opacity var(--dur-slow) var(--ease), filter var(--dur-slow) var(--ease);
 }
 
 .fitness-page-overlay {
@@ -2367,29 +1437,75 @@ textarea:focus-visible {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(11, 11, 12, 0.72) 0%, rgba(11, 11, 12, 0.54) 36%, rgba(11, 11, 12, 0.84) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(11, 11, 12, 0.78) 0%,
+    rgba(11, 11, 12, 0.62) 38%,
+    rgba(11, 11, 12, 0.88) 100%
+  );
 }
 
-.fitness-page .panel-dark {
-  background: rgba(18, 18, 20, 0.76);
-  backdrop-filter: blur(18px) saturate(1.15);
-  -webkit-backdrop-filter: blur(18px) saturate(1.15);
-  border-color: rgba(255, 255, 255, 0.1);
+[data-theme="light"] .fitness-page-bg {
+  opacity: 0.52;
+  filter: brightness(1.1);
 }
 
-/* Main Workout Stage Card */
-.workout-stage-card {
-  display: flex;
-  flex-direction: column;
+[data-theme="light"] .fitness-page-overlay {
+  background: linear-gradient(
+    180deg,
+    rgba(242, 245, 243, 0.72) 0%,
+    rgba(242, 245, 243, 0.45) 38%,
+    rgba(242, 245, 243, 0.78) 100%
+  );
 }
 
-.workout-week-bar {
-  background: rgba(255, 255, 255, 0.015);
+/* Weekly Routine Bar (Mon–Sun) */
+.weekday-bar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-2);
+  padding: var(--space-4) var(--card-pad-x);
+  background: var(--surface-band);
+  border-bottom: 1px solid var(--border);
 }
 
 .weekday-pill {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 9px 6px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
+  color: var(--text-soft);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.weekday-pill:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.weekday-pill.is-active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--text-inverse);
+}
+
+.wd-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .wd-done-dot {
@@ -2400,16 +1516,34 @@ textarea:focus-visible {
 }
 
 .weekday-pill.is-active .wd-done-dot {
-  background: #ffffff;
+  background: var(--text-inverse);
 }
 
-/* Prominent Workout Header (Eliminates unused vertical void) */
+.wd-count {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: var(--r-pill);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text-inverse);
+}
+
+.wd-split {
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  opacity: 0.82;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Prominent Workout Header */
 .workout-hero-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 16px;
-  padding: 20px 22px 18px;
+  gap: var(--space-4);
+  padding: var(--card-pad-y) var(--card-pad-x);
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
 }
@@ -2434,92 +1568,178 @@ textarea:focus-visible {
   gap: 4px;
 }
 
-.sq-btn-sm {
-  width: 28px;
-  height: 28px;
-  font-size: 14px;
-}
-
-.hud-btn-sm {
-  height: 28px;
-  padding: 0 10px;
-  font-size: 12px;
-}
-
 .workout-date-label {
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--text-muted);
 }
 
 .workout-title-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
-.workout-display-title {
-  margin: 0;
-  font-size: clamp(1.65rem, 2.8vw, 2.15rem);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  color: var(--text);
-}
-
-.workout-cat-pill {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 4px 9px;
-  border-radius: 999px;
-  background: var(--orange-soft);
-  border: 1px solid var(--orange-border);
-  color: var(--orange);
-}
-
 .workout-cat-pill.is-rest {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--border-strong);
-  color: var(--text-muted);
+  background: var(--bronze-soft);
+  border-color: var(--bronze-border);
+  color: var(--bronze);
 }
 
 .edit-split-trigger {
-  background: none;
+  height: var(--ctrl-sm);
+  padding: 0 var(--space-2);
+  border-radius: var(--r-xs);
   border: none;
-  padding: 4px 6px;
+  background: transparent;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--text-xs);
   font-weight: 500;
   cursor: pointer;
-  border-radius: 6px;
-  transition: color 150ms var(--ease), background-color 150ms var(--ease);
+  transition:
+    color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
 }
 
 .edit-split-trigger:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--surface-subtle-hover);
 }
 
-/* Collapsible Split Editor Drawer */
+/* Gym Session Toggle CTA */
+.gym-check-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: var(--ctrl-lg);
+  padding: 0 var(--space-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.gym-check-btn:hover {
+  background: var(--bg-hover);
+}
+
+.gym-check-btn.is-active {
+  background: var(--green-soft);
+  border-color: var(--green-border);
+  color: var(--text);
+}
+
+.gym-check-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: transparent;
+}
+
+.gym-check-btn.is-active .gym-check-circle {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--green-ink);
+}
+
+/* Collapsible Split Editor */
 .split-editor-drawer {
   border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface-band);
 }
 
 .split-editor-inner {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 14px;
-  padding: 14px 22px;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--card-pad-x);
   flex-wrap: wrap;
 }
 
-/* Exercise Progress Sub-text & Clean Empty States */
-.workout-list-wrap {
-  min-height: 0;
+.workout-field {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.split-presets {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Exercise List & Per-Set Editor */
+.exercise-list-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.exercise-list-head-simple {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px var(--card-pad-x);
+  background: var(--surface-band);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted);
+}
+
+.exercise-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.exercise-item {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.exercise-item:last-child {
+  border-bottom: none;
+}
+
+.exercise-item.is-done .ex-name {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.exercise-row-simple {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--card-pad-x);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.exercise-row-simple:hover {
+  background: var(--surface-subtle);
+}
+
+.ex-name-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
 }
 
 .ex-title-stack {
@@ -2529,8 +1749,17 @@ textarea:focus-visible {
   min-width: 0;
 }
 
+.ex-name {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .ex-progress-sub {
-  font-size: 11.5px;
+  font-size: var(--text-2xs);
   color: var(--text-muted);
 }
 
@@ -2538,47 +1767,215 @@ textarea:focus-visible {
   color: var(--green);
 }
 
-.empty-state-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 8px;
-  padding: 44px 24px;
-}
-
-.empty-state-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
+.ex-check-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  background: transparent;
+  color: transparent;
+  font-size: 11px;
+  font-weight: 700;
   display: grid;
   place-items: center;
-  font-size: 18px;
-  color: var(--orange);
-  margin-bottom: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
-.empty-state-box.is-rest .empty-state-icon {
+.exercise-item.is-done .ex-check-btn {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--green-ink);
+}
+
+.ex-right-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.ex-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--ctrl-md);
+  padding: 0 var(--space-3);
+  border-radius: var(--r-sm);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.ex-dropdown-trigger:hover,
+.ex-dropdown-trigger.is-open {
+  background: var(--orange-soft);
+  border-color: var(--orange-border);
+}
+
+.dd-caret {
+  display: inline-flex;
+  transition: transform var(--dur-base) var(--ease);
+}
+
+.ex-dropdown-trigger.is-open .dd-caret {
+  transform: rotate(180deg);
+}
+
+/* Per-Set Table */
+.perset-dropdown {
+  padding: var(--space-4) var(--card-pad-x) var(--space-4) 54px;
+  background: var(--surface-band);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.perset-head,
+.set-row {
+  display: grid;
+  grid-template-columns: 60px minmax(120px, 1fr) minmax(140px, 1.2fr) 68px;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.perset-head {
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted);
+}
+
+.perset-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.set-num {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+.set-row.is-set-done .set-num {
   color: var(--green);
 }
 
-.empty-state-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
+.dd-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.empty-state-sub {
-  font-size: 13px;
+.dd-stepper .dd-input {
+  text-align: center;
+  padding: 0 6px;
+}
+
+.set-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.set-check-btn {
+  width: var(--ctrl-sm);
+  height: var(--ctrl-sm);
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface-subtle);
+  color: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.set-check-btn.is-checked {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--green-ink);
+}
+
+.set-remove-btn,
+.ex-del-btn {
+  width: var(--ctrl-sm);
+  height: var(--ctrl-sm);
+  border-radius: var(--r-sm);
+  border: none;
+  background: transparent;
   color: var(--text-muted);
-  max-width: 380px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
-.compact-notes {
-  padding: 12px 20px 14px;
+.set-remove-btn:hover:not(:disabled),
+.ex-del-btn:hover {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.set-remove-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.perset-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.dd-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Inline Exercise Adder & Compact Notes */
+.quick-add-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 14px var(--card-pad-x);
+  border-top: 1px solid var(--border);
+  background: var(--surface-band);
+}
+
+.add-preset-btn {
+  white-space: nowrap;
+}
+
+.workout-notes-bar.compact-notes {
+  padding: 10px var(--card-pad-x) 14px;
+  border-top: 1px solid var(--border);
 }
 
 .notes-single-input {
@@ -2589,43 +1986,16 @@ textarea:focus-visible {
 
 .notes-single-input:hover {
   border-color: var(--border);
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface-subtle);
 }
 
 .notes-single-input:focus {
   background: var(--bg-input);
   border-color: var(--orange);
-  padding-left: 12px;
+  padding-left: var(--space-3);
 }
 
-/* Compact Unified Fitness Summary Strip */
-.panel-dark.fitness-summary-strip {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) 1px minmax(0, 1fr);
-  align-items: center;
-  gap: 24px;
-  padding: 18px 22px;
-}
-
-.fs-left {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.fs-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.fs-week-count {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--orange);
-}
-
+/* Weekly Workout Pills (Fitness Summary Strip) */
 .fs-week-pills {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -2640,12 +2010,15 @@ textarea:focus-visible {
   padding: 6px 4px;
   border-radius: var(--r-sm);
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.025);
+  background: var(--surface-subtle);
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: var(--text-2xs);
   font-weight: 500;
   cursor: pointer;
-  transition: all 150ms var(--ease);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .fs-day-pill:hover {
@@ -2666,8 +2039,8 @@ textarea:focus-visible {
 .fs-day-bar {
   width: 18px;
   height: 4px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--r-pill);
+  background: var(--surface-track);
 }
 
 .fs-day-pill.is-gym .fs-day-bar {
@@ -2678,581 +2051,35 @@ textarea:focus-visible {
   background: var(--orange);
 }
 
-/* Quieter Right Fitness Sidebar */
-.fitness-sidebar .inspector-body {
-  gap: 20px;
-  padding: 22px 20px;
+/* Fitness Sidebar: Quieter Calendar & Recent Sessions */
+.gym-cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-1);
 }
 
 .cal-nav-group {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-}
-
-.fitness-sidebar .gym-cal-head {
-  margin-bottom: 10px;
-}
-
-.fitness-sidebar .cal-cell {
-  height: 30px;
-  font-size: 11px;
-}
-
-.fitness-sidebar .cal-cell.is-gym {
-  background: var(--green-soft);
-  border-color: var(--green-border);
-  color: var(--green);
-}
-
-.fitness-sidebar .cal-cell.is-gym.is-selected {
-  color: var(--text);
-}
-
-[data-theme="light"] .fitness-sidebar .cal-cell.is-gym {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.5);
-  color: #ffffff;
-}
-
-[data-theme="light"] .fitness-page .panel-dark {
-  background: rgba(255, 255, 255, 0.84);
-}
-
-[data-theme="light"] .empty-state-icon {
-  background: #edf4f0;
-}
-
-[data-theme="light"] .fs-day-pill {
-  background: #f5f9f7;
-  color: var(--text-soft);
-}
-
-[data-theme="light"] .fs-day-bar {
-  background: rgba(10, 25, 19, 0.14);
-}
-
-.day-nav-block {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.day-nav-controls {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px;
-  border-radius: var(--r-md);
-  background: rgba(16, 16, 18, 0.66);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.fitness-date-title {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
-}
-
-.gym-check-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  height: 38px;
-  padding: 0 16px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border-strong);
-  background: rgba(18, 18, 20, 0.74);
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: all 160ms var(--ease);
-}
-
-.gym-check-btn:hover {
-  background: var(--bg-hover);
-}
-
-.gym-check-btn.is-active {
-  background: var(--green-soft);
-  border-color: var(--green-border);
-  color: #ffffff;
-}
-
-.gym-check-circle {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border-strong);
-  display: grid;
-  place-items: center;
-  font-size: 11px;
-  color: transparent;
-}
-
-.gym-check-btn.is-active .gym-check-circle {
-  background: var(--green);
-  border-color: var(--green);
-  color: #061b0f;
-}
-
-/* Weekday Strip (Mon–Sun) */
-.weekday-bar {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-}
-
-.weekday-pill {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 9px 6px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-soft);
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 160ms var(--ease);
-}
-
-.weekday-pill:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text);
-}
-
-.weekday-pill.is-active {
-  background: var(--orange);
-  border-color: var(--orange);
-  color: #ffffff;
-}
-
-.wd-top {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.wd-count {
-  font-size: 10.5px;
-  padding: 1px 5px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.3);
-  color: #ffffff;
-}
-
-.wd-split {
-  font-size: 11px;
-  font-weight: 500;
-  opacity: 0.85;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Workout Split Bar */
-.workout-meta-bar {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-
-.workout-field {
-  flex: 1;
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.split-presets {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.preset-chip {
-  height: var(--ctrl-h);
-  padding: 0 11px;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-soft);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 150ms var(--ease);
-}
-
-.preset-chip:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--text);
-}
-
-.preset-chip.is-selected {
-  background: var(--orange-soft);
-  border-color: var(--orange-border);
-  color: #ffffff;
-}
-
-/* Exercise List & Per-Set Dropdowns */
-.exercise-list-wrap {
-  display: flex;
-  flex-direction: column;
-  min-height: 120px;
-}
-
-.exercise-list-head-simple {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  background: rgba(12, 12, 14, 0.55);
-  border-bottom: 1px solid var(--border);
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-}
-
-.exercise-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.empty-exercises {
-  padding: 32px 20px;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 13px;
-}
-
-.exercise-item {
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.exercise-item.is-done .ex-name {
-  text-decoration: line-through;
-  color: var(--text-muted);
-}
-
-.exercise-row-simple {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 20px;
-  transition: background-color 140ms var(--ease);
-}
-
-.exercise-row-simple:hover {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.ex-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.ex-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.ex-check-btn {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border-strong);
-  background: transparent;
-  color: transparent;
-  font-size: 11px;
-  font-weight: 700;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 150ms var(--ease);
-}
-
-.exercise-item.is-done .ex-check-btn {
-  background: var(--green);
-  border-color: var(--green);
-  color: #061b0f;
-}
-
-.ex-right-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.ex-dropdown-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: var(--ctrl-h);
-  padding: 0 12px;
-  border-radius: var(--r-sm);
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid var(--border-strong);
-  color: var(--text);
-  font-size: 12.5px;
-  cursor: pointer;
-  transition: all 150ms var(--ease);
-}
-
-.ex-dropdown-trigger:hover,
-.ex-dropdown-trigger.is-open {
-  background: var(--orange-soft);
-  border-color: var(--orange-border);
-}
-
-.dd-caret {
-  font-size: 11px;
-  transition: transform 180ms var(--ease);
-}
-
-.ex-dropdown-trigger.is-open .dd-caret {
-  transform: rotate(180deg);
-}
-
-/* Per-Set Editable Table */
-.perset-dropdown {
-  padding: 14px 20px 16px 52px;
-  background: rgba(10, 10, 12, 0.42);
-  border-top: 1px dashed var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.perset-head {
-  display: grid;
-  grid-template-columns: 60px minmax(120px, 1fr) minmax(140px, 1.2fr) 68px;
-  gap: 12px;
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-}
-
-.perset-rows {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.set-row {
-  display: grid;
-  grid-template-columns: 60px minmax(120px, 1fr) minmax(140px, 1.2fr) 68px;
-  gap: 12px;
-  align-items: center;
-}
-
-.set-row.is-set-done .set-num {
-  color: var(--green);
-}
-
-.set-num {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-soft);
-}
-
-.dd-stepper {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.dd-stepper .dd-input {
-  text-align: center;
-  padding: 0 6px;
-}
-
-.tiny-step {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--border-strong);
-  background: var(--bg-elevated);
-  color: var(--text-soft);
-  cursor: pointer;
-  font-size: 13px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  transition: background-color 140ms var(--ease), color 140ms var(--ease);
-}
-
-.tiny-step:hover:not(:disabled) {
-  background: var(--bg-hover);
-  color: var(--text);
-}
-
-.tiny-step:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-
-.set-row-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-}
-
-.set-check-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.04);
-  color: transparent;
-  font-size: 12px;
-  font-weight: 700;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: all 140ms var(--ease);
-}
-
-.set-check-btn.is-checked {
-  background: var(--green);
-  border-color: var(--green);
-  color: #ffffff;
-}
-
-.set-remove-btn,
-.ex-del-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--r-sm);
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 14px;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  transition: background-color 140ms var(--ease), color 140ms var(--ease);
-}
-
-.set-remove-btn:hover:not(:disabled),
-.ex-del-btn:hover {
-  background: var(--orange-soft);
-  color: var(--orange);
-}
-
-.set-remove-btn:disabled {
-  opacity: 0.25;
-  cursor: default;
-}
-
-.perset-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
-.dd-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.quick-add-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  padding: 14px 20px;
-  border-top: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.add-preset-btn {
-  white-space: nowrap;
-}
-
-.workout-notes-bar {
-  padding: 14px 20px 18px;
-  border-top: 1px solid var(--border);
-}
-
-.notes-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* Right Sidebar: Gym Calendar & Recent Workouts */
-.gym-cal-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.gym-cal-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: var(--space-2);
 }
 
 .gym-cal-month {
-  font-size: 12.5px;
+  font-size: var(--text-xs);
   font-weight: 500;
-  color: var(--text);
+  color: var(--sidebar-text);
 }
 
-.cal-nav-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text);
-  font-size: 15px;
-  cursor: pointer;
+.inspector-sidebar .cal-nav-btn {
+  background: var(--sidebar-surface);
+  border-color: var(--sidebar-border);
+  color: var(--sidebar-text);
 }
 
-.cal-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+.inspector-sidebar .cal-nav-btn:hover {
+  background: var(--sidebar-surface-hover);
+  color: var(--sidebar-text);
 }
 
 .gym-cal-weekdays,
@@ -3264,22 +2091,24 @@ textarea:focus-visible {
 
 .gym-cal-weekdays span {
   text-align: center;
-  font-size: 11px;
+  font-size: var(--text-2xs);
   color: var(--sidebar-muted);
 }
 
 .cal-cell {
-  height: 32px;
+  height: 30px;
   border-radius: var(--r-sm);
   border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--sidebar-surface);
   color: var(--sidebar-muted);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11.5px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
   cursor: pointer;
   display: grid;
   place-items: center;
-  transition: all 140ms var(--ease);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .cal-cell.is-empty {
@@ -3288,28 +2117,31 @@ textarea:focus-visible {
 }
 
 .cal-cell:not(.is-empty):hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--text);
+  background: var(--sidebar-surface-hover);
+  color: var(--sidebar-text);
 }
 
 .cal-cell.is-gym {
-  background: var(--green);
-  color: #061b0f;
+  background: var(--green-soft);
+  border-color: var(--green-border);
+  color: var(--green);
   font-weight: 600;
 }
 
+[data-theme="light"] .inspector-sidebar .cal-cell.is-gym {
+  background: rgba(255, 255, 255, 0.24);
+  border-color: rgba(255, 255, 255, 0.52);
+  color: #ffffff;
+}
+
 .cal-cell.is-today {
-  border-color: var(--text);
+  border-color: var(--sidebar-text);
 }
 
 .cal-cell.is-selected {
   outline: 2px solid var(--orange);
   outline-offset: -1px;
-  color: var(--text);
-}
-
-.cal-cell.is-gym.is-selected {
-  color: #061b0f;
+  color: var(--sidebar-text);
 }
 
 .recent-list {
@@ -3324,345 +2156,37 @@ textarea:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 9px var(--space-3);
   border-radius: var(--r-sm);
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text);
+  border: 1px solid var(--sidebar-border);
+  background: var(--sidebar-surface);
+  color: var(--sidebar-text);
   text-align: left;
   cursor: pointer;
-  transition: background-color 140ms var(--ease), border-color 140ms var(--ease);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
 }
 
 .recent-item:hover,
 .recent-item.is-selected {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--border-strong);
+  background: var(--sidebar-surface-hover);
+  border-color: var(--sidebar-muted);
 }
 
 .recent-title {
-  font-size: 12.5px;
+  font-size: var(--text-xs);
   font-weight: 500;
 }
 
 .recent-meta,
 .recent-date {
-  font-size: 11px;
+  font-size: var(--text-2xs);
   color: var(--sidebar-muted);
 }
 
-.insp-ghost-btn {
-  width: 100%;
-  height: var(--ctrl-h);
-  border-radius: var(--r-sm);
-  border: 1px dashed var(--border-strong);
-  background: transparent;
-  color: var(--text-soft);
-  font-size: 12.5px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 140ms var(--ease), color 140ms var(--ease);
-}
-
-.insp-ghost-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text);
-}
-
 /* ==========================================================================
-   VIBRANT, HIGH-CONTRAST LIGHT MODE
-   ========================================================================== */
-[data-theme="light"] {
-  --bg-canvas: #f2f5f3;
-  --bg-surface: #e8efeb;
-  --bg-panel: rgba(255, 255, 255, 0.92);
-  --bg-elevated: #edf3ef;
-  --bg-hover: #e1ebe5;
-  --bg-input: #f7faf8;
-
-  --sidebar-top: #0f5c47;
-  --sidebar-mid: #147359;
-  --sidebar-bot: #1a886a;
-  --sidebar-cta: #0a4636;
-  --sidebar-cta-hover: #073629;
-
-  --border: rgba(10, 25, 19, 0.12);
-  --border-strong: rgba(10, 25, 19, 0.22);
-  --border-subtle: rgba(10, 25, 19, 0.07);
-  --dashed: rgba(255, 255, 255, 0.3);
-
-  --text: #0a1611;
-  --text-soft: #1b3127;
-  --text-muted: #3d564b;
-  --sidebar-muted: #e2f5ee;
-
-  --orange: #e35320;
-  --orange-hover: #cf4616;
-  --orange-soft: rgba(227, 83, 32, 0.14);
-  --orange-border: rgba(227, 83, 32, 0.5);
-  --bronze-glow: rgba(18, 145, 66, 0.08);
-
-  --green: #149646;
-  --green-soft: rgba(20, 150, 70, 0.14);
-  --green-border: rgba(20, 150, 70, 0.48);
-
-  --shadow-card: 0 2px 12px rgba(10, 25, 19, 0.06);
-}
-
-[data-theme="light"] .inspector-sidebar {
-  color: #ffffff;
-  border-left-color: rgba(10, 25, 19, 0.12);
-}
-
-[data-theme="light"] .inspector-sidebar .insp-qibla-readout,
-[data-theme="light"] .inspector-sidebar .insp-info-body,
-[data-theme="light"] .inspector-sidebar .gym-cal-month,
-[data-theme="light"] .inspector-sidebar .recent-item,
-[data-theme="light"] .inspector-sidebar .insp-ghost-btn,
-[data-theme="light"] .inspector-sidebar .inspector-cta,
-[data-theme="light"] .inspector-sidebar .cal-nav-btn {
-  color: #ffffff;
-}
-
-[data-theme="light"] .inspector-sidebar .insp-info-title {
-  color: #ffd79a;
-}
-
-[data-theme="light"] .inspector-sidebar .b-seg {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-[data-theme="light"] .inspector-sidebar .b-seg.is-on {
-  background: #ffffff;
-}
-
-[data-theme="light"] .inspector-sidebar .bc-tick {
-  background: rgba(255, 255, 255, 0.24);
-}
-
-[data-theme="light"] .inspector-sidebar .bc-tick.lvl-high {
-  background: #ffffff;
-}
-
-[data-theme="light"] .hud-tab.is-active,
-[data-theme="light"] .subnav-link.is-active {
-  background: #ffffff;
-  color: var(--text);
-  box-shadow: 0 1px 4px rgba(10, 25, 19, 0.08);
-}
-
-[data-theme="light"] .hud-stage {
-  background:
-    radial-gradient(circle at 54% 34%, rgba(255, 224, 163, 0.45), transparent 58%),
-    linear-gradient(180deg, #e7f0ec 0%, #f4efe3 100%);
-}
-
-[data-theme="light"] .prayer-hero-vignette {
-  background:
-    linear-gradient(100deg, rgba(246, 249, 247, 0.94) 0%, rgba(246, 249, 247, 0.68) 42%, rgba(246, 249, 247, 0.16) 76%, rgba(246, 249, 247, 0.45) 100%),
-    linear-gradient(180deg, rgba(246, 249, 247, 0.78) 0%, rgba(246, 249, 247, 0.08) 38%, rgba(246, 249, 247, 0.34) 70%, rgba(246, 249, 247, 0.95) 100%);
-}
-
-[data-theme="light"] .hero-quiet-meta,
-[data-theme="light"] .focal-prayer-name,
-[data-theme="light"] .focal-prayer-time,
-[data-theme="light"] .focal-countdown-prefix {
-  color: var(--text);
-  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.92);
-}
-
-[data-theme="light"] .timeline-rail,
-[data-theme="light"] .dp-seg {
-  background: rgba(10, 25, 19, 0.12);
-}
-
-[data-theme="light"] .dp-seg.is-done {
-  background: var(--green);
-}
-
-[data-theme="light"] .tl-card {
-  background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(10, 25, 19, 0.14);
-}
-
-[data-theme="light"] .tl-card.is-done {
-  background: rgba(226, 248, 234, 0.96);
-  border-color: var(--green-border);
-}
-
-[data-theme="light"] .tl-card.is-current:not(.is-done) {
-  background: rgba(252, 244, 230, 0.96);
-  border-color: rgba(186, 128, 52, 0.45);
-}
-
-[data-theme="light"] .tl-card.is-next:not(.is-done) {
-  background: rgba(255, 236, 229, 0.96);
-  border-color: var(--orange-border);
-}
-
-[data-theme="light"] .tl-card.is-done .tl-check {
-  color: #ffffff;
-}
-
-[data-theme="light"] .inspector-sidebar .calc-summary-line {
-  color: #ffffff;
-}
-
-[data-theme="light"] .stage-vignette {
-  background:
-    linear-gradient(90deg, rgba(246, 249, 247, 0.92) 0%, rgba(246, 249, 247, 0.36) 34%, rgba(246, 249, 247, 0.08) 72%, rgba(246, 249, 247, 0.45) 100%),
-    linear-gradient(180deg, rgba(246, 249, 247, 0.8) 0%, rgba(246, 249, 247, 0.06) 38%, rgba(246, 249, 247, 0.24) 72%, rgba(246, 249, 247, 0.94) 100%);
-}
-
-[data-theme="light"] .greeting-line,
-[data-theme="light"] .greeting-sub,
-[data-theme="light"] .ruler-label,
-[data-theme="light"] .kpi-num,
-[data-theme="light"] .kpi-unit,
-[data-theme="light"] .ruler-ticks,
-[data-theme="light"] .scrubber-head {
-  color: var(--text);
-  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.94);
-}
-
-[data-theme="light"] .ruler-track {
-  border-left-color: rgba(10, 25, 19, 0.35);
-  background-image: repeating-linear-gradient(to bottom, rgba(10, 25, 19, 0.35) 0 1px, transparent 1px 10px);
-}
-
-[data-theme="light"] .btns-3d {
-  background: rgba(255, 255, 255, 0.82);
-}
-
-[data-theme="light"] .hud-prayer-card {
-  background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(10, 25, 19, 0.14);
-}
-
-[data-theme="light"] .hud-prayer-card.is-done {
-  background: rgba(226, 248, 234, 0.95);
-  border-color: var(--green-border);
-}
-
-[data-theme="light"] .hud-prayer-card.is-next:not(.is-done) {
-  background: rgba(255, 236, 229, 0.95);
-  border-color: var(--orange-border);
-}
-
-[data-theme="light"] .hud-prayer-card.is-done .hud-status-badge,
-[data-theme="light"] .gym-check-btn.is-active .gym-check-circle,
-[data-theme="light"] .exercise-item.is-done .ex-check-btn {
-  color: #ffffff;
-}
-
-[data-theme="light"] .scrubber-track,
-[data-theme="light"] .spark-track,
-[data-theme="light"] .bd-track {
-  background: rgba(10, 25, 19, 0.12);
-}
-
-[data-theme="light"] .scrubber-progress,
-[data-theme="light"] .spark-needle {
-  background: #147359;
-}
-
-[data-theme="light"] .spark-needle.is-focus,
-[data-theme="light"] .spark-needle.is-today-bar {
-  background: var(--orange);
-}
-
-[data-theme="light"] .spark-needle.is-gym-bar {
-  background: var(--green);
-}
-
-[data-theme="light"] .spark-needle.is-rest-bar {
-  background: rgba(10, 25, 19, 0.16);
-}
-
-[data-theme="light"] .arc-gauge-svg path:first-child {
-  stroke: rgba(10, 25, 19, 0.14);
-}
-
-[data-theme="light"] #gauge-arc-active {
-  stroke: #147359;
-}
-
-[data-theme="light"] .tag-jumuah {
-  background: rgba(20, 115, 89, 0.12);
-  color: #0f5c47;
-}
-
-[data-theme="light"] .cell.lvl-0 {
-  background: rgba(10, 25, 19, 0.08);
-}
-
-[data-theme="light"] .fitness-page-bg {
-  opacity: 0.78;
-  filter: brightness(1.12);
-}
-
-[data-theme="light"] .fitness-page-overlay {
-  background: linear-gradient(180deg, rgba(242, 245, 243, 0.5) 0%, rgba(242, 245, 243, 0.24) 34%, rgba(242, 245, 243, 0.65) 100%);
-}
-
-[data-theme="light"] .fitness-page .panel-dark,
-[data-theme="light"] .fitness-page .bento-card {
-  background: rgba(255, 255, 255, 0.74);
-  border-color: rgba(10, 25, 19, 0.14);
-}
-
-[data-theme="light"] .fitness-hero-banner .fitness-date-title {
-  color: var(--text);
-  text-shadow: 0 1px 14px rgba(255, 255, 255, 0.96);
-}
-
-[data-theme="light"] .day-nav-controls,
-[data-theme="light"] .gym-check-btn {
-  background: rgba(255, 255, 255, 0.84);
-}
-
-[data-theme="light"] .gym-check-btn.is-active {
-  background: rgba(226, 248, 234, 0.95);
-  color: #0b5a2a;
-}
-
-[data-theme="light"] .weekday-pill {
-  background: rgba(255, 255, 255, 0.78);
-  color: var(--text);
-}
-
-[data-theme="light"] .weekday-pill.is-active {
-  background: var(--orange);
-  color: #ffffff;
-}
-
-[data-theme="light"] .exercise-list-head-simple {
-  background: rgba(232, 239, 235, 0.85);
-  color: var(--text);
-}
-
-[data-theme="light"] .ex-dropdown-trigger {
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--text);
-}
-
-[data-theme="light"] .perset-dropdown {
-  background: rgba(232, 239, 235, 0.65);
-}
-
-[data-theme="light"] .preset-chip {
-  background: rgba(255, 255, 255, 0.8);
-  color: var(--text);
-}
-
-[data-theme="light"] .preset-chip.is-selected {
-  background: var(--orange);
-  border-color: var(--orange);
-  color: #ffffff;
-}
-
-/* ==========================================================================
-   RESPONSIVE & PHONE / iOS OPTIMISATION
+   8. RESPONSIVE BREAKPOINTS (1120px / 860px / 640px) & PRINT
    ========================================================================== */
 @media (max-width: 1120px) {
   .viewport-frame {
@@ -3696,11 +2220,7 @@ textarea:focus-visible {
   }
 
   .panel-dark.daily-progress-card,
-  .panel-dark.fitness-summary-strip {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
+  .panel-dark.fitness-summary-strip,
   .panel-dark.prayer-log-card {
     grid-template-columns: 1fr;
   }
@@ -3714,13 +2234,17 @@ textarea:focus-visible {
     width: 100%;
     height: 1px;
   }
-
-  .bento-3 {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 640px) {
+  :root {
+    --shell-pad-x: 12px;
+    --shell-pad-y: 12px;
+    --card-pad-x: 16px;
+    --card-pad-y: 16px;
+    --sidebar-pad: 16px;
+  }
+
   body {
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
@@ -3728,8 +2252,8 @@ textarea:focus-visible {
   }
 
   .left-column {
-    padding: 12px 12px 20px;
-    gap: 12px;
+    gap: var(--space-3);
+    padding-bottom: var(--space-5);
   }
 
   .hud-topbar {
@@ -3759,44 +2283,19 @@ textarea:focus-visible {
     white-space: nowrap;
   }
 
-  .hud-stage {
-    min-height: 360px;
-    padding: 14px;
+  .hud-stage.prayer-hero {
+    min-height: 380px;
+    padding: var(--space-4);
     touch-action: pan-y;
   }
 
-  .stage-middle {
-    padding-top: 40px;
-    gap: 14px;
-  }
-
-  .ruler-scale {
-    display: none;
-  }
-
-  .hud-prayer-card:last-child {
-    grid-column: 1 / -1;
-  }
-
-  .transport-right {
-    width: 100%;
-    justify-content: space-between;
-  }
-
   /* Prevent iOS Safari input auto-zoom */
+  .field-input,
+  .field-select,
   .dark-input,
   .dark-select,
   .dd-input {
     font-size: 16px !important;
-  }
-
-  .fitness-hero-banner {
-    min-height: 90px;
-    gap: 10px;
-  }
-
-  .fitness-date-title {
-    font-size: 19px;
   }
 
   .gym-check-btn {
@@ -3808,7 +2307,7 @@ textarea:focus-visible {
     grid-template-columns: repeat(7, minmax(66px, 1fr));
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .split-presets {
@@ -3823,7 +2322,7 @@ textarea:focus-visible {
 
   .exercise-row-simple {
     flex-wrap: wrap;
-    padding: 12px 14px;
+    padding: var(--space-3) var(--card-pad-x);
   }
 
   .ex-name-cell {
@@ -3831,7 +2330,7 @@ textarea:focus-visible {
   }
 
   .perset-dropdown {
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .perset-head {
@@ -3840,15 +2339,11 @@ textarea:focus-visible {
 
   .set-row {
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: var(--space-2);
     padding: 10px;
     border-radius: var(--r-sm);
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--surface-subtle);
     border: 1px solid var(--border);
-  }
-
-  [data-theme="light"] .set-row {
-    background: rgba(255, 255, 255, 0.8);
   }
 
   .set-num {
@@ -3877,7 +2372,7 @@ textarea:focus-visible {
   }
 
   .cal-cell {
-    height: 36px;
+    height: 34px;
   }
 }
 
@@ -3887,6 +2382,7 @@ textarea:focus-visible {
   .panel-dark {
     background: #ffffff !important;
     color: #111111 !important;
+    box-shadow: none !important;
   }
 
   .hud-topbar,

@@ -12,8 +12,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=23" />
-  <script src="theme.js?v=23"></script>
+  <link rel="stylesheet" href="tokens.css?v=24" />
+  <link rel="stylesheet" href="styles.css?v=24" />
+  <script src="theme.js?v=24"></script>
 </head>
 <body class="fitness-page">
   <div class="viewport-frame">
@@ -35,14 +36,20 @@
         </div>
 
         <nav class="hud-nav" aria-label="Site navigation">
-          <a class="hud-tab hud-page-link" href="index.html?v=23">Prayer</a>
-          <a class="hud-tab hud-page-link is-active" href="fitness.html?v=23" aria-current="page">Fitness</a>
+          <a class="hud-tab hud-page-link" href="index.html?v=24">Prayer</a>
+          <a class="hud-tab hud-page-link is-active" href="fitness.html?v=24" aria-current="page">Fitness</a>
         </nav>
 
         <div class="hud-right">
           <div class="theme-switch" role="group" aria-label="Theme switcher">
-            <button type="button" class="theme-opt is-active" data-set-theme="dark" aria-pressed="true">☾ Dark</button>
-            <button type="button" class="theme-opt" data-set-theme="light" aria-pressed="false">☀ Light</button>
+            <button type="button" class="theme-opt is-active" data-set-theme="dark" aria-pressed="true">
+              <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              <span>Dark</span>
+            </button>
+            <button type="button" class="theme-opt" data-set-theme="light" aria-pressed="false">
+              <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+              <span>Light</span>
+            </button>
           </div>
         </div>
       </header>
@@ -59,16 +66,20 @@
           <div class="workout-hero-left">
             <div class="workout-date-row">
               <div class="day-nav-inline">
-                <button class="sq-btn sq-btn-sm" id="btn-prev-day" type="button" aria-label="Previous day">‹</button>
+                <button class="sq-btn sq-btn-sm" id="btn-prev-day" type="button" aria-label="Previous day">
+                  <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
                 <button class="hud-btn hud-btn-sm" id="btn-today" type="button">Today</button>
-                <button class="sq-btn sq-btn-sm" id="btn-next-day" type="button" aria-label="Next day">›</button>
+                <button class="sq-btn sq-btn-sm" id="btn-next-day" type="button" aria-label="Next day">
+                  <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
               </div>
               <span class="workout-date-label mono" id="selected-date-title">Today</span>
             </div>
 
             <div class="workout-title-row">
-              <h1 class="workout-display-title" id="workout-display-title">Workout</h1>
-              <span class="workout-cat-pill mono" id="workout-cat-pill">TRAINING</span>
+              <h1 class="workout-display-title ds-h1" id="workout-display-title">Workout</h1>
+              <span class="workout-cat-pill badge badge-accent" id="workout-cat-pill">TRAINING</span>
               <button type="button" class="edit-split-trigger" id="btn-toggle-split-editor" aria-expanded="false">
                 Edit split
               </button>
@@ -178,11 +189,15 @@
       <div class="inspector-body">
         <div class="sidebar-block">
           <div class="gym-cal-head">
-            <span class="insp-label" style="margin:0;">Calendar</span>
+            <span class="insp-label">Calendar</span>
             <div class="cal-nav-group">
-              <button type="button" class="cal-nav-btn" id="cal-prev" aria-label="Previous month">‹</button>
+              <button type="button" class="cal-nav-btn" id="cal-prev" aria-label="Previous month">
+                <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
               <span class="mono gym-cal-month" id="cal-month-label">Month Year</span>
-              <button type="button" class="cal-nav-btn" id="cal-next" aria-label="Next month">›</button>
+              <button type="button" class="cal-nav-btn" id="cal-next" aria-label="Next month">
+                <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
             </div>
           </div>
 
@@ -192,17 +207,20 @@
           <div class="gym-cal-grid" id="gym-cal-grid"></div>
         </div>
 
-        <hr class="dashed-divider" />
+        <hr class="divider" />
 
         <div class="sidebar-block">
           <div class="insp-label">Recent Sessions</div>
           <div class="recent-list" id="recent-list"></div>
         </div>
 
-        <hr class="dashed-divider" />
+        <hr class="divider" />
 
         <div class="insp-bottom-actions">
-          <button type="button" class="insp-ghost-btn" id="btn-export-fitness">Export Workout CSV</button>
+          <button type="button" class="insp-ghost-btn" id="btn-export-fitness">
+            <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export Workout CSV</span>
+          </button>
         </div>
       </div>
 
@@ -212,6 +230,6 @@
     </aside>
   </div>
 
-  <script src="fitness.js?v=22"></script>
+  <script src="fitness.js?v=24"></script>
 </body>
 </html>

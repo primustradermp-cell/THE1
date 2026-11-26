@@ -342,16 +342,20 @@ function renderMainWorkout() {
     headEl.style.display = "none";
     if (category.isRest) {
       listEl.innerHTML = `
-        <div class="empty-state-box is-rest">
-          <div class="empty-state-icon" aria-hidden="true">☽</div>
+        <div class="empty-state empty-state-box is-rest">
+          <div class="empty-state-icon" aria-hidden="true">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </div>
           <div class="empty-state-title">Rest &amp; Recovery Day</div>
           <div class="empty-state-sub">No exercises scheduled for ${wdInfo.full}. Recover well, or add an exercise below if you decide to train.</div>
         </div>
       `;
     } else {
       listEl.innerHTML = `
-        <div class="empty-state-box">
-          <div class="empty-state-icon" aria-hidden="true">+</div>
+        <div class="empty-state empty-state-box">
+          <div class="empty-state-icon" aria-hidden="true">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          </div>
           <div class="empty-state-title">No exercises scheduled for ${wdInfo.full}</div>
           <div class="empty-state-sub">Add your preset exercises below once—they’ll load automatically every ${wdInfo.full} so you only need to adjust sets, reps, and weights.</div>
         </div>
@@ -428,7 +432,9 @@ function renderMainWorkout() {
                   aria-expanded="${isOpen}"
                 >
                   <span class="dd-summary">${summary}</span>
-                  <span class="dd-caret" aria-hidden="true">▾</span>
+                  <span class="dd-caret" aria-hidden="true">
+                    <svg class="icon icon-xs" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+                  </span>
                 </button>
               </div>
             </div>
@@ -568,7 +574,7 @@ function renderRecentWorkouts() {
     .slice(0, 4);
 
   if (!gymKeys.length) {
-    list.innerHTML = `<div class="insp-stat-sub">No sessions logged yet.</div>`;
+    list.innerHTML = `<div class="empty-state-compact">No sessions logged yet. Check off an exercise or mark today’s gym day to record your first session.</div>`;
     return;
   }
 

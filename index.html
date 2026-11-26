@@ -12,8 +12,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=23" />
-  <script src="theme.js?v=23"></script>
+  <link rel="stylesheet" href="tokens.css?v=24" />
+  <link rel="stylesheet" href="styles.css?v=24" />
+  <script src="theme.js?v=24"></script>
 </head>
 <body class="prayer-page">
   <div class="viewport-frame">
@@ -23,22 +24,28 @@
       <header class="hud-topbar">
         <div class="hud-left">
           <div class="status-cluster">
-            <span class="pill-dot" id="api-dot"></span>
-            <span id="api-status-text">Preston Live</span>
+            <span class="pill-dot is-loading" id="api-dot"></span>
+            <span id="api-status-text">Syncing…</span>
             <span class="cluster-sep" aria-hidden="true">·</span>
             <span class="mono cluster-clock" id="widget-clock">--:--:--</span>
           </div>
         </div>
 
         <nav class="hud-nav" aria-label="Site navigation">
-          <a class="hud-tab hud-page-link is-active" href="index.html?v=23" aria-current="page">Prayer</a>
-          <a class="hud-tab hud-page-link" href="fitness.html?v=23">Fitness</a>
+          <a class="hud-tab hud-page-link is-active" href="index.html?v=24" aria-current="page">Prayer</a>
+          <a class="hud-tab hud-page-link" href="fitness.html?v=24">Fitness</a>
         </nav>
 
         <div class="hud-right">
           <div class="theme-switch" role="group" aria-label="Theme switcher">
-            <button type="button" class="theme-opt is-active" data-set-theme="dark" aria-pressed="true">☾ Dark</button>
-            <button type="button" class="theme-opt" data-set-theme="light" aria-pressed="false">☀ Light</button>
+            <button type="button" class="theme-opt is-active" data-set-theme="dark" aria-pressed="true">
+              <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              <span>Dark</span>
+            </button>
+            <button type="button" class="theme-opt" data-set-theme="light" aria-pressed="false">
+              <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+              <span>Light</span>
+            </button>
           </div>
         </div>
       </header>
@@ -78,10 +85,10 @@
           </div>
 
           <!-- Primary Focal Point: Next Upcoming Prayer + Time + Live Countdown -->
-          <div class="hero-focal">
-            <div class="focal-kicker mono" id="focal-kicker">NEXT PRAYER</div>
+          <div class="hero-focal is-loading" id="hero-focal">
+            <div class="focal-kicker ds-kicker" id="focal-kicker">NEXT PRAYER</div>
             <div class="focal-headline">
-              <h1 class="focal-prayer-name" id="focal-prayer-name">—</h1>
+              <h1 class="focal-prayer-name ds-display" id="focal-prayer-name">—</h1>
               <span class="focal-prayer-time mono" id="focal-prayer-time">--:--</span>
             </div>
             <div class="focal-countdown-row">
@@ -145,9 +152,13 @@
                 <div class="panel-sub">Select any past day to mark missed prayers completed</div>
               </div>
               <div class="plog-cal-nav">
-                <button type="button" class="sq-btn" id="pcal-prev" aria-label="Previous month">‹</button>
+                <button type="button" class="sq-btn" id="pcal-prev" aria-label="Previous month">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
                 <span class="mono plog-month-label" id="pcal-month-label">Month Year</span>
-                <button type="button" class="sq-btn" id="pcal-next" aria-label="Next month">›</button>
+                <button type="button" class="sq-btn" id="pcal-next" aria-label="Next month">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
                 <button type="button" class="hud-btn" id="pcal-today">Today</button>
               </div>
             </div>
@@ -190,9 +201,13 @@
               <div class="panel-sub" id="tt-subtitle">Tap Today to highlight the current date or export to CSV</div>
             </div>
             <div class="toolbar-btns">
-              <button class="sq-btn" id="tt-prev" type="button" aria-label="Previous month">‹</button>
+              <button class="sq-btn" id="tt-prev" type="button" aria-label="Previous month">
+                <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
               <span class="month-readout mono" id="tt-month">Loading…</span>
-              <button class="sq-btn" id="tt-next" type="button" aria-label="Next month">›</button>
+              <button class="sq-btn" id="tt-next" type="button" aria-label="Next month">
+                <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
               <button class="hud-btn" id="tt-today" type="button">Today</button>
               <button class="hud-btn" id="tt-print" type="button">Print</button>
               <button class="hud-btn hud-btn-accent" id="tt-csv" type="button">Export CSV</button>
@@ -214,7 +229,14 @@
                 </tr>
               </thead>
               <tbody id="tt-body">
-                <tr><td colspan="8" class="table-loading">Loading Preston timetable…</td></tr>
+                <tr>
+                  <td colspan="8" class="table-loading">
+                    <div class="loading-state">
+                      <span class="spinner" aria-hidden="true"></span>
+                      <span>Loading monthly timetable…</span>
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -409,7 +431,7 @@
           </div>
         </div>
 
-        <hr class="dashed-divider" />
+        <hr class="divider" />
 
         <!-- Module 2: Daily Reflection -->
         <div class="sidebar-block">
@@ -418,17 +440,23 @@
           <p class="insp-info-body reflection-body" id="ref-quote">
             “Verily, in the remembrance of Allah do hearts find rest.”
           </p>
-          <button class="insp-cycle-btn" id="ref-next-btn" type="button">Next reflection ↻</button>
+          <button class="insp-cycle-btn" id="ref-next-btn" type="button">
+            <span>Next reflection</span>
+            <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></svg>
+          </button>
         </div>
 
-        <hr class="dashed-divider" />
+        <hr class="divider" />
 
         <!-- Module 3: Active Calculation Summary -->
         <div class="sidebar-block">
           <div class="insp-label">Calculation Profile</div>
           <div class="calc-summary-line" id="sidebar-calc-summary">Custom Angles (15.5° / 15.0°)</div>
           <div class="insp-unit" id="sidebar-school-summary">Hanafi Asr · Preston, Lancashire</div>
-          <button class="insp-cycle-btn" id="btn-open-calc" type="button">Adjust calculation →</button>
+          <button class="insp-cycle-btn" id="btn-open-calc" type="button">
+            <span>Adjust calculation</span>
+            <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
         </div>
       </div>
 
@@ -442,7 +470,7 @@
   <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
-  <script src="kaaba3d.js?v=23"></script>
-  <script src="script.js?v=23"></script>
+  <script src="kaaba3d.js?v=24"></script>
+  <script src="script.js?v=24"></script>
 </body>
 </html>

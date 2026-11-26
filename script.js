@@ -201,11 +201,14 @@ function buildAlAdhanQuery() {
   return params.toString();
 }
 
-function setApiStatus(text, isError = false) {
+function setApiStatus(text, stateMode = "live") {
   const label = document.getElementById("api-status-text");
   const dot = document.getElementById("api-dot");
   if (label) label.textContent = text;
-  if (dot) dot.classList.toggle("is-error", isError);
+  if (dot) {
+    dot.classList.toggle("is-error", stateMode === "error" || stateMode === true);
+    dot.classList.toggle("is-loading", stateMode === "loading");
+  }
 }
 
 async function fetchTodayTimings() {
@@ -216,7 +219,9 @@ async function fetchTodayTimings() {
   const url = `https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}?${buildAlAdhanQuery()}`;
 
   const shortCity = state.settings.city.split(",")[0];
-  setApiStatus(`Syncing ${shortCity}…`);
+  const heroFocal = document.getElementById("hero-focal");
+  if (heroFocal && !state.todayTimings) heroFocal.classList.add("is-loading");
+  setApiStatus(`Syncing ${shortCity}…`, "loading");
 
   try {
     const res = await fetch(url);
@@ -231,11 +236,13 @@ async function fetchTodayTimings() {
     document.getElementById("hero-hijri-line").textContent = state.todayHijri;
     document.getElementById("sunrise-pill").textContent = `Sunrise ${cleanTime(state.todayTimings.Sunrise)}`;
 
-    setApiStatus(`${shortCity} Live`);
+    if (heroFocal) heroFocal.classList.remove("is-loading");
+    setApiStatus(`${shortCity} Live`, "live");
     renderAll();
   } catch (err) {
     console.error("AlAdhan today fetch failed:", err);
-    setApiStatus("API Offline", true);
+    if (heroFocal) heroFocal.classList.remove("is-loading");
+    setApiStatus("API Offline", "error");
   }
 }
 
@@ -248,8 +255,15 @@ async function fetchMonthlyCalendar(year = state.calendarYear, month = state.cal
     year: "numeric",
   });
   document.getElementById("tt-month").textContent = monthName;
-  document.getElementById("tt-body").innerHTML =
-    `<tr><td colspan="8" class="table-loading">Loading ${monthName} timetable for ${state.settings.city}…</td></tr>`;
+  document.getElementById("tt-body").innerHTML = `
+    <tr>
+      <td colspan="8" class="table-loading">
+        <div class="loading-state">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Loading ${monthName} timetable for ${state.settings.city}…</span>
+        </div>
+      </td>
+    </tr>`;
 
   const url = `https://api.aladhan.com/v1/calendar/${year}/${month}?${buildAlAdhanQuery()}`;
   try {
@@ -262,8 +276,23 @@ async function fetchMonthlyCalendar(year = state.calendarYear, month = state.cal
     renderTimetable();
   } catch (err) {
     console.error("AlAdhan calendar fetch failed:", err);
-    document.getElementById("tt-body").innerHTML =
-      `<tr><td colspan="8" class="table-loading">Could not load monthly timetable from AlAdhan API.</td></tr>`;
+    document.getElementById("tt-body").innerHTML = `
+      <tr>
+        <td colspan="8" class="table-loading">
+          <div class="empty-state">
+            <div class="empty-state-icon" aria-hidden="true">
+              <svg class="icon icon-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            </div>
+            <div class="empty-state-title">Timetable unavailable</div>
+            <div class="empty-state-sub">Could not load ${monthName} prayer times from AlAdhan API. Check your connection and try again.</div>
+            <div class="empty-state-actions">
+              <button type="button" class="btn btn-sm" id="tt-retry-btn">Retry</button>
+            </div>
+          </div>
+        </td>
+      </tr>`;
+    const retryBtn = document.getElementById("tt-retry-btn");
+    if (retryBtn) retryBtn.addEventListener("click", () => fetchMonthlyCalendar(year, month));
   }
 }
 
