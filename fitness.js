@@ -228,14 +228,14 @@ function renderWeekdayBar() {
   document.getElementById("weekday-bar").innerHTML = WEEKDAYS.map((w) => {
     const planDay = fitnessState.plan[w.id];
     const count = (planDay?.exercises || []).length;
-    const splitShort = planDay?.title ? planDay.title.slice(0, 7) : "";
+    const splitName = planDay?.title ? planDay.title.trim() : "";
     return `
-      <button type="button" class="weekday-pill${w.id === activeWd ? " is-active" : ""}" data-weekday="${w.id}" role="tab" aria-selected="${w.id === activeWd}">
+      <button type="button" class="weekday-pill${w.id === activeWd ? " is-active" : ""}" data-weekday="${w.id}" role="tab" aria-selected="${w.id === activeWd}" title="${w.full}${splitName ? ` · ${splitName}` : ""}">
         <span class="wd-top">
           <span>${w.short}</span>
           ${count > 0 ? `<span class="wd-count mono">${count}</span>` : ""}
         </span>
-        ${splitShort ? `<span class="wd-split">${escapeHtml(splitShort)}</span>` : ""}
+        ${splitName ? `<span class="wd-split">${escapeHtml(splitName)}</span>` : ""}
       </button>
     `;
   }).join("");
@@ -351,15 +351,25 @@ function renderMainWorkout() {
 
                 <label class="dd-field">
                   <span class="m-lbl">Reps</span>
-                  <input type="text" class="dark-input mono dd-input" data-field="reps" data-index="${idx}" value="${safeReps}" placeholder="10" />
+                  <div class="dd-stepper">
+                    <button type="button" class="tiny-step" data-action="dec-reps" data-index="${idx}" aria-label="Decrease reps">−</button>
+                    <input type="text" class="dark-input mono dd-input" data-field="reps" data-index="${idx}" value="${safeReps}" placeholder="10" />
+                    <button type="button" class="tiny-step" data-action="inc-reps" data-index="${idx}" aria-label="Increase reps">+</button>
+                  </div>
                 </label>
 
                 <label class="dd-field">
                   <span class="m-lbl">Weight</span>
-                  <input type="text" class="dark-input mono dd-input" data-field="weight" data-index="${idx}" value="${safeWeight}" placeholder="e.g. 60 kg" />
+                  <div class="dd-stepper">
+                    <button type="button" class="tiny-step" data-action="dec-weight" data-index="${idx}" aria-label="Decrease weight by 2.5">−</button>
+                    <input type="text" class="dark-input mono dd-input" data-field="weight" data-index="${idx}" value="${safeWeight}" placeholder="e.g. 60 kg" />
+                    <button type="button" class="tiny-step" data-action="inc-weight" data-index="${idx}" aria-label="Increase weight by 2.5">+</button>
+                  </div>
                 </label>
 
                 <div class="dd-actions">
+                  <button type="button" class="tiny-step" data-action="move-up" data-index="${idx}" title="Move up" ${idx === 0 ? "disabled" : ""}>↑</button>
+                  <button type="button" class="tiny-step" data-action="move-down" data-index="${idx}" title="Move down" ${idx === exercises.length - 1 ? "disabled" : ""}>↓</button>
                   <button type="button" class="hud-btn" data-action="save-default" data-index="${idx}" title="Update default for future ${wdInfo.full}s">Save Default</button>
                   <button type="button" class="hud-btn hud-btn-accent" data-action="close-dropdown">Done</button>
                   <button type="button" class="ex-del-btn" data-action="delete-ex" data-index="${idx}" title="Remove exercise">✕</button>
@@ -706,6 +716,46 @@ function bindEvents() {
     if (action === "dec-sets") {
       ex.sets = Math.max(1, (Number(ex.sets) || 1) - 1);
       day.attended = true;
+      saveLogs();
+      renderAll();
+      return;
+    }
+
+    if (action === "inc-reps" || action === "dec-reps") {
+      const cur = parseLeadingNumber(ex.reps) || 10;
+      const next = Math.max(1, cur + (action === "inc-reps" ? 1 : -1));
+      ex.reps = String(next);
+      day.attended = true;
+      saveLogs();
+      renderAll();
+      return;
+    }
+
+    if (action === "inc-weight" || action === "dec-weight") {
+      const m = String(ex.weight || "").match(/(\d+(?:\.\d+)?)\s*(.*)/);
+      const cur = m ? parseFloat(m[1]) : 0;
+      const unit = m && m[2] ? m[2].trim() : "kg";
+      const next = Math.max(0, +(cur + (action === "inc-weight" ? 2.5 : -2.5)).toFixed(1));
+      ex.weight = next === 0 ? "" : `${next} ${unit}`;
+      day.attended = true;
+      saveLogs();
+      renderAll();
+      return;
+    }
+
+    if (action === "move-up" || action === "move-down") {
+      const swapIdx = action === "move-up" ? idx - 1 : idx + 1;
+      if (swapIdx < 0 || swapIdx >= day.exercises.length) return;
+      [day.exercises[idx], day.exercises[swapIdx]] = [day.exercises[swapIdx], day.exercises[idx]];
+      const wd = getWeekdayForDate(fitnessState.selectedDate);
+      fitnessState.plan[wd].exercises = day.exercises.map((e) => ({
+        id: e.id,
+        name: e.name,
+        sets: e.sets,
+        reps: e.reps,
+        weight: e.weight,
+      }));
+      savePlan();
       saveLogs();
       renderAll();
       return;

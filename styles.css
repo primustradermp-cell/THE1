@@ -2909,12 +2909,17 @@ body {
 
 .ex-dropdown-panel {
   display: grid;
-  grid-template-columns: 150px 1fr 1fr auto;
+  grid-template-columns: repeat(3, minmax(120px, 1fr)) auto;
   gap: 12px;
   align-items: end;
   padding: 12px 20px 16px 48px;
   background: rgba(0, 0, 0, 0.24);
   border-top: 1px dashed var(--border);
+}
+
+.tiny-step:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .dd-field {
