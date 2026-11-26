@@ -1449,6 +1449,536 @@ body {
   font-size: 10.5px;
 }
 
+/* Cross-Page Nav & Fitness Page Styles (same warm charcoal & khaki-taupe theme) */
+.nav-sep {
+  width: 1px;
+  height: 14px;
+  background: var(--border-strong);
+}
+
+.hud-page-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-soft);
+}
+
+.hud-page-link:hover {
+  color: var(--orange);
+}
+
+.fitness-main-panel {
+  gap: 0;
+}
+
+.fitness-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.day-nav-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.day-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fitness-date-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+
+.gym-check-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-soft);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.gym-check-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.gym-check-btn.is-active {
+  background: var(--green-soft);
+  border-color: rgba(50, 184, 107, 0.55);
+  color: #ffffff;
+}
+
+.gym-check-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  color: transparent;
+}
+
+.gym-check-btn.is-active .gym-check-circle {
+  background: var(--green);
+  border-color: var(--green);
+  color: #081c10;
+}
+
+.workout-meta-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.workout-field {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dark-input {
+  width: 100%;
+  padding: 8px 11px;
+  border-radius: 5px;
+  background: #13120f;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font: inherit;
+  font-size: 12.5px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.dark-input:focus {
+  border-color: var(--orange);
+}
+
+.dark-input::placeholder {
+  color: var(--text-muted);
+}
+
+.dark-textarea {
+  resize: vertical;
+  min-height: 54px;
+}
+
+.split-presets {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.preset-chip {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-chip:hover {
+  color: var(--text-soft);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.preset-chip.is-selected {
+  background: var(--orange-soft);
+  border-color: rgba(232, 93, 42, 0.55);
+  color: #ffffff;
+}
+
+.add-exercise-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) 82px 96px 124px auto;
+  gap: 10px;
+  align-items: end;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--border);
+}
+
+.form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.add-ex-btn {
+  height: 35px;
+  padding: 0 16px;
+  white-space: nowrap;
+}
+
+.exercise-list-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 190px;
+}
+
+.exercise-list-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) 140px 110px 36px;
+  gap: 12px;
+  padding: 10px 20px;
+  background: #141310;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.exercise-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-exercises {
+  padding: 36px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.exercise-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) 140px 110px 36px;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background-color 0.14s ease;
+}
+
+.exercise-row:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.exercise-row.is-done .ex-name {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.ex-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ex-name {
+  font-size: 13px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ex-check-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: transparent;
+  font-size: 10px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.exercise-row.is-done .ex-check-btn {
+  background: var(--green);
+  border-color: var(--green);
+  color: #081c10;
+}
+
+.ex-sets-reps {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-soft);
+}
+
+.tiny-step {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.tiny-step:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text);
+}
+
+.ex-weight {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.ex-del-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.ex-del-btn:hover {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.workout-notes-bar {
+  padding: 14px 20px 18px;
+  border-top: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.notes-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.l-green {
+  background: var(--green);
+}
+
+/* Weekly 7-Day Spark Bars on Fitness Page */
+.week-spark-bars {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  align-items: end;
+  height: 92px;
+  padding: 6px 4px;
+}
+
+.spark-col-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.spark-needle.is-gym-bar {
+  background: var(--green);
+}
+
+.spark-needle.is-rest-bar {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.spark-needle.is-today-bar {
+  background: var(--orange);
+}
+
+.week-spark-scale {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 9.5px;
+  color: var(--text-muted);
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+/* Right Khaki-Taupe Sidebar: Monthly Gym Calendar & Recent Workouts */
+.gym-cal-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gym-cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gym-cal-month {
+  font-size: 12px;
+  color: #ffffff;
+}
+
+.cal-nav-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(0, 0, 0, 0.14);
+  color: #ffffff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.cal-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.26);
+}
+
+.gym-cal-weekdays,
+.gym-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.gym-cal-weekdays span {
+  text-align: center;
+  font-size: 9.5px;
+  color: var(--taupe-muted);
+}
+
+.cal-cell {
+  height: 30px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: rgba(0, 0, 0, 0.14);
+  color: var(--taupe-muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.14s ease;
+}
+
+.cal-cell.is-empty {
+  background: transparent;
+  cursor: default;
+}
+
+.cal-cell:not(.is-empty):hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.cal-cell.is-gym {
+  background: var(--green);
+  color: #081c10;
+  font-weight: 600;
+}
+
+.cal-cell.is-today {
+  border-color: #ffffff;
+}
+
+.cal-cell.is-selected {
+  outline: 2px solid var(--orange);
+  outline-offset: -1px;
+  color: #ffffff;
+}
+
+.cal-cell.is-gym.is-selected {
+  color: #081c10;
+}
+
+.recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recent-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.14);
+  color: #ffffff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.14s ease;
+}
+
+.recent-item:hover,
+.recent-item.is-selected {
+  background: rgba(0, 0, 0, 0.28);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+.recent-title {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.recent-meta,
+.recent-date {
+  font-size: 10px;
+  color: var(--taupe-muted);
+}
+
+.insp-bottom-actions {
+  display: flex;
+}
+
+.insp-ghost-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.insp-ghost-btn:hover {
+  background: rgba(0, 0, 0, 0.16);
+}
+
 /* Responsive */
 @media (max-width: 1120px) {
   .viewport-frame {
@@ -1477,6 +2007,24 @@ body {
 
   .bento-3 {
     grid-template-columns: 1fr;
+  }
+
+  .add-exercise-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-col-name,
+  .add-ex-btn {
+    grid-column: 1 / -1;
+  }
+
+  .exercise-list-head {
+    display: none;
+  }
+
+  .exercise-row {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
   }
 }
 
