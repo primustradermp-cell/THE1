@@ -1,4 +1,4 @@
-/* SalahSync — Preston, Lancashire Prayer Telemetry & Timetable (AlAdhan API) */
+/* SalahSync — Minimalist Preston Prayer Dashboard, Live Countdown & Monthly Timetable (AlAdhan API) */
 
 const PRAYERS = [
   { key: "Fajr", label: "Fajr" },
@@ -7,6 +7,16 @@ const PRAYERS = [
   { key: "Maghrib", label: "Maghrib" },
   { key: "Isha", label: "Isha" },
 ];
+
+const METHOD_NAMES = {
+  99: "Custom Angles",
+  15: "Moonsighting Committee",
+  3: "Muslim World League",
+  2: "ISNA",
+  1: "Karachi",
+  5: "Egyptian",
+  4: "Umm Al-Qura",
+};
 
 const REFLECTIONS = [
   {
@@ -24,6 +34,10 @@ const REFLECTIONS = [
   {
     source: "Prophet Muhammad ﷺ",
     quote: "“Your smile in the face of your brother is charity.”",
+  },
+  {
+    source: "Qur’an 14:7",
+    quote: "“If you are grateful, I will surely increase you in favor.”",
   },
 ];
 
@@ -43,6 +57,7 @@ const DEFAULT_SETTINGS = {
 };
 
 const state = {
+  activeView: "overview",
   settings: loadSettings(),
   logs: loadLogs(),
   todayTimings: null,
@@ -104,10 +119,10 @@ function parseSeconds(hhmm) {
   return h * 3600 + m * 60;
 }
 
-function getUKTime() {
+function getTimeInZone(timeZone) {
   const now = new Date();
   const fmt = new Intl.DateTimeFormat("en-GB", {
-    timeZone: state.settings.tz,
+    timeZone,
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
@@ -123,15 +138,17 @@ function getUKTime() {
     m,
     s,
     text: `${get("hour")}:${get("minute")}:${get("second")}`,
+    hm: `${get("hour")}:${get("minute")}`,
     totalSeconds: h * 3600 + m * 60 + s,
   };
 }
 
-function formatHM(totalSec) {
+function formatHMS(totalSec) {
   const sec = Math.max(0, Math.floor(totalSec));
   const h = String(Math.floor(sec / 3600)).padStart(2, "0");
   const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
-  return `${h}:${m}`;
+  const s = String(sec % 60).padStart(2, "0");
+  return `${h}:${m}:${s}`;
 }
 
 /* ---------- AlAdhan API ---------- */
@@ -152,8 +169,10 @@ function buildAlAdhanQuery() {
 }
 
 function setApiStatus(text, isError = false) {
-  document.getElementById("api-status-text").textContent = text;
-  document.getElementById("api-dot").classList.toggle("is-error", isError);
+  const label = document.getElementById("api-status-text");
+  const dot = document.getElementById("api-dot");
+  if (label) label.textContent = text;
+  if (dot) dot.classList.toggle("is-error", isError);
 }
 
 async function fetchTodayTimings() {
@@ -174,13 +193,10 @@ async function fetchTodayTimings() {
 
     state.todayTimings = json.data.timings;
     const h = json.data.date.hijri;
-    state.todayHijri = `${h.day} ${h.month.en.toUpperCase()} ${h.year} AH`;
+    state.todayHijri = `${h.day} ${h.month.en} ${h.year} AH`;
 
     document.getElementById("hero-hijri-line").textContent = state.todayHijri;
     document.getElementById("sunrise-pill").textContent = `Sunrise ${cleanTime(state.todayTimings.Sunrise)}`;
-    document.getElementById("g-fajr").textContent = cleanTime(state.todayTimings.Fajr);
-    document.getElementById("g-dhuhr").textContent = cleanTime(state.todayTimings.Dhuhr);
-    document.getElementById("g-isha").textContent = cleanTime(state.todayTimings.Isha);
 
     setApiStatus(`${shortCity} Live`);
     renderAll();
@@ -218,17 +234,23 @@ async function fetchMonthlyCalendar(year = state.calendarYear, month = state.cal
   }
 }
 
-/* ---------- Telemetry & Next Prayer ---------- */
+/* ---------- Prayer Window Logic (Current vs. Next vs. Upcoming) ---------- */
 
-function getNextPrayerInfo() {
-  if (!state.todayTimings) return null;
-  const nowSec = getUKTime().totalSeconds;
+function getPrayerPhaseInfo() {
+  if (!state.todayTimings) return { currentKey: null, next: null, progressPct: 0 };
+  const nowSec = getTimeInZone(state.settings.tz).totalSeconds;
+
+  let currentKey = null;
+  let next = null;
 
   for (let i = 0; i < PRAYERS.length; i++) {
     const p = PRAYERS[i];
     const pSec = parseSeconds(state.todayTimings[p.key]);
-    if (pSec !== null && pSec > nowSec) {
-      return {
+    if (pSec === null) continue;
+    if (pSec <= nowSec) {
+      currentKey = p.key;
+    } else if (!next) {
+      next = {
         index: i,
         key: p.key,
         time: cleanTime(state.todayTimings[p.key]),
@@ -238,17 +260,24 @@ function getNextPrayerInfo() {
     }
   }
 
-  const fajrSec = parseSeconds(state.todayTimings.Fajr);
-  if (fajrSec !== null) {
-    return {
-      index: 0,
-      key: "Fajr",
-      time: cleanTime(state.todayTimings.Fajr),
-      remainingSec: 86400 - nowSec + fajrSec,
-      tomorrow: true,
-    };
+  if (!next) {
+    const fajrSec = parseSeconds(state.todayTimings.Fajr);
+    if (fajrSec !== null) {
+      next = {
+        index: 0,
+        key: "Fajr",
+        time: cleanTime(state.todayTimings.Fajr),
+        remainingSec: 86400 - nowSec + fajrSec,
+        tomorrow: true,
+      };
+    }
   }
-  return null;
+
+  const fajrSec = parseSeconds(state.todayTimings.Fajr) ?? 5 * 3600;
+  const ishaSec = parseSeconds(state.todayTimings.Isha) ?? 19 * 3600;
+  const progressPct = Math.min(100, Math.max(0, ((nowSec - fajrSec) / Math.max(1, ishaSec - fajrSec)) * 100));
+
+  return { currentKey, next, progressPct };
 }
 
 function getDayLog(key) {
@@ -260,134 +289,138 @@ function countDayPrayers(key) {
   return PRAYERS.reduce((acc, p) => acc + (log[p.key] ? 1 : 0), 0);
 }
 
-function updateLiveTelemetry() {
-  const uk = getUKTime();
+/* ---------- Live Clocks & Focal Countdown ---------- */
+
+function updateLiveClocks() {
+  const uk = getTimeInZone(state.settings.tz);
+  const makkah = getTimeInZone("Asia/Riyadh");
+
   const clockEl = document.getElementById("widget-clock");
   if (clockEl) clockEl.textContent = uk.text;
-  const scrubTimeEl = document.getElementById("scrubber-time");
-  if (scrubTimeEl) scrubTimeEl.textContent = uk.text.slice(0, 5);
 
-  const dayPct = Math.round((uk.totalSeconds / 86400) * 100);
-  const pctLabel = document.getElementById("day-pct-label");
-  const pctFill = document.getElementById("day-pct-fill");
-  if (pctLabel) pctLabel.textContent = `${dayPct}%`;
-  if (pctFill) pctFill.style.width = `${dayPct}%`;
-  const scrubProg = document.getElementById("scrubber-progress");
-  if (scrubProg) scrubProg.style.width = `${dayPct}%`;
+  const makkahEl = document.getElementById("makkah-clock");
+  if (makkahEl) makkahEl.textContent = `Makkah · ${makkah.hm}`;
 
   if (!state.todayTimings) return;
 
-  const next = getNextPrayerInfo();
+  const { next, progressPct } = getPrayerPhaseInfo();
   if (next) {
-    document.getElementById("ruler-countdown").textContent = formatHM(next.remainingSec);
-    document.getElementById("insp-next-title").textContent = `${next.key} Prayer`;
-    document.getElementById("insp-next-time").textContent = next.time;
-    document.getElementById("gauge-status-text").textContent = `Next: ${next.key}`;
+    document.getElementById("focal-kicker").textContent = next.tomorrow ? "NEXT PRAYER · TOMORROW" : "NEXT PRAYER";
+    document.getElementById("focal-prayer-name").textContent = next.key;
+    document.getElementById("focal-prayer-time").textContent = next.time;
+    document.getElementById("focal-countdown").textContent = formatHMS(next.remainingSec);
   }
 
-  // Ruler needle & semicircular daylight arc gauge (Fajr -> Isha)
-  const fajrSec = parseSeconds(state.todayTimings.Fajr) ?? 5 * 3600;
-  const ishaSec = parseSeconds(state.todayTimings.Isha) ?? 19 * 3600;
-  const ratio = Math.min(1, Math.max(0, (uk.totalSeconds - fajrSec) / Math.max(1, ishaSec - fajrSec)));
+  const railFill = document.getElementById("timeline-rail-fill");
+  if (railFill) railFill.style.width = `${progressPct.toFixed(1)}%`;
 
-  document.getElementById("ruler-needle").style.top = `${(ratio * 92).toFixed(1)}%`;
-
-  // Semicircle angle: -90deg (left/Fajr) to +90deg (right/Isha)
-  const deg = -90 + ratio * 180;
-  document.getElementById("gauge-needle").setAttribute("transform", `translate(110, 102) rotate(${deg.toFixed(1)})`);
-  document.getElementById("gauge-arc-active").setAttribute("stroke-dashoffset", String((270 * (1 - ratio)).toFixed(1)));
-
-  // Scrubber milestone ticks
-  const markers = document.getElementById("scrubber-markers");
-  markers.innerHTML = PRAYERS.map((p) => {
-    const pSec = parseSeconds(state.todayTimings[p.key]);
-    if (pSec === null) return "";
-    const leftPct = (pSec / 86400) * 100;
-    const isNext = next && next.key === p.key && !next.tomorrow;
-    return `<span class="scrub-tick${isNext ? " is-next" : ""}" style="left:${leftPct.toFixed(1)}%" title="${p.label} ${cleanTime(state.todayTimings[p.key])}"></span>`;
-  }).join("");
+  // Refresh timeline state right when a minute rolls over (catches prayer transitions cleanly)
+  if (uk.s === 0) {
+    renderTimeline();
+  }
 }
 
-/* ---------- Render Dashboard, Bento & Inspector ---------- */
+/* ---------- Render Timeline, Consolidated Daily Progress & Activity ---------- */
 
-function renderAll() {
+function renderTimeline() {
   const key = todayKey();
   const todayLog = getDayLog(key);
-  const doneToday = countDayPrayers(key);
-  const pctToday = Math.round((doneToday / 5) * 100);
-  const next = getNextPrayerInfo();
+  const { currentKey, next } = getPrayerPhaseInfo();
 
-  // Greeting & Inspector counts
-  document.getElementById("hero-pct-text").textContent = `Completed ${pctToday}%`;
-  document.getElementById("insp-done-num").textContent = String(doneToday);
-  document.getElementById("insp-balance-val").textContent = `${doneToday} / 5`;
-
-  // 5 Interactive HUD Prayer Cards
   const grid = document.getElementById("hud-prayer-grid");
   grid.innerHTML = "";
+
   for (const p of PRAYERS) {
     const isDone = Boolean(todayLog[p.key]);
     const isNext = next && next.key === p.key && !next.tomorrow;
+    const isCurrent = currentKey === p.key;
     const timeStr = state.todayTimings ? cleanTime(state.todayTimings[p.key]) : "--:--";
+
+    let badgeText = "Upcoming";
+    let checkGlyph = "";
+    if (isDone) {
+      badgeText = "Done";
+      checkGlyph = "✓";
+    } else if (isNext) {
+      badgeText = "Next";
+      checkGlyph = "●";
+    } else if (isCurrent) {
+      badgeText = "Now";
+      checkGlyph = "○";
+    }
+
+    const cls = [
+      "tl-card",
+      isDone ? "is-done" : "",
+      isCurrent ? "is-current" : "",
+      isNext ? "is-next" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
 
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = `hud-prayer-card${isDone ? " is-done" : ""}${isNext ? " is-next" : ""}`;
+    btn.className = cls;
+    btn.setAttribute("aria-pressed", String(isDone));
     btn.innerHTML = `
-      <div class="hud-card-top">
-        <span class="hud-status-badge">${isDone ? "✓" : isNext ? "●" : ""}</span>
-        <span class="hud-tag">${isDone ? "Done" : isNext ? "Next" : "Tap"}</span>
+      <div class="tl-top">
+        <span class="tl-check" aria-hidden="true">${checkGlyph}</span>
+        <span class="tl-badge">${badgeText}</span>
       </div>
       <div>
-        <div class="hud-p-name">${p.label}</div>
-        <div class="hud-p-time">${timeStr}</div>
+        <div class="tl-name">${p.label}</div>
+        <div class="tl-time">${timeStr}</div>
       </div>
     `;
+
     btn.addEventListener("click", () => {
       if (!state.logs[key]) state.logs[key] = {};
       state.logs[key][p.key] = !state.logs[key][p.key];
       saveLogs();
       renderAll();
     });
+
     grid.appendChild(btn);
   }
+}
 
-  // Inspector 5-block meter
-  const blockMeter = document.getElementById("insp-block-meter");
-  blockMeter.innerHTML = PRAYERS.map((p) => {
+function renderAll() {
+  renderTimeline();
+
+  const key = todayKey();
+  const todayLog = getDayLog(key);
+  const doneToday = countDayPrayers(key);
+  const pctToday = Math.round((doneToday / 5) * 100);
+  const { next } = getPrayerPhaseInfo();
+
+  // Consolidated Daily Progress Card
+  document.getElementById("dp-count").textContent = `${doneToday} of 5`;
+  document.getElementById("dp-pct").textContent = `${pctToday}%`;
+  document.getElementById("dp-sub").textContent =
+    doneToday === 5 ? "all prayers completed today" : "prayers completed today";
+
+  document.getElementById("dp-segments").innerHTML = PRAYERS.map((p) => {
     const isDone = Boolean(todayLog[p.key]);
     const isNext = next && next.key === p.key && !next.tomorrow;
-    return `<span class="b-seg${isDone ? " is-on" : isNext ? " is-next" : ""}" title="${p.label}"></span>`;
+    const cls = isDone ? "is-done" : isNext ? "is-next" : "";
+    return `<span class="dp-seg ${cls}" title="${p.label}"></span>`;
   }).join("");
 
-  // Inspector Balance 4-node glyphs
-  const balGlyphs = document.getElementById("insp-balance-glyphs");
-  balGlyphs.innerHTML = Array.from({ length: 4 }, (_, i) => {
-    const threshold = (i + 1) * 1.25;
-    const cls = doneToday >= threshold ? "g-full" : doneToday >= threshold - 0.75 ? "g-orange" : "";
-    return `<span class="glyph ${cls}"></span>`;
-  }).join("");
-
-  // 30-Day Analytics
+  // 30-Day Analytics & Streak
   const now = new Date();
   const counts = { Fajr: 0, Dhuhr: 0, Asr: 0, Maghrib: 0, Isha: 0 };
   let total30 = 0;
-  const last30Counts = [];
 
-  for (let i = 29; i >= 0; i--) {
+  for (let i = 0; i < 30; i++) {
     const d = new Date(now);
     d.setDate(now.getDate() - i);
-    const dk = toDateKey(d);
-    const log = getDayLog(dk);
-    let daySum = 0;
+    const log = getDayLog(toDateKey(d));
     for (const p of PRAYERS) {
       if (log[p.key]) {
         counts[p.key]++;
         total30++;
-        daySum++;
       }
     }
-    last30Counts.push({ key: dk, count: daySum, isToday: i === 0 });
   }
 
   // Week total
@@ -401,7 +434,7 @@ function renderAll() {
     weekSum += countDayPrayers(toDateKey(d));
   }
 
-  // Streak
+  // Current & Best Streak
   let streak = 0;
   for (let i = 0; i < 365; i++) {
     const d = new Date(now);
@@ -412,7 +445,6 @@ function renderAll() {
     else break;
   }
 
-  // Best streak
   const sortedKeys = Object.keys(state.logs).sort();
   let bestStreak = streak;
   let run = 0;
@@ -429,31 +461,13 @@ function renderAll() {
     }
   }
 
-  document.getElementById("bento-total-30").textContent = String(total30);
-  document.getElementById("bento-streak").textContent = `${streak} d`;
-  document.getElementById("bento-week").textContent = `${weekSum}/35`;
+  const rate30 = Math.round((total30 / 150) * 100);
+  document.getElementById("dp-streak").textContent = `${streak} d`;
+  document.getElementById("dp-week").textContent = `${weekSum} / 35`;
+  document.getElementById("dp-rate").textContent = `${rate30}%`;
   document.getElementById("analytics-best-streak").textContent = `Best streak · ${bestStreak} days`;
 
-  // Spark-bars (Card 2) & Breakdown list (Activity tab)
-  let minPrayer = PRAYERS[0];
-  for (const p of PRAYERS) {
-    if (counts[p.key] < counts[minPrayer.key]) minPrayer = p;
-  }
-
-  document.getElementById("spark-bars").innerHTML = PRAYERS.map((p) => {
-    const pct = Math.round((counts[p.key] / 30) * 100);
-    const h = Math.max(pct > 0 ? 14 : 6, pct);
-    const isFocus = p.key === minPrayer.key || (next && next.key === p.key);
-    return `
-      <div class="spark-col">
-        <span class="spark-pct">${pct}%</span>
-        <div class="spark-track">
-          <div class="spark-needle${isFocus ? " is-focus" : ""}" style="height:${h}%"></div>
-        </div>
-      </div>
-    `;
-  }).join("");
-
+  // Activity 30-Day Per-Prayer Breakdown (shown only in Activity view)
   document.getElementById("breakdown-list").innerHTML = PRAYERS.map((p) => {
     const c = counts[p.key];
     const pct = Math.round((c / 30) * 100);
@@ -467,29 +481,8 @@ function renderAll() {
     `;
   }).join("");
 
-  // Inspector 30-day barcode
-  document.getElementById("barcode-track").innerHTML = last30Counts
-    .map((d) => {
-      const cls = d.isToday
-        ? "is-today"
-        : d.count >= 4
-        ? "lvl-high"
-        : d.count >= 1
-        ? "lvl-mid"
-        : "";
-      return `<span class="bc-tick ${cls}" title="${d.key}: ${d.count}/5"></span>`;
-    })
-    .join("");
-
-  // Inspector Consistency arc
-  const rate30 = Math.round((total30 / 150) * 100);
-  document.getElementById("insp-eff-arc").setAttribute("stroke-dashoffset", String((110 * (1 - rate30 / 100)).toFixed(1)));
-  document.getElementById("insp-eff-label").textContent =
-    rate30 >= 80 ? "High" : rate30 >= 45 ? "Steady" : "Building";
-  document.getElementById("insp-eff-sub").textContent = `${rate30}% over 30 days`;
-
   renderHeatmap();
-  updateLiveTelemetry();
+  updateLiveClocks();
 }
 
 function renderHeatmap() {
@@ -542,7 +535,7 @@ function renderHeatmap() {
   }
 }
 
-/* ---------- Monthly Timetable ---------- */
+/* ---------- Dedicated Monthly Timetable ---------- */
 
 function renderTimetable() {
   const now = new Date();
@@ -564,7 +557,7 @@ function renderTimetable() {
       ].join("");
 
       return `
-        <tr class="${isToday ? "is-today-row" : ""}">
+        <tr class="${isToday ? "is-today-row" : ""}" ${isToday ? 'data-today-row="true"' : ""}>
           <td>${g.weekday.en.slice(0, 3)}, ${g.day} ${g.month.en.slice(0, 3)}${tags}</td>
           <td>${h.day} ${h.month.en}</td>
           <td class="t-time">${cleanTime(t.Fajr)}</td>
@@ -612,42 +605,30 @@ function exportTimetableCSV() {
   URL.revokeObjectURL(a.href);
 }
 
-/* ---------- Navigation, Qibla & Settings ---------- */
+/* ---------- Focused View Switching, Qibla & Settings ---------- */
 
-function scrollToTimetable() {
-  const el = document.getElementById("section-timetable");
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-}
+function switchPrayerView(viewName) {
+  state.activeView = viewName;
 
-function initSubnavSpy() {
-  const links = Array.from(document.querySelectorAll(".subnav-link"));
-  if (!links.length) return;
-
-  links.forEach((link) => {
-    link.addEventListener("click", () => {
-      links.forEach((l) => l.classList.remove("is-active"));
-      link.classList.add("is-active");
-    });
+  document.querySelectorAll("[data-prayer-view]").forEach((btn) => {
+    const active = btn.dataset.prayerView === viewName;
+    btn.classList.toggle("is-active", active);
+    btn.setAttribute("aria-selected", String(active));
   });
 
-  if (typeof IntersectionObserver === "undefined") return;
-  const sections = links
-    .map((l) => document.querySelector(l.getAttribute("href")))
-    .filter(Boolean);
+  document.querySelectorAll(".prayer-view").forEach((view) => {
+    view.classList.toggle("is-active", view.id === `view-${viewName}`);
+  });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const visible = entries
-        .filter((e) => e.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      const id = `#${visible.target.id}`;
-      links.forEach((l) => l.classList.toggle("is-active", l.getAttribute("href") === id));
-    },
-    { rootMargin: "-18% 0px -65% 0px", threshold: [0.1, 0.4] }
-  );
+  const cta = document.getElementById("inspector-cta-btn");
+  if (cta) {
+    cta.textContent = viewName === "timetable" ? "Back to Overview" : "View Monthly Timetable";
+  }
 
-  sections.forEach((sec) => observer.observe(sec));
+  if (viewName === "timetable") {
+    const todayRow = document.querySelector('#tt-body tr[data-today-row="true"]');
+    if (todayRow) todayRow.scrollIntoView({ block: "center", behavior: "instant" });
+  }
 }
 
 function updateQibla() {
@@ -663,8 +644,10 @@ function updateQibla() {
   const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
   const bearing = (toDeg(Math.atan2(y, x)) + 360) % 360;
 
+  const shortCity = state.settings.city.split(",")[0];
   document.getElementById("wire-needle").setAttribute("transform", `rotate(${bearing.toFixed(1)} 55 55)`);
-  document.getElementById("insp-qibla-deg").textContent = `${bearing.toFixed(1)}° ESE`;
+  document.getElementById("insp-qibla-deg").textContent = `${bearing.toFixed(1)}°`;
+  document.getElementById("insp-qibla-sub").textContent = `ESE from ${shortCity}`;
 }
 
 function syncSettingsUI() {
@@ -676,21 +659,19 @@ function syncSettingsUI() {
   document.getElementById("setting-lat-adj").value = String(s.latAdj);
   document.getElementById("val-fajr-angle").textContent = `${s.fajrAngle.toFixed(1)}°`;
   document.getElementById("val-isha-angle").textContent = `${s.ishaAngle.toFixed(1)}°`;
-  document.getElementById("bento-angle-readout").textContent = `${s.fajrAngle.toFixed(1)}° / ${s.ishaAngle.toFixed(1)}°`;
 
   const isCustom = Number(s.method) === 99;
   document.getElementById("row-fajr-angle").classList.toggle("is-disabled", !isCustom);
   document.getElementById("row-isha-angle").classList.toggle("is-disabled", !isCustom);
 
-  const widgetCity = document.getElementById("widget-city");
-  if (widgetCity) widgetCity.textContent = `${shortCity}, UK`;
-  document.getElementById("insp-city-unit").textContent = `${shortCity} time`;
-  const locLabel = document.getElementById("settings-city-label");
-  if (locLabel) locLabel.textContent = `Location · ${s.city}`;
+  document.getElementById("hero-location-meta").textContent = shortCity;
+  document.getElementById("settings-city-label").textContent = `Location · ${s.city}`;
 
-  document.querySelectorAll(".mini-mode-btn").forEach((btn) => {
-    btn.classList.toggle("is-active", Number(btn.dataset.school) === Number(s.school));
-  });
+  const methodName = METHOD_NAMES[s.method] || "Custom";
+  const calcDetail = isCustom ? `${methodName} (${s.fajrAngle.toFixed(1)}° / ${s.ishaAngle.toFixed(1)}°)` : methodName;
+  const schoolName = Number(s.school) === 1 ? "Hanafi Asr" : "Standard Asr";
+  document.getElementById("sidebar-calc-summary").textContent = calcDetail;
+  document.getElementById("sidebar-school-summary").textContent = `${schoolName} · ${s.city}`;
 
   document.querySelectorAll(".city-btn").forEach((btn) => {
     btn.classList.toggle("is-selected", btn.dataset.city === s.city);
@@ -713,26 +694,25 @@ function changeMonth(delta) {
 }
 
 function bindEvents() {
-  document.getElementById("inspector-cta-btn").addEventListener("click", scrollToTimetable);
-  document.getElementById("btn-jump-tt").addEventListener("click", scrollToTimetable);
-  document.getElementById("btn-quick-csv").addEventListener("click", exportTimetableCSV);
+  document.querySelectorAll("[data-prayer-view]").forEach((btn) => {
+    btn.addEventListener("click", () => switchPrayerView(btn.dataset.prayerView));
+  });
+
+  document.getElementById("inspector-cta-btn").addEventListener("click", () => {
+    switchPrayerView(state.activeView === "timetable" ? "overview" : "timetable");
+  });
+
+  document.getElementById("btn-open-calc").addEventListener("click", () => {
+    switchPrayerView("calculation");
+  });
+
   document.getElementById("tt-csv").addEventListener("click", exportTimetableCSV);
   document.getElementById("tt-print").addEventListener("click", () => window.print());
-
   document.getElementById("tt-prev").addEventListener("click", () => changeMonth(-1));
   document.getElementById("tt-next").addEventListener("click", () => changeMonth(1));
   document.getElementById("tt-today").addEventListener("click", () => {
     const now = new Date();
     fetchMonthlyCalendar(now.getFullYear(), now.getMonth() + 1);
-  });
-
-  document.querySelectorAll(".mini-mode-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      state.settings.school = Number(btn.dataset.school);
-      saveSettings();
-      syncSettingsUI();
-      refreshAllFromApi();
-    });
   });
 
   document.getElementById("setting-method").addEventListener("change", (e) => {
@@ -797,10 +777,9 @@ function refreshAllFromApi() {
 function init() {
   syncSettingsUI();
   bindEvents();
-  initSubnavSpy();
   renderAll();
   refreshAllFromApi();
-  window.setInterval(updateLiveTelemetry, 1000);
+  window.setInterval(updateLiveClocks, 1000);
 }
 
 init();

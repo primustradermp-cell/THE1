@@ -268,12 +268,15 @@ textarea:focus-visible {
 }
 
 .subnav-link {
+  border: none;
+  background: transparent;
   text-decoration: none;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-muted);
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: var(--r-sm);
+  cursor: pointer;
   transition: color 180ms var(--ease), background-color 180ms var(--ease);
 }
 
@@ -285,41 +288,433 @@ textarea:focus-visible {
 .subnav-link.is-active {
   color: var(--text);
   background: var(--bg-elevated);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-.prayer-section {
-  display: flex;
+/* Focused Prayer Views */
+.prayer-view {
+  display: none;
   flex-direction: column;
-  gap: 14px;
-  scroll-margin-top: 20px;
+  gap: 16px;
+  animation: fadeSlideIn 220ms var(--ease);
 }
 
-.section-subheading {
+.prayer-view.is-active {
+  display: flex;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   MINIMALIST PRAYER HERO, NEXT-PRAYER FOCAL & 5-PRAYER HORIZONTAL TIMELINE
+   ========================================================================== */
+.prayer-hero {
+  min-height: 468px;
+  padding: 24px 26px 24px;
+  gap: 24px;
+}
+
+.prayer-hero-vignette {
+  background:
+    linear-gradient(100deg, rgba(11, 11, 12, 0.9) 0%, rgba(11, 11, 12, 0.62) 40%, rgba(11, 11, 12, 0.24) 76%, rgba(11, 11, 12, 0.45) 100%),
+    linear-gradient(180deg, rgba(11, 11, 12, 0.54) 0%, rgba(11, 11, 12, 0.08) 38%, rgba(11, 11, 12, 0.36) 68%, rgba(11, 11, 12, 0.92) 100%);
+}
+
+.hero-context-row,
+.hero-focal,
+.prayer-timeline-wrap {
+  position: relative;
+  z-index: 3;
+}
+
+.hero-context-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 8px;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.sub-index {
-  font-size: 11px;
+.hero-quiet-meta {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.meta-dot {
+  opacity: 0.45;
+}
+
+/* Primary Focal Point: Next Prayer + Time + Live Countdown */
+.hero-focal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: auto 0;
+  padding: 16px 0 8px;
+  max-width: 520px;
+}
+
+.focal-kicker {
+  font-size: 11.5px;
   font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--orange);
-  letter-spacing: 0.08em;
 }
 
-.sub-title {
+.focal-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.focal-prayer-name {
   margin: 0;
-  font-size: 15px;
+  font-size: clamp(2.4rem, 4.4vw, 3.35rem);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
   color: var(--text);
 }
 
-.sub-line {
-  flex: 1;
-  height: 1px;
+.focal-prayer-time {
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-weight: 500;
+  color: var(--text-soft);
+  letter-spacing: -0.02em;
+}
+
+.focal-countdown-row {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.focal-countdown-prefix {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.focal-countdown {
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-weight: 600;
+  color: var(--orange);
+  letter-spacing: -0.015em;
+}
+
+/* 5-Prayer Horizontal Timeline */
+.prayer-timeline-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.timeline-rail {
+  position: relative;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 8px;
+  overflow: hidden;
+}
+
+.timeline-rail-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--green), var(--orange));
+  border-radius: 999px;
+  transition: width 0.5s var(--ease);
+}
+
+.prayer-timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tl-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 15px;
+  border-radius: var(--r-md);
+  background: rgba(15, 15, 17, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 160ms var(--ease), border-color 180ms var(--ease), background-color 180ms var(--ease), box-shadow 180ms var(--ease);
+}
+
+.tl-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(24, 24, 28, 0.8);
+}
+
+.tl-card:active {
+  transform: scale(0.985);
+}
+
+/* Distinct States: Completed / Current / Next / Upcoming */
+.tl-card.is-done {
+  background: rgba(47, 179, 109, 0.13);
+  border-color: rgba(47, 179, 109, 0.36);
+}
+
+.tl-card.is-current:not(.is-done) {
+  background: rgba(196, 146, 92, 0.14);
+  border-color: rgba(196, 146, 92, 0.42);
+}
+
+.tl-card.is-next:not(.is-done) {
+  background: rgba(229, 106, 53, 0.18);
+  border-color: rgba(229, 106, 53, 0.62);
+  box-shadow: 0 0 0 1px rgba(229, 106, 53, 0.2), 0 8px 22px rgba(229, 106, 53, 0.14);
+}
+
+.tl-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.tl-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: transparent;
+  transition: all 160ms var(--ease);
+}
+
+.tl-card.is-done .tl-check {
+  background: var(--green);
+  border-color: var(--green);
+  color: #061b0f;
+}
+
+.tl-card.is-current:not(.is-done) .tl-check {
+  border-color: #d4a36a;
+  color: #d4a36a;
+}
+
+.tl-card.is-next:not(.is-done) .tl-check {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.tl-badge {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.tl-card.is-done .tl-badge {
+  color: var(--green);
+}
+
+.tl-card.is-current:not(.is-done) .tl-badge {
+  color: #d4a36a;
+}
+
+.tl-card.is-next:not(.is-done) .tl-badge {
+  color: var(--orange);
+}
+
+.tl-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-soft);
+}
+
+.tl-time {
+  font-family: "JetBrains Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   SINGLE CONSOLIDATED DAILY PROGRESS CARD
+   ========================================================================== */
+.daily-progress-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) 1px minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+}
+
+.dp-left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dp-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dp-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.dp-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dp-count {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--text);
+}
+
+.dp-sub {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+.dp-pct {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--orange);
+}
+
+.dp-segments {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.dp-seg {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: background-color 220ms var(--ease);
+}
+
+.dp-seg.is-done {
+  background: var(--green);
+}
+
+.dp-seg.is-next {
+  background: rgba(229, 106, 53, 0.45);
+}
+
+.dp-divider {
+  width: 1px;
+  height: 54px;
   background: var(--border);
+}
+
+.dp-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.dp-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dp-metric-val {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+/* Simplified Prayer Sidebar Modules */
+.prayer-sidebar .inspector-body {
+  gap: 22px;
+  padding: 24px 22px;
+}
+
+.sidebar-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.qibla-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.makkah-time {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--sidebar-muted);
+}
+
+.reflection-body {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.calc-summary-line {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.table-scroll-tall {
+  max-height: calc(100vh - 230px);
+}
+
+.breakdown-section-title {
+  padding: 6px 20px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-soft);
 }
 
 /* ==========================================================================
@@ -2415,6 +2810,57 @@ textarea:focus-visible {
     linear-gradient(180deg, #e7f0ec 0%, #f4efe3 100%);
 }
 
+[data-theme="light"] .prayer-hero-vignette {
+  background:
+    linear-gradient(100deg, rgba(246, 249, 247, 0.94) 0%, rgba(246, 249, 247, 0.68) 42%, rgba(246, 249, 247, 0.16) 76%, rgba(246, 249, 247, 0.45) 100%),
+    linear-gradient(180deg, rgba(246, 249, 247, 0.78) 0%, rgba(246, 249, 247, 0.08) 38%, rgba(246, 249, 247, 0.34) 70%, rgba(246, 249, 247, 0.95) 100%);
+}
+
+[data-theme="light"] .hero-quiet-meta,
+[data-theme="light"] .focal-prayer-name,
+[data-theme="light"] .focal-prayer-time,
+[data-theme="light"] .focal-countdown-prefix {
+  color: var(--text);
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.92);
+}
+
+[data-theme="light"] .timeline-rail,
+[data-theme="light"] .dp-seg {
+  background: rgba(10, 25, 19, 0.12);
+}
+
+[data-theme="light"] .dp-seg.is-done {
+  background: var(--green);
+}
+
+[data-theme="light"] .tl-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(10, 25, 19, 0.14);
+}
+
+[data-theme="light"] .tl-card.is-done {
+  background: rgba(226, 248, 234, 0.96);
+  border-color: var(--green-border);
+}
+
+[data-theme="light"] .tl-card.is-current:not(.is-done) {
+  background: rgba(252, 244, 230, 0.96);
+  border-color: rgba(186, 128, 52, 0.45);
+}
+
+[data-theme="light"] .tl-card.is-next:not(.is-done) {
+  background: rgba(255, 236, 229, 0.96);
+  border-color: var(--orange-border);
+}
+
+[data-theme="light"] .tl-card.is-done .tl-check {
+  color: #ffffff;
+}
+
+[data-theme="light"] .inspector-sidebar .calc-summary-line {
+  color: #ffffff;
+}
+
 [data-theme="light"] .stage-vignette {
   background:
     linear-gradient(90deg, rgba(246, 249, 247, 0.92) 0%, rgba(246, 249, 247, 0.36) 34%, rgba(246, 249, 247, 0.08) 72%, rgba(246, 249, 247, 0.45) 100%),
@@ -2594,12 +3040,22 @@ textarea:focus-visible {
     order: 2;
   }
 
-  .stage-middle {
-    grid-template-columns: 1fr;
+  .prayer-timeline-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .hud-prayer-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .tl-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .daily-progress-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .dp-divider {
+    width: 100%;
+    height: 1px;
   }
 
   .bento-3 {
@@ -2778,12 +3234,9 @@ textarea:focus-visible {
 
   .hud-topbar,
   .subnav-bar,
-  .section-subheading,
   .inspector-sidebar,
   .toolbar-btns,
-  #section-overview,
-  #section-activity,
-  #section-settings {
+  .prayer-view:not(.is-active) {
     display: none !important;
   }
 

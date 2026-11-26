@@ -618,7 +618,7 @@
   if (spinBtn) {
     spinBtn.addEventListener("click", () => {
       orbit.autoRotate = !orbit.autoRotate;
-      spinBtn.textContent = orbit.autoRotate ? "Auto-Orbit: On" : "Auto-Orbit: Off";
+      spinBtn.textContent = orbit.autoRotate ? "Orbit" : "Paused";
       spinBtn.classList.toggle("is-active", orbit.autoRotate);
     });
   }
@@ -632,15 +632,27 @@
     });
   }
 
-  /* ---------- Responsive Resize ---------- */
+  /* ---------- Responsive Resize & Calm Framing ---------- */
+  function applyFraming(w, h) {
+    camera.aspect = w / h;
+    if (w > 720) {
+      // Gently offset Kaaba slightly right so left-side Next Prayer typography stays unobstructed
+      camera.setViewOffset(w, h, -Math.round(w * 0.14), Math.round(h * 0.04), w, h);
+    } else {
+      camera.clearViewOffset();
+    }
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
+
   function handleResize() {
     const w = container.clientWidth;
     const h = container.clientHeight;
     if (!w || !h) return;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
+    applyFraming(w, h);
   }
+
+  applyFraming(width, height);
 
   if (typeof ResizeObserver !== "undefined") {
     new ResizeObserver(handleResize).observe(container);
