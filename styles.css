@@ -211,16 +211,11 @@ body {
   transition: width 0.35s ease;
 }
 
-/* Stage Views */
-.stage-view {
-  display: none;
+/* Unified Prayer Page Sections */
+.prayer-section {
+  display: flex;
   flex-direction: column;
   gap: 14px;
-  flex: 1;
-}
-
-.stage-view.is-active {
-  display: flex;
 }
 
 /* Main Atmospheric HUD Stage */
@@ -888,6 +883,10 @@ body {
 
 /* RIGHT KHAKI-TAUPE INSPECTOR SIDEBAR (Signature GymSync Element) */
 .inspector-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1199,8 +1198,7 @@ body {
 /* Timetable Table */
 .table-scroll {
   overflow: auto;
-  flex: 1;
-  max-height: calc(100vh - 175px);
+  max-height: 440px;
 }
 
 .timetable {
@@ -1986,6 +1984,8 @@ body {
   }
 
   .inspector-sidebar {
+    position: static;
+    height: auto;
     border-left: none;
     border-top: 1px solid var(--border-strong);
   }
@@ -2039,7 +2039,9 @@ body {
   .hud-topbar,
   .inspector-sidebar,
   .toolbar-btns,
-  .stage-view:not(.is-active) {
+  #section-overview,
+  #section-activity,
+  #section-settings {
     display: none !important;
   }
 

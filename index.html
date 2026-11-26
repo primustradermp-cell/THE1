@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=6" />
 </head>
 <body>
   <div class="viewport-frame">
@@ -21,13 +21,9 @@
             <span class="pill-dot" id="api-dot"></span>
             <span id="api-status-text">Preston Live</span>
           </span>
-          <nav class="hud-nav" role="tablist" aria-label="Dashboard views">
-            <button class="hud-tab is-active" role="tab" aria-selected="true" data-tab="overview" type="button">Overview</button>
-            <button class="hud-tab" role="tab" aria-selected="false" data-tab="timetable" type="button">Timetable</button>
-            <button class="hud-tab" role="tab" aria-selected="false" data-tab="analytics" type="button">Activity</button>
-            <button class="hud-tab" role="tab" aria-selected="false" data-tab="settings" type="button">Calculation</button>
-            <span class="nav-sep" aria-hidden="true"></span>
-            <a class="hud-tab hud-page-link" href="fitness.html">Fitness ↗</a>
+          <nav class="hud-nav" aria-label="Site navigation">
+            <a class="hud-tab hud-page-link is-active" href="index.html" aria-current="page">Prayer</a>
+            <a class="hud-tab hud-page-link" href="fitness.html">Fitness</a>
           </nav>
         </div>
 
@@ -48,8 +44,8 @@
         </div>
       </header>
 
-      <!-- TAB 1: OVERVIEW STAGE + 3-CARD BOTTOM BENTO -->
-      <div class="stage-view is-active" id="tab-overview">
+      <!-- SECTION 1: LIVE 3D KAABA STAGE + 3-CARD BENTO -->
+      <div class="prayer-section" id="section-overview">
         <!-- Main Atmospheric HUD Stage -->
         <section class="hud-stage" id="hud-stage">
           <img class="stage-kaaba-bg" id="stage-kaaba-bg" src="./kaaba-3d.jpg" alt="" aria-hidden="true" />
@@ -205,8 +201,8 @@
         </section>
       </div>
 
-      <!-- TAB 2: PRESTON, LANCASHIRE MONTHLY TIMETABLE -->
-      <div class="stage-view" id="tab-timetable">
+      <!-- SECTION 2: PRESTON, LANCASHIRE MONTHLY TIMETABLE -->
+      <div class="prayer-section" id="section-timetable">
         <section class="panel-dark timetable-panel">
           <div class="panel-toolbar">
             <div>
@@ -245,8 +241,8 @@
         </section>
       </div>
 
-      <!-- TAB 3: YEARLY ACTIVITY HEATMAP & STREAK -->
-      <div class="stage-view" id="tab-analytics">
+      <!-- SECTION 3: YEARLY ACTIVITY HEATMAP & STREAK -->
+      <div class="prayer-section" id="section-activity">
         <section class="panel-dark analytics-panel">
           <div class="panel-toolbar">
             <div>
@@ -282,8 +278,8 @@
         </section>
       </div>
 
-      <!-- TAB 4: CALCULATION & LOCATION SETTINGS -->
-      <div class="stage-view" id="tab-settings">
+      <!-- SECTION 4: CALCULATION & LOCATION SETTINGS -->
+      <div class="prayer-section" id="section-settings">
         <section class="panel-dark settings-panel">
           <div class="panel-toolbar">
             <div>
@@ -473,9 +469,9 @@
         </div>
       </div>
 
-      <!-- Pinned Bottom CTA (mirrors "Start Training") -->
+      <!-- Pinned Bottom CTA -->
       <button class="inspector-cta" id="inspector-cta-btn" type="button">
-        Open Monthly Timetable
+        Jump to Monthly Timetable
       </button>
     </aside>
   </div>
@@ -483,7 +479,7 @@
   <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
-  <script src="kaaba3d.js?v=4"></script>
-  <script src="script.js?v=4"></script>
+  <script src="kaaba3d.js?v=6"></script>
+  <script src="script.js?v=6"></script>
 </body>
 </html>

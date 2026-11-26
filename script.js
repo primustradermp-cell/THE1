@@ -615,18 +615,9 @@ function exportTimetableCSV() {
 
 /* ---------- Navigation, Qibla & Settings ---------- */
 
-function switchTab(tabName) {
-  document.querySelectorAll(".hud-tab").forEach((btn) => {
-    const active = btn.dataset.tab === tabName;
-    btn.classList.toggle("is-active", active);
-    btn.setAttribute("aria-selected", String(active));
-  });
-  document.querySelectorAll(".stage-view").forEach((view) => {
-    view.classList.toggle("is-active", view.id === `tab-${tabName}`);
-  });
-
-  const cta = document.getElementById("inspector-cta-btn");
-  cta.textContent = tabName === "timetable" ? "Back to Live Overview" : "Open Monthly Timetable";
+function scrollToTimetable() {
+  const el = document.getElementById("section-timetable");
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function updateQibla() {
@@ -693,16 +684,8 @@ function changeMonth(delta) {
 }
 
 function bindEvents() {
-  document.querySelectorAll(".hud-tab").forEach((btn) => {
-    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
-  });
-
-  document.getElementById("inspector-cta-btn").addEventListener("click", () => {
-    const isTT = document.getElementById("tab-timetable").classList.contains("is-active");
-    switchTab(isTT ? "overview" : "timetable");
-  });
-
-  document.getElementById("btn-jump-tt").addEventListener("click", () => switchTab("timetable"));
+  document.getElementById("inspector-cta-btn").addEventListener("click", scrollToTimetable);
+  document.getElementById("btn-jump-tt").addEventListener("click", scrollToTimetable);
   document.getElementById("btn-quick-csv").addEventListener("click", exportTimetableCSV);
   document.getElementById("tt-csv").addEventListener("click", exportTimetableCSV);
   document.getElementById("tt-print").addEventListener("click", () => window.print());
