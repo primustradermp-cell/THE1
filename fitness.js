@@ -285,6 +285,11 @@ function renderWeekdayBar() {
       </button>
     `;
   }).join("");
+
+  const activePill = document.querySelector("#weekday-bar .weekday-pill.is-active");
+  if (activePill && window.matchMedia("(max-width: 767px)").matches) {
+    activePill.scrollIntoView({ inline: "center", block: "nearest" });
+  }
 }
 
 function renderMainWorkout() {
@@ -391,15 +396,21 @@ function renderMainWorkout() {
                 return `
                   <div class="set-row${s.done ? " is-set-done" : ""}">
                     <span class="set-num mono">Set ${sIdx + 1}</span>
-                    <div class="dd-stepper">
-                      <button type="button" class="tiny-step" data-action="dec-reps" data-index="${idx}" data-set="${sIdx}" aria-label="Decrease reps">−</button>
-                      <input type="text" class="dark-input mono dd-input" data-field="reps" data-index="${idx}" data-set="${sIdx}" value="${safeReps}" placeholder="10" aria-label="Set ${sIdx + 1} reps" />
-                      <button type="button" class="tiny-step" data-action="inc-reps" data-index="${idx}" data-set="${sIdx}" aria-label="Increase reps">+</button>
+                    <div class="dd-field-group">
+                      <span class="mobile-field-lbl mono">Reps</span>
+                      <div class="dd-stepper">
+                        <button type="button" class="tiny-step" data-action="dec-reps" data-index="${idx}" data-set="${sIdx}" aria-label="Decrease reps">−</button>
+                        <input type="text" inputmode="numeric" class="dark-input mono dd-input" data-field="reps" data-index="${idx}" data-set="${sIdx}" value="${safeReps}" placeholder="10" aria-label="Set ${sIdx + 1} reps" />
+                        <button type="button" class="tiny-step" data-action="inc-reps" data-index="${idx}" data-set="${sIdx}" aria-label="Increase reps">+</button>
+                      </div>
                     </div>
-                    <div class="dd-stepper">
-                      <button type="button" class="tiny-step" data-action="dec-weight" data-index="${idx}" data-set="${sIdx}" aria-label="Decrease weight by 2.5">−</button>
-                      <input type="text" class="dark-input mono dd-input" data-field="weight" data-index="${idx}" data-set="${sIdx}" value="${safeWeight}" placeholder="kg" aria-label="Set ${sIdx + 1} weight" />
-                      <button type="button" class="tiny-step" data-action="inc-weight" data-index="${idx}" data-set="${sIdx}" aria-label="Increase weight by 2.5">+</button>
+                    <div class="dd-field-group">
+                      <span class="mobile-field-lbl mono">Weight</span>
+                      <div class="dd-stepper">
+                        <button type="button" class="tiny-step" data-action="dec-weight" data-index="${idx}" data-set="${sIdx}" aria-label="Decrease weight by 2.5">−</button>
+                        <input type="text" inputmode="decimal" class="dark-input mono dd-input" data-field="weight" data-index="${idx}" data-set="${sIdx}" value="${safeWeight}" placeholder="kg" aria-label="Set ${sIdx + 1} weight" />
+                        <button type="button" class="tiny-step" data-action="inc-weight" data-index="${idx}" data-set="${sIdx}" aria-label="Increase weight by 2.5">+</button>
+                      </div>
                     </div>
                     <div class="set-row-actions">
                       <button type="button" class="set-check-btn${s.done ? " is-checked" : ""}" data-action="toggle-set" data-index="${idx}" data-set="${sIdx}" title="Mark Set ${sIdx + 1} complete">${s.done ? "✓" : ""}</button>

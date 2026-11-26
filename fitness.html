@@ -4,17 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="GymSync" />
-  <meta name="theme-color" content="#0b0b0c" />
+  <meta name="apple-mobile-web-app-title" content="SalahSync" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="manifest" href="manifest.json?v=30" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
   <title>GymSync · Personal Training &amp; Workout Tracker</title>
   <meta name="description" content="Minimalist weekly workout routine planner, per-set exercise logger, and gym calendar." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css?v=29" />
-  <link rel="stylesheet" href="styles.css?v=29" />
-  <script src="theme.js?v=29"></script>
+  <link rel="stylesheet" href="tokens.css?v=30" />
+  <link rel="stylesheet" href="styles.css?v=30" />
+  <script src="theme.js?v=30"></script>
 </head>
 <body class="fitness-page">
   <div class="viewport-frame">
@@ -36,9 +40,9 @@
         </div>
 
         <nav class="hud-nav" aria-label="Site navigation">
-          <a class="hud-tab hud-page-link" href="index.html?v=29">Home</a>
-          <a class="hud-tab hud-page-link" href="prayer.html?v=29">Prayer</a>
-          <a class="hud-tab hud-page-link is-active" href="fitness.html?v=29" aria-current="page">Fitness</a>
+          <a class="hud-tab hud-page-link" href="index.html?v=30">Home</a>
+          <a class="hud-tab hud-page-link" href="prayer.html?v=30">Prayer</a>
+          <a class="hud-tab hud-page-link is-active" href="fitness.html?v=30" aria-current="page">Fitness</a>
         </nav>
 
         <div class="hud-right">
@@ -213,19 +217,21 @@
 
         <hr class="divider" />
 
-        <div class="sidebar-block">
-          <div class="insp-label">Recent Sessions</div>
-          <div class="recent-list" id="recent-list"></div>
-        </div>
-
-        <hr class="divider" />
-
-        <div class="insp-bottom-actions">
-          <button type="button" class="insp-ghost-btn" id="btn-export-fitness">
-            <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Export Workout CSV</span>
-          </button>
-        </div>
+        <details class="sidebar-accordion" open>
+          <summary class="sidebar-accordion-summary">
+            <span class="insp-label">Recent Sessions &amp; Export</span>
+            <svg class="icon icon-xs accordion-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <div class="sidebar-block sidebar-accordion-body">
+            <div class="recent-list" id="recent-list"></div>
+            <div class="insp-bottom-actions">
+              <button type="button" class="insp-ghost-btn" id="btn-export-fitness">
+                <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Export Workout CSV</span>
+              </button>
+            </div>
+          </div>
+        </details>
       </div>
 
       <button class="inspector-cta" id="btn-jump-today-cta" type="button">
@@ -234,6 +240,22 @@
     </aside>
   </div>
 
-  <script src="fitness.js?v=29"></script>
+  <!-- Mobile Fixed Frosted Bottom Tab Bar (< 768px) -->
+  <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+    <a class="mbn-item" href="index.html?v=30">
+      <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </a>
+    <a class="mbn-item" href="prayer.html?v=30">
+      <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span>Prayer</span>
+    </a>
+    <a class="mbn-item is-active" href="fitness.html?v=30" aria-current="page">
+      <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5 17.5 17.5"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>
+      <span>Fitness</span>
+    </a>
+  </nav>
+
+  <script src="fitness.js?v=30"></script>
 </body>
 </html>

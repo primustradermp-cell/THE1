@@ -2933,12 +2933,66 @@
 /* ==========================================================================
    8. RESPONSIVE BREAKPOINTS (1120px / 960px / 860px / 640px) & PRINT
    ========================================================================== */
-@media (max-width: 960px) {
-  .home-grid {
-    grid-template-columns: 1fr;
-  }
+/* ==========================================================================
+   7C. MOBILE BOTTOM TAB BAR & COLLAPSIBLE SIDEBAR ACCORDIONS
+   ========================================================================== */
+.mobile-bottom-nav {
+  display: none;
 }
-@media (max-width: 1120px) {
+
+.mobile-field-lbl {
+  display: none;
+}
+
+.dd-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-accordion {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-accordion-summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 0;
+}
+
+.sidebar-accordion-summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-chevron {
+  display: none;
+  color: var(--sidebar-muted);
+  transition: transform var(--dur-base) var(--ease);
+}
+
+.sidebar-accordion[open] .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+.sidebar-accordion-body {
+  margin-top: var(--space-2);
+}
+
+.insp-bottom-actions {
+  margin-top: var(--space-2);
+}
+
+/* ==========================================================================
+   8. RESPONSIVE BREAKPOINTS (1024px / 768px / 400px) & PRINT
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .home-grid,
   .viewport-frame {
     grid-template-columns: 1fr;
   }
@@ -2951,42 +3005,8 @@
   }
 }
 
-@media (max-width: 860px) {
-  .hud-topbar {
-    grid-template-columns: 1fr auto;
-  }
-
-  .hud-left {
-    grid-column: 1 / -1;
-    order: 2;
-  }
-
-  .prayer-timeline-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .tl-card:last-child {
-    grid-column: 1 / -1;
-  }
-
-  .panel-dark.daily-progress-card,
-  .panel-dark.fitness-summary-strip,
-  .panel-dark.prayer-log-card {
-    grid-template-columns: 1fr;
-  }
-
-  .plog-cal-col {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .dp-divider {
-    width: 100%;
-    height: 1px;
-  }
-}
-
-@media (max-width: 640px) {
+/* Mobile-First One-Handed Phone Ergonomics (< 768px) */
+@media (max-width: 767px) {
   :root {
     --shell-pad-x: 12px;
     --shell-pad-y: 12px;
@@ -2995,43 +3015,199 @@
     --sidebar-pad: 16px;
   }
 
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
   body {
     padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    overflow-x: hidden;
+  }
+
+  /* Bottom clearance (pb-24+) so content never hides behind fixed bottom nav */
+  .home-shell {
+    gap: var(--space-4);
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+
+  .viewport-frame {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
   }
 
   .left-column {
     gap: var(--space-3);
-    padding-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
   }
 
+  /* Ultra-Compact Single-Row Mobile Top Bar (Status Pill Left | Theme Right) */
   .hud-topbar {
-    gap: 10px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    min-height: 44px;
+    padding-bottom: 10px;
   }
 
-  .hud-tab,
-  .hud-page-link,
-  .theme-opt,
-  .subnav-link {
-    height: 36px;
+  .hud-nav {
+    display: none;
   }
 
-  .hud-tab,
-  .hud-page-link {
-    padding: 0 11px;
-    font-size: var(--text-xs);
+  .hud-left {
+    min-width: 0;
+  }
+
+  .status-cluster {
+    width: fit-content;
+    max-width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    gap: 6px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .status-cluster > span:not(.pill-dot):not(.cluster-sep):not(.cluster-clock) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .theme-switch {
+    padding: 2px;
   }
 
   .theme-opt {
-    padding: 0 9px;
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: var(--text-xs);
   }
 
-  .home-shell {
-    gap: var(--space-4);
-    padding-bottom: var(--space-6);
+  /* Fixed Frosted-Glass Mobile Bottom Navigation Bar */
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 6px 12px calc(6px + env(safe-area-inset-bottom));
+    background: rgba(18, 18, 21, 0.88);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(20px) saturate(1.25);
+    -webkit-backdrop-filter: blur(20px) saturate(1.25);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.32);
   }
 
+  [data-theme="light"] .mobile-bottom-nav {
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 -4px 16px rgba(10, 25, 19, 0.08);
+  }
+
+  .mbn-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-height: 56px;
+    border-radius: var(--r-md);
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 500;
+    transition:
+      color var(--dur-fast) var(--ease),
+      background-color var(--dur-fast) var(--ease),
+      transform var(--dur-fast) var(--ease);
+  }
+
+  .mbn-item:active {
+    transform: scale(0.96);
+  }
+
+  .mbn-item.is-active {
+    background: var(--orange-soft);
+    color: var(--orange-text);
+    font-weight: 600;
+  }
+
+  /* Collapsible Sidebar Accordions on Mobile */
+  .accordion-chevron {
+    display: inline-block;
+  }
+
+  .sidebar-accordion-summary {
+    min-height: 44px;
+    padding: 0 2px;
+  }
+
+  /* Universal 44px Minimum Touch Targets */
+  .btn,
+  .hud-btn,
+  .sq-btn,
+  .btn-3d,
+  .step-btn,
+  .tiny-step,
+  .cal-nav-btn,
+  .edit-split-trigger,
+  .gym-check-btn,
+  .insp-ghost-btn,
+  .inspector-cta,
+  .ex-dropdown-trigger,
+  .subnav-link,
+  .city-btn,
+  .preset-chip,
+  .home-next-pill,
+  .home-cycle-btn {
+    min-height: 44px;
+  }
+
+  .sq-btn,
+  .step-btn,
+  .tiny-step,
+  .cal-nav-btn,
+  .set-check-btn,
+  .set-remove-btn,
+  .ex-del-btn {
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .ex-check-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    position: relative;
+  }
+
+  .ex-check-btn::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+  }
+
+  .plog-cell,
+  .cal-cell,
+  .hc-tile,
+  .fs-day-pill,
+  .plog-prayer-btn,
+  .recent-item {
+    min-height: 44px;
+  }
+
+  /* Prevent iOS Safari Auto-Zoom on All Inputs */
+  .field-input,
+  .field-select,
+  .dark-input,
+  .dark-select,
+  .dd-input {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+
+  /* Home Page Mobile Refinements */
   .home-next-pill {
     width: 100%;
     justify-content: center;
@@ -3056,6 +3232,7 @@
   }
 
   .hp-tile {
+    min-height: 68px;
     padding: 10px 3px;
     gap: 4px;
   }
@@ -3068,33 +3245,7 @@
     font-size: 10.5px;
   }
 
-  .hc-tile {
-    height: 42px;
-  }
-
-  .hud-btn,
-  .sq-btn,
-  .cal-nav-btn,
-  .edit-split-trigger,
-  .btns-3d .btn-3d {
-    min-height: 36px;
-  }
-
-  .insp-ghost-btn {
-    min-height: 40px;
-  }
-
-  .sq-btn,
-  .cal-nav-btn {
-    min-width: 36px;
-  }
-
-  .status-cluster {
-    width: 100%;
-    height: 36px;
-    justify-content: center;
-  }
-
+  /* Prayer Sub-Nav & Single-Column Strips */
   .subnav-bar {
     width: 100%;
     flex-wrap: nowrap;
@@ -3111,38 +3262,112 @@
 
   .subnav-link {
     white-space: nowrap;
+    flex: 1 0 auto;
   }
 
+  .panel-dark.daily-progress-card,
+  .panel-dark.fitness-summary-strip,
+  .panel-dark.prayer-log-card {
+    grid-template-columns: 1fr;
+  }
+
+  .plog-cal-col {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dp-divider {
+    width: 100%;
+    height: 1px;
+  }
+
+  /* Capped Mobile 3D Kaaba Hero (h-56 / h-48) so Countdown + 5 Prayers Sit Above the Fold */
   .hud-stage.prayer-hero {
-    min-height: 340px;
-    padding: var(--space-4);
-    gap: var(--space-4);
+    min-height: 0;
+    padding: 14px;
+    gap: 12px;
+    background: var(--bg-panel-solid);
     touch-action: pan-y;
   }
 
+  .stage-kaaba-bg,
+  .kaaba-3d-canvas,
+  .stage-vignette.prayer-hero-vignette {
+    inset: 0 0 auto 0;
+    width: 100%;
+    height: 224px;
+  }
+
+  .stage-vignette.prayer-hero-vignette {
+    background:
+      linear-gradient(100deg, rgba(11, 11, 12, 0.88) 0%, rgba(11, 11, 12, 0.56) 45%, rgba(11, 11, 12, 0.25) 100%),
+      linear-gradient(180deg, rgba(11, 11, 12, 0.45) 0%, rgba(11, 11, 12, 0.1) 42%, var(--bg-panel-solid) 100%);
+  }
+
+  [data-theme="light"] .stage-vignette.prayer-hero-vignette {
+    background:
+      linear-gradient(100deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 45%, rgba(255, 255, 255, 0.22) 100%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.12) 42%, var(--bg-panel-solid) 100%);
+  }
+
+  .hero-context-row {
+    gap: 8px;
+  }
+
   .hero-quiet-meta {
-    row-gap: 4px;
+    row-gap: 2px;
+    font-size: 11px;
   }
 
   .hero-quiet-meta > span:not(.meta-dot) {
     white-space: nowrap;
   }
 
-  .tl-card {
-    padding: 11px 12px;
+  .btns-3d .btn-3d {
+    min-height: 34px;
+    height: 34px;
+    padding: 0 10px;
+  }
+
+  .hero-focal {
+    margin: 0;
+    padding: 6px 0 4px;
+    gap: 4px;
+  }
+
+  .focal-prayer-name {
+    font-size: 2.05rem;
+  }
+
+  .focal-prayer-time {
+    font-size: 1.35rem;
+  }
+
+  .focal-countdown {
+    font-size: 1.25rem;
+  }
+
+  .prayer-timeline-wrap {
+    padding-top: 4px;
     gap: 8px;
   }
 
-  /* Prevent iOS Safari input auto-zoom */
-  .field-input,
-  .field-select,
-  .dark-input,
-  .dark-select,
-  .dd-input {
-    font-size: 16px !important;
-    min-height: 40px;
+  .prayer-timeline-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
+  .tl-card {
+    min-height: 64px;
+    padding: 10px 12px;
+    gap: 6px;
+  }
+
+  .tl-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  /* Fitness Mobile Gym Ergonomics */
   .gym-check-btn {
     width: 100%;
     justify-content: center;
@@ -3158,6 +3383,10 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  .weekday-pill {
+    min-height: 54px;
+  }
+
   .quick-add-row {
     grid-template-columns: 1fr auto;
     gap: 8px;
@@ -3165,16 +3394,7 @@
   }
 
   .add-preset-btn {
-    min-height: 40px;
-    padding: 0 12px;
-  }
-
-  .fs-day-pill {
-    padding: 8px 4px;
-  }
-
-  .cal-cell {
-    height: 38px;
+    padding: 0 14px;
   }
 
   .split-presets {
@@ -3187,27 +3407,40 @@
     white-space: nowrap;
   }
 
+  /* Clean 2-Row Mobile Exercise Card */
   .exercise-row-simple {
-    flex-wrap: wrap;
-    padding: var(--space-3) var(--card-pad-x);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 14px var(--card-pad-x);
   }
 
   .ex-name-cell {
-    flex: 1 1 180px;
+    width: 100%;
+  }
+
+  .ex-right-controls {
+    width: 100%;
+  }
+
+  .ex-dropdown-trigger {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .perset-dropdown {
-    padding: var(--space-3);
+    padding: 12px var(--card-pad-x) 14px;
   }
 
   .perset-head {
     display: none;
   }
 
+  /* Clean Stacked Mobile Per-Set Card with 44px Steppers & 16px Inputs */
   .set-row {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-2);
-    padding: 10px;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    padding: 12px;
     border-radius: var(--r-md);
     background: var(--surface-subtle);
     border: 1px solid var(--border);
@@ -3215,27 +3448,97 @@
 
   .set-num {
     grid-column: 1 / 2;
+    align-self: center;
+    font-size: var(--text-sm);
   }
 
   .set-row-actions {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
+    gap: 8px;
   }
 
-  .tiny-step,
-  .set-check-btn,
-  .set-remove-btn {
-    width: 32px;
-    height: 32px;
+  .dd-field-group {
+    grid-column: 1 / -1;
+  }
+
+  .mobile-field-lbl {
+    display: block;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .dd-stepper {
+    gap: 8px;
   }
 
   .perset-footer {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
   }
 
   .dd-actions {
+    display: grid;
+    grid-template-columns: auto auto 1fr 1fr auto;
+    gap: 6px;
+  }
+}
+
+/* Compact Phone Screens (< 400px, e.g. iPhone SE / 375px / 390px) */
+@media (max-width: 400px) {
+  /* Cap 3D Kaaba backdrop to h-48 (192px) */
+  .stage-kaaba-bg,
+  .kaaba-3d-canvas,
+  .stage-vignette.prayer-hero-vignette {
+    height: 192px;
+  }
+
+  /* Full-width compact vertical tap rows for the 5 prayers (zero text truncation) */
+  .prayer-timeline-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .tl-card {
+    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
+    min-height: 48px;
+    padding: 8px 12px;
+  }
+
+  .tl-card > div:last-child {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex: 1;
+    margin-left: 10px;
+  }
+
+  .tl-top {
+    display: contents;
+  }
+
+  .tl-check {
+    order: 1;
+    flex-shrink: 0;
+  }
+
+  .tl-card > div:last-child {
+    order: 2;
+  }
+
+  .tl-badge {
+    order: 3;
+    flex-shrink: 0;
+  }
+
+  .tl-time {
+    font-size: var(--text-md);
+    margin-top: 0;
   }
 }
 
@@ -3250,6 +3553,7 @@
 
   .hud-topbar,
   .subnav-bar,
+  .mobile-bottom-nav,
   .inspector-sidebar,
   .toolbar-btns,
   .prayer-view:not(.is-active) {
