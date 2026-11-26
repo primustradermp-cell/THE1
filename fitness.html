@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GymSync · Simple Fitness &amp; Workout Tracker</title>
-  <meta name="description" content="Simple gym day tracker and workout log for exercises, sets, and reps in the SalahSync warm dark charcoal and khaki-taupe theme." />
+  <title>GymSync · Weekly Routine &amp; Workout Tracker</title>
+  <meta name="description" content="Preset your weekly exercises for Monday–Sunday and quickly edit sets, reps, and weights with inline dropdowns." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=13" />
-  <script src="theme.js?v=13"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=15" />
+  <script src="theme.js?v=15"></script>
 </head>
 <body class="fitness-page">
   <div class="viewport-frame">
@@ -27,8 +27,8 @@
             <span>Fitness Log</span>
           </span>
           <nav class="hud-nav" aria-label="Site navigation">
-            <a class="hud-tab hud-page-link" href="index.html?v=13">Prayer</a>
-            <a class="hud-tab hud-page-link is-active" href="fitness.html?v=13" aria-current="page">Fitness</a>
+            <a class="hud-tab hud-page-link" href="index.html?v=15">Prayer</a>
+            <a class="hud-tab hud-page-link is-active" href="fitness.html?v=15" aria-current="page">Fitness</a>
           </nav>
           <div class="theme-switch" role="group" aria-label="Theme switcher">
             <button type="button" class="theme-opt is-active" data-set-theme="dark" aria-pressed="true">☾ Dark</button>
@@ -37,7 +37,6 @@
         </div>
 
         <div class="hud-right">
-          <!-- Floating Sync Widget (mirrors My SalahSync) -->
           <div class="sync-widget">
             <div class="sync-top">
               <div class="sync-brand">My GymSync</div>
@@ -55,7 +54,7 @@
         </div>
       </header>
 
-      <!-- Open Gym Visual Hero Band (lets the gym photo shine clearly) -->
+      <!-- Open Gym Visual Hero Band -->
       <section class="fitness-hero-banner">
         <div class="day-nav-block">
           <div class="day-nav-controls">
@@ -74,72 +73,60 @@
         </button>
       </section>
 
-      <!-- MAIN WORKOUT LOG PANEL -->
+      <!-- MAIN UNIFIED ROUTINE & DAILY WORKOUT PANEL -->
       <section class="panel-dark fitness-main-panel">
+        <!-- Always-Visible Mon–Sun Weekday Strip -->
+        <div class="weekday-bar" id="weekday-bar" role="tablist" aria-label="Weekly routine days">
+          <!-- Populated by fitness.js -->
+        </div>
 
-        <!-- Workout Name / Focus Bar -->
+        <!-- Selected Weekday Split Title -->
         <div class="workout-meta-bar">
           <label class="workout-field">
-            <span class="m-lbl">Workout / Split</span>
+            <span class="m-lbl" id="split-day-label">Workout Split</span>
             <input
               type="text"
               id="workout-title-input"
               class="dark-input"
-              placeholder="e.g. Push Day, Legs, Upper Body, Cardio…"
+              placeholder="e.g. Push, Pull, Legs, Upper Body…"
               autocomplete="off"
             />
           </label>
-          <div class="split-presets" aria-label="Quick workout labels">
+          <div class="split-presets" aria-label="Quick workout split presets">
             <button type="button" class="preset-chip" data-split="Push">Push</button>
             <button type="button" class="preset-chip" data-split="Pull">Pull</button>
             <button type="button" class="preset-chip" data-split="Legs">Legs</button>
-            <button type="button" class="preset-chip" data-split="Upper Body">Upper</button>
+            <button type="button" class="preset-chip" data-split="Upper">Upper</button>
             <button type="button" class="preset-chip" data-split="Full Body">Full Body</button>
+            <button type="button" class="preset-chip" data-split="Rest">Rest</button>
           </div>
         </div>
 
-        <!-- Simple Add Exercise Form -->
-        <form class="add-exercise-form" id="add-exercise-form">
-          <label class="form-col form-col-name">
-            <span class="m-lbl">Exercise</span>
-            <input
-              type="text"
-              id="input-exercise"
-              class="dark-input"
-              placeholder="e.g. Barbell Bench Press"
-              required
-              autocomplete="off"
-            />
-          </label>
-          <label class="form-col form-col-num">
-            <span class="m-lbl">Sets</span>
-            <input type="number" id="input-sets" class="dark-input mono" min="1" max="50" value="3" required />
-          </label>
-          <label class="form-col form-col-num">
-            <span class="m-lbl">Reps</span>
-            <input type="text" id="input-reps" class="dark-input mono" value="10" placeholder="10" required />
-          </label>
-          <label class="form-col form-col-weight">
-            <span class="m-lbl">Weight (optional)</span>
-            <input type="text" id="input-weight" class="dark-input mono" placeholder="e.g. 60 kg" autocomplete="off" />
-          </label>
-          <button type="submit" class="hud-btn hud-btn-accent add-ex-btn">+ Add</button>
-        </form>
-
-        <!-- Exercises List for Selected Day -->
+        <!-- Preset Exercise List with Inline Dropdowns (Sets / Reps / Weight) -->
         <div class="exercise-list-wrap">
-          <div class="exercise-list-head mono">
-            <span>Exercise</span>
-            <span>Sets × Reps</span>
-            <span>Weight</span>
-            <span></span>
+          <div class="exercise-list-head-simple mono">
+            <span id="list-day-heading">Exercises</span>
+            <span>Sets · Reps · Weight</span>
           </div>
           <div class="exercise-list" id="exercise-list">
             <!-- Populated by fitness.js -->
           </div>
         </div>
 
-        <!-- Simple Workout Notes -->
+        <!-- Super-Fast Single-Input Preset Exercise Adder -->
+        <form class="quick-add-row" id="add-preset-form">
+          <input
+            type="text"
+            id="input-preset-exercise"
+            class="dark-input"
+            placeholder="+ Add exercise to Monday’s preset list…"
+            autocomplete="off"
+            required
+          />
+          <button type="submit" class="hud-btn hud-btn-accent add-preset-btn">+ Add to List</button>
+        </form>
+
+        <!-- Session Notes -->
         <div class="workout-notes-bar">
           <label class="notes-field">
             <span class="m-lbl">Session Notes</span>
@@ -147,13 +134,13 @@
               id="workout-notes-input"
               class="dark-input dark-textarea"
               rows="2"
-              placeholder="Write down how the session felt, PRs, rest times, or cardio…"
+              placeholder="Notes for this session (PRs, cardio, energy)…"
             ></textarea>
           </label>
         </div>
       </section>
 
-      <!-- Bottom 3-Column Bento Grid (matches index.html) -->
+      <!-- Bottom 3-Column Bento Grid -->
       <section class="bento-3">
         <!-- Card 1: Gym Attendance -->
         <div class="bento-card">
@@ -173,17 +160,9 @@
         <!-- Card 2: Weekly Gym Rhythm -->
         <div class="bento-card">
           <div class="bento-title">This Week’s Sessions</div>
-          <div class="week-spark-bars" id="week-spark-bars">
-            <!-- Populated by fitness.js -->
-          </div>
+          <div class="week-spark-bars" id="week-spark-bars"></div>
           <div class="week-spark-scale mono">
-            <span>M</span>
-            <span>T</span>
-            <span>W</span>
-            <span>T</span>
-            <span>F</span>
-            <span>S</span>
-            <span>S</span>
+            <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
           </div>
         </div>
 
@@ -201,13 +180,13 @@
             </div>
           </div>
           <div class="legend-row">
-            <span class="m-lbl" id="stat-day-status">Rest day — log an exercise to track</span>
+            <span class="m-lbl" id="stat-day-status">Tap any exercise dropdown to adjust sets, reps &amp; weight</span>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- RIGHT KHAKI-TAUPE INSPECTOR SIDEBAR (~28%, matches index.html) -->
+    <!-- RIGHT INSPECTOR SIDEBAR (~28%) -->
     <aside class="inspector-sidebar" aria-label="Gym Calendar and Summary">
       <div class="inspector-body">
         <div class="inspector-header">
@@ -219,7 +198,7 @@
             </div>
             <div>
               <div class="insp-big mono" id="insp-total-ex">0</div>
-              <div class="insp-unit">exercises today</div>
+              <div class="insp-unit">exercises listed</div>
             </div>
           </div>
         </div>
@@ -244,26 +223,23 @@
         <!-- Recent Workouts -->
         <div class="recent-wrap">
           <div class="insp-label">Recent Gym Days:</div>
-          <div class="recent-list" id="recent-list">
-            <!-- Populated by fitness.js -->
-          </div>
+          <div class="recent-list" id="recent-list"></div>
         </div>
 
         <hr class="dashed-divider" />
 
-        <!-- Simple Export / Clear -->
         <div class="insp-bottom-actions">
           <button type="button" class="insp-ghost-btn" id="btn-export-fitness">Export Workout CSV</button>
         </div>
       </div>
 
       <!-- Pinned Bottom CTA -->
-      <button class="inspector-cta" id="btn-log-today-cta" type="button">
-        Log Today’s Workout
+      <button class="inspector-cta" id="btn-jump-today-cta" type="button">
+        Jump to Today’s Workout
       </button>
     </aside>
   </div>
 
-  <script src="fitness.js?v=13"></script>
+  <script src="fitness.js?v=15"></script>
 </body>
 </html>

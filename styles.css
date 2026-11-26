@@ -2768,6 +2768,359 @@ body {
   box-shadow: none;
 }
 
+/* ==========================================================================
+   FITNESS WEEKLY PLAN & INLINE EXERCISE DROPDOWNS
+   ========================================================================== */
+.fitness-mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.fitness-mode-tabs {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--border);
+  gap: 3px;
+}
+
+.fit-mode-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 6px 13px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.fit-mode-btn:hover {
+  color: var(--text);
+}
+
+.fit-mode-btn.is-active {
+  background: var(--orange);
+  color: #ffffff;
+}
+
+.fit-split-badge {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+}
+
+.fit-view {
+  display: none;
+  flex-direction: column;
+}
+
+.fit-view.is-active {
+  display: flex;
+}
+
+.exercise-list-head-simple {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: rgba(14, 13, 10, 0.48);
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.exercise-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.exercise-item.is-done .ex-name {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.exercise-item.is-done .ex-check-btn {
+  background: var(--green);
+  border-color: var(--green);
+  color: #081c10;
+}
+
+.exercise-row-simple {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  transition: background-color 0.14s ease;
+}
+
+.exercise-row-simple:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ex-right-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ex-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 11px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ex-dropdown-trigger:hover,
+.ex-dropdown-trigger.is-open {
+  background: var(--orange-soft);
+  border-color: rgba(232, 93, 42, 0.65);
+}
+
+.dd-caret {
+  font-size: 11px;
+  transition: transform 0.18s ease;
+}
+
+.ex-dropdown-trigger.is-open .dd-caret {
+  transform: rotate(180deg);
+}
+
+.ex-dropdown-panel {
+  display: grid;
+  grid-template-columns: 150px 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+  padding: 12px 20px 16px 48px;
+  background: rgba(0, 0, 0, 0.24);
+  border-top: 1px dashed var(--border);
+}
+
+.dd-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dd-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dd-stepper .dd-input {
+  text-align: center;
+  padding: 7px 6px;
+}
+
+.dd-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quick-add-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.inline-plan-link {
+  margin-left: 6px;
+  background: none;
+  border: none;
+  color: var(--orange);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Weekday Selector Bar (Mon–Sun) */
+.weekday-bar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.weekday-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-soft);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wd-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wd-split {
+  font-size: 9.5px;
+  font-weight: 500;
+  opacity: 0.78;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quick-add-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.add-preset-btn {
+  white-space: nowrap;
+}
+
+.weekday-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+}
+
+.weekday-pill.is-active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.wd-count {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.28);
+  color: #ffffff;
+}
+
+.plan-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.plan-meta-pill {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Light Mode Overrides for Weekly Plan & Dropdowns */
+[data-theme="light"] .fitness-mode-tabs {
+  background: rgba(230, 240, 235, 0.85);
+}
+
+[data-theme="light"] .fit-mode-btn {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+[data-theme="light"] .fit-mode-btn.is-active {
+  color: #ffffff;
+}
+
+[data-theme="light"] .fit-split-badge {
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text);
+  font-weight: 600;
+}
+
+[data-theme="light"] .exercise-list-head-simple {
+  background: rgba(230, 240, 235, 0.78);
+  color: var(--text);
+  font-weight: 600;
+}
+
+[data-theme="light"] .exercise-item {
+  border-bottom-color: rgba(10, 25, 19, 0.09);
+}
+
+[data-theme="light"] .exercise-item.is-done .ex-check-btn {
+  color: #ffffff;
+}
+
+[data-theme="light"] .ex-dropdown-trigger {
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--text);
+  font-weight: 600;
+}
+
+[data-theme="light"] .ex-dropdown-panel {
+  background: rgba(230, 240, 235, 0.55);
+}
+
+[data-theme="light"] .weekday-pill {
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--text);
+  font-weight: 600;
+}
+
+[data-theme="light"] .weekday-pill.is-active {
+  background: var(--orange);
+  color: #ffffff;
+}
+
+[data-theme="light"] .plan-meta-pill {
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
+@media (max-width: 820px) {
+  .ex-dropdown-panel {
+    grid-template-columns: 1fr 1fr;
+    padding-left: 20px;
+  }
+
+  .dd-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+
+  .weekday-bar {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 /* Responsive */
 @media (max-width: 1120px) {
   .viewport-frame {
