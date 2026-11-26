@@ -2917,6 +2917,148 @@ body {
   border-top: 1px dashed var(--border);
 }
 
+/* Per-Set Editable Table Inside Exercise Dropdown */
+.perset-dropdown {
+  padding: 12px 20px 14px 48px;
+  background: rgba(0, 0, 0, 0.24);
+  border-top: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.perset-head {
+  display: grid;
+  grid-template-columns: 58px minmax(110px, 1fr) minmax(130px, 1.2fr) 62px;
+  gap: 10px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: 0 2px;
+}
+
+.perset-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.set-row {
+  display: grid;
+  grid-template-columns: 58px minmax(110px, 1fr) minmax(130px, 1.2fr) 62px;
+  gap: 10px;
+  align-items: center;
+}
+
+.set-row.is-set-done .set-num {
+  color: var(--green);
+}
+
+.set-num {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+.set-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.set-check-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.05);
+  color: transparent;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.set-check-btn.is-checked {
+  background: var(--green);
+  border-color: var(--green);
+  color: #ffffff;
+}
+
+.set-remove-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 15px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.set-remove-btn:hover:not(:disabled) {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.set-remove-btn:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+.perset-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  margin-top: 2px;
+  border-top: 1px solid var(--border);
+}
+
+[data-theme="light"] .perset-dropdown {
+  background: rgba(230, 240, 235, 0.62);
+}
+
+[data-theme="light"] .perset-head,
+[data-theme="light"] .set-num {
+  color: var(--text);
+  font-weight: 600;
+}
+
+[data-theme="light"] .set-check-btn {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="light"] .set-check-btn.is-checked {
+  background: var(--green);
+  border-color: var(--green);
+  color: #ffffff;
+}
+
+@media (max-width: 720px) {
+  .perset-dropdown {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .perset-head {
+    display: none;
+  }
+
+  .set-row {
+    grid-template-columns: 48px 1fr 1fr auto;
+    gap: 6px;
+  }
+}
+
 .tiny-step:disabled {
   opacity: 0.35;
   cursor: default;

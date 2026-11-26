@@ -1,4 +1,4 @@
-/* GymSync — Unified Weekly Preset Routine (Mon–Sun) + Inline Sets/Reps/Weight Dropdowns */
+/* GymSync — Weekly Preset Routine (Mon–Sun) + Individual Per-Set Editing (Sets / Reps / Weight) */
 
 const FITNESS_LOGS_KEY = "salahsync_fitness_logs_v1";
 const FITNESS_PLAN_KEY = "salahsync_fitness_plan_v1";
@@ -49,14 +49,14 @@ const SAMPLE_SPLITS = {
 
 const fitnessState = {
   selectedDate: toDateKey(new Date()),
-  openDropdownId: null, // exercise id currently expanded
+  openDropdownId: null,
   calYear: new Date().getFullYear(),
   calMonth: new Date().getMonth(),
   logs: loadJSON(FITNESS_LOGS_KEY, {}),
   plan: loadPlan(),
 };
 
-/* ---------- Storage ---------- */
+/* ---------- Storage & Migration ---------- */
 
 function loadJSON(key, fallback) {
   try {
@@ -71,19 +71,42 @@ function makeId() {
   return `ex_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
 }
 
+/**
+ * Normalizes any exercise (legacy { sets, reps, weight } OR new { setList: [...] })
+ * into the per-set format without losing existing saved user data.
+ */
+function normalizeExercise(ex, resetDone = false) {
+  let setList;
+  if (Array.isArray(ex.setList) && ex.setList.length > 0) {
+    setList = ex.setList.map((s) => ({
+      reps: String(s.reps ?? "10"),
+      weight: String(s.weight ?? ""),
+      done: resetDone ? false : Boolean(s.done),
+    }));
+  } else {
+    const count = Math.max(1, Math.min(30, Number(ex.sets) || 3));
+    const reps = String(ex.reps ?? "10");
+    const weight = String(ex.weight ?? "");
+    const done = resetDone ? false : Boolean(ex.done);
+    setList = Array.from({ length: count }, () => ({ reps, weight, done }));
+  }
+
+  const allDone = setList.length > 0 && setList.every((s) => s.done);
+  return {
+    id: ex.id || makeId(),
+    name: String(ex.name || "Exercise"),
+    done: resetDone ? false : Boolean(ex.done || allDone),
+    setList,
+  };
+}
+
 function loadPlan() {
   const saved = loadJSON(FITNESS_PLAN_KEY, null);
   const merged = {};
   for (const w of WEEKDAYS) {
     const src = saved && saved[w.id] ? saved[w.id] : DEFAULT_PLAN[w.id];
     const exList = Array.isArray(src.exercises)
-      ? src.exercises.map((ex) => ({
-          id: ex.id || makeId(),
-          name: ex.name,
-          sets: Number(ex.sets) || 3,
-          reps: String(ex.reps || "10"),
-          weight: String(ex.weight || ""),
-        }))
+      ? src.exercises.map((ex) => normalizeExercise(ex, true))
       : [];
     merged[w.id] = {
       title: src.title || "",
@@ -101,7 +124,7 @@ function savePlan() {
   localStorage.setItem(FITNESS_PLAN_KEY, JSON.stringify(fitnessState.plan));
 }
 
-/* ---------- Date Helpers ---------- */
+/* ---------- Date & Format Helpers ---------- */
 
 function toDateKey(date) {
   const y = date.getFullYear();
@@ -139,7 +162,7 @@ function formatReadableDate(key) {
 }
 
 function parseLeadingNumber(val) {
-  const match = String(val || "").match(/\d+/);
+  const match = String(val || "").match(/\d+(?:\.\d+)?/);
   return match ? Number(match[0]) : 0;
 }
 
@@ -151,46 +174,71 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
-/* ---------- Smart Preset + Daily Override Resolution ---------- */
+function formatExerciseSummary(ex) {
+  const list = ex.setList || [];
+  const count = list.length;
+  if (!count) return "0 sets";
+
+  const repsArr = list.map((s) => s.reps.trim() || "0");
+  const uniqueReps = [...new Set(repsArr)];
+  const repsText =
+    uniqueReps.length === 1
+      ? `${uniqueReps[0]} reps`
+      : repsArr.length <= 4
+      ? `${repsArr.join("/")} reps`
+      : `${repsArr.slice(0, 3).join("/")}+ reps`;
+
+  const weights = list.map((s) => s.weight.trim()).filter(Boolean);
+  let weightText = "";
+  if (weights.length) {
+    const uniqueWeights = [...new Set(weights)];
+    if (uniqueWeights.length === 1) {
+      weightText = ` · ${uniqueWeights[0]}`;
+    } else {
+      const nums = weights.map((w) => parseLeadingNumber(w)).filter((n) => n > 0);
+      if (nums.length >= 2) {
+        const min = Math.min(...nums);
+        const max = Math.max(...nums);
+        const unitMatch = weights[0].match(/[a-zA-Z]+/);
+        const unit = unitMatch ? ` ${unitMatch[0]}` : "";
+        weightText = min === max ? ` · ${min}${unit}` : ` · ${min}–${max}${unit}`;
+      } else {
+        weightText = ` · ${uniqueWeights[0]}`;
+      }
+    }
+  }
+
+  return `${count} ${count === 1 ? "set" : "sets"} · ${repsText}${weightText}`;
+}
+
+function countExerciseSets(ex) {
+  return ex.setList ? ex.setList.length : Number(ex.sets) || 0;
+}
+
+function countExerciseReps(ex) {
+  if (ex.setList) {
+    return ex.setList.reduce((sum, s) => sum + Math.round(parseLeadingNumber(s.reps)), 0);
+  }
+  return (Number(ex.sets) || 0) * Math.round(parseLeadingNumber(ex.reps));
+}
+
+/* ---------- Preset + Daily Override Resolution ---------- */
 
 function getEffectiveExercises(dateKey) {
   const wd = getWeekdayForDate(dateKey);
-  const presetList = fitnessState.plan[wd]?.exercises || [];
+  const presetList = (fitnessState.plan[wd]?.exercises || []).map((p) => normalizeExercise(p, true));
   const savedLog = fitnessState.logs[dateKey];
 
-  // If no log saved yet for this date, return clean copies of the weekday's presets
   if (!savedLog || !Array.isArray(savedLog.exercises)) {
-    return presetList.map((p) => ({
-      id: p.id,
-      name: p.name,
-      sets: p.sets,
-      reps: p.reps,
-      weight: p.weight,
-      done: false,
-    }));
+    return presetList;
   }
 
-  // Merge: keep every saved exercise on this date + append any newly added preset exercises not yet in this day's log
-  const existing = savedLog.exercises.map((e) => ({
-    id: e.id || makeId(),
-    name: e.name,
-    sets: Number(e.sets) || 3,
-    reps: String(e.reps || "10"),
-    weight: String(e.weight || ""),
-    done: Boolean(e.done),
-  }));
-
+  const existing = savedLog.exercises.map((e) => normalizeExercise(e, false));
   const seenNames = new Set(existing.map((e) => e.name.toLowerCase()));
+
   for (const p of presetList) {
     if (!seenNames.has(p.name.toLowerCase())) {
-      existing.push({
-        id: p.id,
-        name: p.name,
-        sets: p.sets,
-        reps: p.reps,
-        weight: p.weight,
-        done: false,
-      });
+      existing.push(p);
     }
   }
   return existing;
@@ -293,7 +341,7 @@ function renderMainWorkout() {
     const sampleBtn = document.getElementById("btn-load-sample");
     if (sampleBtn && sampleKey) {
       sampleBtn.addEventListener("click", () => {
-        fitnessState.plan[wd].exercises = SAMPLE_SPLITS[sampleKey].map((s) => ({ ...s, id: makeId() }));
+        fitnessState.plan[wd].exercises = SAMPLE_SPLITS[sampleKey].map((s) => normalizeExercise({ ...s, id: makeId() }, true));
         savePlan();
         renderAll();
       });
@@ -303,9 +351,35 @@ function renderMainWorkout() {
       .map((ex, idx) => {
         const isOpen = fitnessState.openDropdownId === ex.id;
         const safeName = escapeHtml(ex.name);
-        const safeReps = escapeHtml(ex.reps);
-        const safeWeight = escapeHtml(ex.weight || "");
-        const summary = `${ex.sets} sets · ${safeReps} reps${safeWeight ? ` · ${safeWeight}` : ""}`;
+        const summary = escapeHtml(formatExerciseSummary(ex));
+
+        const setRowsHtml = isOpen
+          ? ex.setList
+              .map((s, sIdx) => {
+                const safeReps = escapeHtml(s.reps);
+                const safeWeight = escapeHtml(s.weight);
+                return `
+                  <div class="set-row${s.done ? " is-set-done" : ""}">
+                    <span class="set-num mono">Set ${sIdx + 1}</span>
+                    <div class="dd-stepper">
+                      <button type="button" class="tiny-step" data-action="dec-reps" data-index="${idx}" data-set="${sIdx}" aria-label="Decrease reps">−</button>
+                      <input type="text" class="dark-input mono dd-input" data-field="reps" data-index="${idx}" data-set="${sIdx}" value="${safeReps}" placeholder="10" aria-label="Set ${sIdx + 1} reps" />
+                      <button type="button" class="tiny-step" data-action="inc-reps" data-index="${idx}" data-set="${sIdx}" aria-label="Increase reps">+</button>
+                    </div>
+                    <div class="dd-stepper">
+                      <button type="button" class="tiny-step" data-action="dec-weight" data-index="${idx}" data-set="${sIdx}" aria-label="Decrease weight by 2.5">−</button>
+                      <input type="text" class="dark-input mono dd-input" data-field="weight" data-index="${idx}" data-set="${sIdx}" value="${safeWeight}" placeholder="kg" aria-label="Set ${sIdx + 1} weight" />
+                      <button type="button" class="tiny-step" data-action="inc-weight" data-index="${idx}" data-set="${sIdx}" aria-label="Increase weight by 2.5">+</button>
+                    </div>
+                    <div class="set-row-actions">
+                      <button type="button" class="set-check-btn${s.done ? " is-checked" : ""}" data-action="toggle-set" data-index="${idx}" data-set="${sIdx}" title="Mark Set ${sIdx + 1} complete">${s.done ? "✓" : ""}</button>
+                      <button type="button" class="set-remove-btn" data-action="remove-set" data-index="${idx}" data-set="${sIdx}" title="Remove Set ${sIdx + 1}" ${ex.setList.length <= 1 ? "disabled" : ""}>×</button>
+                    </div>
+                  </div>
+                `;
+              })
+              .join("")
+          : "";
 
         return `
           <div class="exercise-item${ex.done ? " is-done" : ""}${isOpen ? " is-open" : ""}" data-ex-id="${ex.id}">
@@ -339,40 +413,25 @@ function renderMainWorkout() {
             ${
               isOpen
                 ? `
-              <div class="ex-dropdown-panel">
-                <label class="dd-field">
-                  <span class="m-lbl">Sets</span>
-                  <div class="dd-stepper">
-                    <button type="button" class="tiny-step" data-action="dec-sets" data-index="${idx}" aria-label="Decrease sets">−</button>
-                    <input type="number" class="dark-input mono dd-input" data-field="sets" data-index="${idx}" min="1" max="50" value="${ex.sets}" />
-                    <button type="button" class="tiny-step" data-action="inc-sets" data-index="${idx}" aria-label="Increase sets">+</button>
+              <div class="perset-dropdown">
+                <div class="perset-head mono">
+                  <span>Set</span>
+                  <span>Reps</span>
+                  <span>Weight</span>
+                  <span>Done</span>
+                </div>
+                <div class="perset-rows">
+                  ${setRowsHtml}
+                </div>
+                <div class="perset-footer">
+                  <button type="button" class="hud-btn" data-action="add-set" data-index="${idx}">+ Add Set</button>
+                  <div class="dd-actions">
+                    <button type="button" class="tiny-step" data-action="move-up" data-index="${idx}" title="Move up" ${idx === 0 ? "disabled" : ""}>↑</button>
+                    <button type="button" class="tiny-step" data-action="move-down" data-index="${idx}" title="Move down" ${idx === exercises.length - 1 ? "disabled" : ""}>↓</button>
+                    <button type="button" class="hud-btn" data-action="save-default" data-index="${idx}" title="Save these sets for future ${wdInfo.full}s">Save Default</button>
+                    <button type="button" class="hud-btn hud-btn-accent" data-action="close-dropdown">Done</button>
+                    <button type="button" class="ex-del-btn" data-action="delete-ex" data-index="${idx}" title="Delete exercise">✕</button>
                   </div>
-                </label>
-
-                <label class="dd-field">
-                  <span class="m-lbl">Reps</span>
-                  <div class="dd-stepper">
-                    <button type="button" class="tiny-step" data-action="dec-reps" data-index="${idx}" aria-label="Decrease reps">−</button>
-                    <input type="text" class="dark-input mono dd-input" data-field="reps" data-index="${idx}" value="${safeReps}" placeholder="10" />
-                    <button type="button" class="tiny-step" data-action="inc-reps" data-index="${idx}" aria-label="Increase reps">+</button>
-                  </div>
-                </label>
-
-                <label class="dd-field">
-                  <span class="m-lbl">Weight</span>
-                  <div class="dd-stepper">
-                    <button type="button" class="tiny-step" data-action="dec-weight" data-index="${idx}" aria-label="Decrease weight by 2.5">−</button>
-                    <input type="text" class="dark-input mono dd-input" data-field="weight" data-index="${idx}" value="${safeWeight}" placeholder="e.g. 60 kg" />
-                    <button type="button" class="tiny-step" data-action="inc-weight" data-index="${idx}" aria-label="Increase weight by 2.5">+</button>
-                  </div>
-                </label>
-
-                <div class="dd-actions">
-                  <button type="button" class="tiny-step" data-action="move-up" data-index="${idx}" title="Move up" ${idx === 0 ? "disabled" : ""}>↑</button>
-                  <button type="button" class="tiny-step" data-action="move-down" data-index="${idx}" title="Move down" ${idx === exercises.length - 1 ? "disabled" : ""}>↓</button>
-                  <button type="button" class="hud-btn" data-action="save-default" data-index="${idx}" title="Update default for future ${wdInfo.full}s">Save Default</button>
-                  <button type="button" class="hud-btn hud-btn-accent" data-action="close-dropdown">Done</button>
-                  <button type="button" class="ex-del-btn" data-action="delete-ex" data-index="${idx}" title="Remove exercise">✕</button>
                 </div>
               </div>
             `
@@ -384,9 +443,12 @@ function renderMainWorkout() {
       .join("");
   }
 
-  // Update day stats
-  const totalSets = exercises.reduce((sum, ex) => sum + (Number(ex.sets) || 0), 0);
-  const totalReps = exercises.reduce((sum, ex) => sum + (Number(ex.sets) || 0) * parseLeadingNumber(ex.reps), 0);
+  updateDayStats(exercises, went, title);
+}
+
+function updateDayStats(exercises, went, title) {
+  const totalSets = exercises.reduce((sum, ex) => sum + countExerciseSets(ex), 0);
+  const totalReps = exercises.reduce((sum, ex) => sum + countExerciseReps(ex), 0);
 
   document.getElementById("stat-day-sets").textContent = String(totalSets);
   document.getElementById("stat-day-ex").textContent = String(exercises.length);
@@ -397,7 +459,7 @@ function renderMainWorkout() {
       ? `${title} · Logged ✓`
       : "Gym day logged ✓"
     : exercises.length
-    ? "Tap any dropdown ▾ to edit sets, reps & weight"
+    ? "Tap any exercise dropdown ▾ to edit each set"
     : "Add exercises below to build this day’s routine";
 }
 
@@ -515,13 +577,13 @@ function renderRecentWorkouts() {
       const d = fitnessState.logs[k];
       const nice = fromDateKey(k).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
       const title = d.title ? escapeHtml(d.title) : "Gym Session";
-      const exCount = (d.exercises || []).length;
-      const setsCount = (d.exercises || []).reduce((s, e) => s + (Number(e.sets) || 0), 0);
+      const exs = (d.exercises || []).map((e) => normalizeExercise(e, false));
+      const setsCount = exs.reduce((s, e) => s + countExerciseSets(e), 0);
       return `
         <button type="button" class="recent-item${k === fitnessState.selectedDate ? " is-selected" : ""}" data-date="${k}">
           <div>
             <div class="recent-title">${title}</div>
-            <div class="recent-meta mono">${exCount} ex · ${setsCount} sets</div>
+            <div class="recent-meta mono">${exs.length} ex · ${setsCount} sets</div>
           </div>
           <span class="recent-date mono">${nice}</span>
         </button>
@@ -538,7 +600,7 @@ function renderAll() {
   renderRecentWorkouts();
 }
 
-/* ---------- Navigation ---------- */
+/* ---------- Navigation & CSV Export ---------- */
 
 function selectDate(dateKey) {
   fitnessState.selectedDate = dateKey;
@@ -551,7 +613,7 @@ function selectDate(dateKey) {
 
 function jumpToWeekdayInCurrentWeek(targetWd) {
   const cur = fromDateKey(fitnessState.selectedDate);
-  const curOffset = (cur.getDay() + 6) % 7; // Mon=0..Sun=6
+  const curOffset = (cur.getDay() + 6) % 7;
   const targetOffset = (targetWd + 6) % 7;
   cur.setDate(cur.getDate() - curOffset + targetOffset);
   selectDate(toDateKey(cur));
@@ -568,19 +630,23 @@ function exportFitnessCSV() {
     .filter((k) => isGymDay(k))
     .sort();
 
-  const lines = ["Date,Workout,Exercise,Sets,Reps,Weight,Completed,Notes"];
+  const lines = ["Date,Workout,Exercise,Set,Reps,Weight,Completed,Notes"];
   for (const k of keys) {
     const d = fitnessState.logs[k];
     const title = (d.title || "Gym Session").replace(/"/g, '""');
     const notes = (d.notes || "").replace(/"/g, '""').replace(/\n/g, " ");
-    if (!d.exercises || !d.exercises.length) {
+    const exs = (d.exercises || []).map((e) => normalizeExercise(e, false));
+
+    if (!exs.length) {
       lines.push(`"${k}","${title}","",0,"","",true,"${notes}"`);
     } else {
-      for (const ex of d.exercises) {
-        const name = (ex.name || "").replace(/"/g, '""');
-        const reps = String(ex.reps || "").replace(/"/g, '""');
-        const weight = String(ex.weight || "").replace(/"/g, '""');
-        lines.push(`"${k}","${title}","${name}",${ex.sets},"${reps}","${weight}",${Boolean(ex.done)},"${notes}"`);
+      for (const ex of exs) {
+        const name = ex.name.replace(/"/g, '""');
+        ex.setList.forEach((s, idx) => {
+          const reps = String(s.reps || "").replace(/"/g, '""');
+          const weight = String(s.weight || "").replace(/"/g, '""');
+          lines.push(`"${k}","${title}","${name}",${idx + 1},"${reps}","${weight}",${Boolean(s.done)},"${notes}"`);
+        });
       }
     }
   }
@@ -616,7 +682,7 @@ function bindEvents() {
     renderAll();
   });
 
-  // Split title updates both this weekday's preset AND today's log if started
+  // Split title
   document.getElementById("workout-title-input").addEventListener("input", (e) => {
     const wd = getWeekdayForDate(fitnessState.selectedDate);
     fitnessState.plan[wd].title = e.target.value;
@@ -642,7 +708,7 @@ function bindEvents() {
     });
   });
 
-  // Single-input fast preset exercise adder (adds to weekday preset + opens immediately on this day)
+  // Add new preset exercise (defaults to 3 editable individual sets)
   document.getElementById("add-preset-form").addEventListener("submit", (e) => {
     e.preventDefault();
     const input = document.getElementById("input-preset-exercise");
@@ -650,7 +716,7 @@ function bindEvents() {
     if (!name) return;
 
     const wd = getWeekdayForDate(fitnessState.selectedDate);
-    const newPreset = { id: makeId(), name, sets: 3, reps: "10", weight: "" };
+    const newPreset = normalizeExercise({ id: makeId(), name, sets: 3, reps: "10", weight: "" }, true);
     fitnessState.plan[wd].exercises.push(newPreset);
     savePlan();
 
@@ -664,14 +730,14 @@ function bindEvents() {
     renderAll();
   });
 
-  // Session notes auto-save
+  // Session notes
   document.getElementById("workout-notes-input").addEventListener("input", (e) => {
     const day = ensureDayLog(fitnessState.selectedDate);
     day.notes = e.target.value;
     saveLogs();
   });
 
-  // Exercise list actions (check, dropdown open/close, +/- sets, save default, delete)
+  // Exercise & per-set actions
   const exList = document.getElementById("exercise-list");
 
   exList.addEventListener("click", (e) => {
@@ -693,50 +759,64 @@ function bindEvents() {
     }
 
     const idx = Number(btn.dataset.index);
+    const setIdx = btn.dataset.set !== undefined ? Number(btn.dataset.set) : null;
     const day = ensureDayLog(fitnessState.selectedDate);
     const ex = day.exercises[idx];
     if (!ex) return;
 
     if (action === "toggle-ex") {
       ex.done = !ex.done;
+      ex.setList.forEach((s) => {
+        s.done = ex.done;
+      });
       if (ex.done) day.attended = true;
       saveLogs();
       renderAll();
       return;
     }
 
-    if (action === "inc-sets") {
-      ex.sets = Math.min(50, (Number(ex.sets) || 1) + 1);
+    if (action === "toggle-set" && setIdx !== null && ex.setList[setIdx]) {
+      ex.setList[setIdx].done = !ex.setList[setIdx].done;
+      ex.done = ex.setList.every((s) => s.done);
+      if (ex.setList[setIdx].done) day.attended = true;
+      saveLogs();
+      renderAll();
+      return;
+    }
+
+    if (action === "add-set") {
+      const last = ex.setList[ex.setList.length - 1] || { reps: "10", weight: "" };
+      ex.setList.push({ reps: last.reps, weight: last.weight, done: false });
+      ex.done = false;
       day.attended = true;
       saveLogs();
       renderAll();
       return;
     }
 
-    if (action === "dec-sets") {
-      ex.sets = Math.max(1, (Number(ex.sets) || 1) - 1);
+    if (action === "remove-set" && setIdx !== null && ex.setList.length > 1) {
+      ex.setList.splice(setIdx, 1);
+      ex.done = ex.setList.every((s) => s.done);
+      saveLogs();
+      renderAll();
+      return;
+    }
+
+    if ((action === "inc-reps" || action === "dec-reps") && setIdx !== null && ex.setList[setIdx]) {
+      const cur = Math.round(parseLeadingNumber(ex.setList[setIdx].reps)) || 10;
+      ex.setList[setIdx].reps = String(Math.max(1, cur + (action === "inc-reps" ? 1 : -1)));
       day.attended = true;
       saveLogs();
       renderAll();
       return;
     }
 
-    if (action === "inc-reps" || action === "dec-reps") {
-      const cur = parseLeadingNumber(ex.reps) || 10;
-      const next = Math.max(1, cur + (action === "inc-reps" ? 1 : -1));
-      ex.reps = String(next);
-      day.attended = true;
-      saveLogs();
-      renderAll();
-      return;
-    }
-
-    if (action === "inc-weight" || action === "dec-weight") {
-      const m = String(ex.weight || "").match(/(\d+(?:\.\d+)?)\s*(.*)/);
+    if ((action === "inc-weight" || action === "dec-weight") && setIdx !== null && ex.setList[setIdx]) {
+      const m = String(ex.setList[setIdx].weight || "").match(/(\d+(?:\.\d+)?)\s*(.*)/);
       const cur = m ? parseFloat(m[1]) : 0;
       const unit = m && m[2] ? m[2].trim() : "kg";
       const next = Math.max(0, +(cur + (action === "inc-weight" ? 2.5 : -2.5)).toFixed(1));
-      ex.weight = next === 0 ? "" : `${next} ${unit}`;
+      ex.setList[setIdx].weight = next === 0 ? "" : `${next} ${unit}`;
       day.attended = true;
       saveLogs();
       renderAll();
@@ -748,13 +828,7 @@ function bindEvents() {
       if (swapIdx < 0 || swapIdx >= day.exercises.length) return;
       [day.exercises[idx], day.exercises[swapIdx]] = [day.exercises[swapIdx], day.exercises[idx]];
       const wd = getWeekdayForDate(fitnessState.selectedDate);
-      fitnessState.plan[wd].exercises = day.exercises.map((e) => ({
-        id: e.id,
-        name: e.name,
-        sets: e.sets,
-        reps: e.reps,
-        weight: e.weight,
-      }));
+      fitnessState.plan[wd].exercises = day.exercises.map((item) => normalizeExercise(item, true));
       savePlan();
       saveLogs();
       renderAll();
@@ -763,21 +837,14 @@ function bindEvents() {
 
     if (action === "save-default") {
       const wd = getWeekdayForDate(fitnessState.selectedDate);
-      const match = fitnessState.plan[wd].exercises.find(
+      const cleanDefault = normalizeExercise(ex, true);
+      const matchIdx = fitnessState.plan[wd].exercises.findIndex(
         (p) => p.id === ex.id || p.name.toLowerCase() === ex.name.toLowerCase()
       );
-      if (match) {
-        match.sets = ex.sets;
-        match.reps = ex.reps;
-        match.weight = ex.weight;
+      if (matchIdx >= 0) {
+        fitnessState.plan[wd].exercises[matchIdx] = cleanDefault;
       } else {
-        fitnessState.plan[wd].exercises.push({
-          id: ex.id,
-          name: ex.name,
-          sets: ex.sets,
-          reps: ex.reps,
-          weight: ex.weight,
-        });
+        fitnessState.plan[wd].exercises.push(cleanDefault);
       }
       savePlan();
       btn.textContent = "Saved ✓";
@@ -800,34 +867,30 @@ function bindEvents() {
     }
   });
 
-  // Live typing inside inline dropdown (Sets, Reps, Weight) without losing focus
+  // Live typing inside any individual set's Reps or Weight input (keeps keyboard focus!)
   exList.addEventListener("input", (e) => {
     const input = e.target.closest(".dd-input");
     if (!input) return;
     const idx = Number(input.dataset.index);
+    const setIdx = Number(input.dataset.set);
     const field = input.dataset.field;
     const day = ensureDayLog(fitnessState.selectedDate);
     const ex = day.exercises[idx];
-    if (!ex) return;
+    if (!ex || !ex.setList[setIdx]) return;
 
     day.attended = true;
-    if (field === "sets") ex.sets = Math.max(1, Number(input.value) || 1);
-    if (field === "reps") ex.reps = input.value;
-    if (field === "weight") ex.weight = input.value;
+    if (field === "reps") ex.setList[setIdx].reps = input.value;
+    if (field === "weight") ex.setList[setIdx].weight = input.value;
     saveLogs();
 
+    // Update collapsed summary pill & stats without re-rendering focused input
     const item = input.closest(".exercise-item");
     if (item) {
       const summaryEl = item.querySelector(".dd-summary");
-      if (summaryEl) {
-        summaryEl.textContent = `${ex.sets} sets · ${ex.reps} reps${ex.weight ? ` · ${ex.weight}` : ""}`;
-      }
+      if (summaryEl) summaryEl.textContent = formatExerciseSummary(ex);
     }
 
-    const totalSets = day.exercises.reduce((sum, x) => sum + (Number(x.sets) || 0), 0);
-    const totalReps = day.exercises.reduce((sum, x) => sum + (Number(x.sets) || 0) * parseLeadingNumber(x.reps), 0);
-    document.getElementById("stat-day-sets").textContent = String(totalSets);
-    document.getElementById("stat-day-reps").textContent = String(totalReps);
+    updateDayStats(day.exercises, day.attended, day.title);
     renderCalendar();
     renderWeeklySparkBars();
     renderRecentWorkouts();
