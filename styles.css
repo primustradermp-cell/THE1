@@ -2328,7 +2328,7 @@ textarea:focus-visible {
   object-position: 64% 46%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.78;
+  opacity: 0.42;
   transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
@@ -2338,25 +2338,368 @@ textarea:focus-visible {
   z-index: 1;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(11, 11, 12, 0.62) 0%, rgba(11, 11, 12, 0.34) 28%, rgba(11, 11, 12, 0.72) 100%);
+    linear-gradient(180deg, rgba(11, 11, 12, 0.72) 0%, rgba(11, 11, 12, 0.54) 36%, rgba(11, 11, 12, 0.84) 100%);
 }
 
-.fitness-page .panel-dark,
-.fitness-page .bento-card {
-  background: rgba(16, 16, 18, 0.56);
-  backdrop-filter: blur(14px) saturate(1.15);
-  -webkit-backdrop-filter: blur(14px) saturate(1.15);
-  border-color: rgba(255, 255, 255, 0.12);
+.fitness-page .panel-dark {
+  background: rgba(18, 18, 20, 0.76);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-.fitness-hero-banner {
-  min-height: 104px;
+/* Main Workout Stage Card */
+.workout-stage-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.workout-week-bar {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.weekday-pill {
+  position: relative;
+}
+
+.wd-done-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.weekday-pill.is-active .wd-done-dot {
+  background: #ffffff;
+}
+
+/* Prominent Workout Header (Eliminates unused vertical void) */
+.workout-hero-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  padding: 12px 2px 4px;
+  padding: 20px 22px 18px;
+  border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
+}
+
+.workout-hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.workout-date-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.day-nav-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sq-btn-sm {
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+}
+
+.hud-btn-sm {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.workout-date-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.workout-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.workout-display-title {
+  margin: 0;
+  font-size: clamp(1.65rem, 2.8vw, 2.15rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.workout-cat-pill {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--orange-soft);
+  border: 1px solid var(--orange-border);
+  color: var(--orange);
+}
+
+.workout-cat-pill.is-rest {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+}
+
+.edit-split-trigger {
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 150ms var(--ease), background-color 150ms var(--ease);
+}
+
+.edit-split-trigger:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Collapsible Split Editor Drawer */
+.split-editor-drawer {
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.split-editor-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 22px;
+  flex-wrap: wrap;
+}
+
+/* Exercise Progress Sub-text & Clean Empty States */
+.workout-list-wrap {
+  min-height: 0;
+}
+
+.ex-title-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.ex-progress-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.exercise-item.is-done .ex-progress-sub {
+  color: var(--green);
+}
+
+.empty-state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  padding: 44px 24px;
+}
+
+.empty-state-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  color: var(--orange);
+  margin-bottom: 4px;
+}
+
+.empty-state-box.is-rest .empty-state-icon {
+  color: var(--green);
+}
+
+.empty-state-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.empty-state-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 380px;
+}
+
+.compact-notes {
+  padding: 12px 20px 14px;
+}
+
+.notes-single-input {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 4px;
+}
+
+.notes-single-input:hover {
+  border-color: var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.notes-single-input:focus {
+  background: var(--bg-input);
+  border-color: var(--orange);
+  padding-left: 12px;
+}
+
+/* Compact Unified Fitness Summary Strip */
+.panel-dark.fitness-summary-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) 1px minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  padding: 18px 22px;
+}
+
+.fs-left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fs-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.fs-week-count {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--orange);
+}
+
+.fs-week-pills {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.fs-day-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 4px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms var(--ease);
+}
+
+.fs-day-pill:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.fs-day-pill.is-gym {
+  background: var(--green-soft);
+  border-color: var(--green-border);
+  color: var(--text);
+}
+
+.fs-day-pill.is-today {
+  border-color: var(--orange-border);
+}
+
+.fs-day-bar {
+  width: 18px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.fs-day-pill.is-gym .fs-day-bar {
+  background: var(--green);
+}
+
+.fs-day-pill.is-today:not(.is-gym) .fs-day-bar {
+  background: var(--orange);
+}
+
+/* Quieter Right Fitness Sidebar */
+.fitness-sidebar .inspector-body {
+  gap: 20px;
+  padding: 22px 20px;
+}
+
+.cal-nav-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fitness-sidebar .gym-cal-head {
+  margin-bottom: 10px;
+}
+
+.fitness-sidebar .cal-cell {
+  height: 30px;
+  font-size: 11px;
+}
+
+.fitness-sidebar .cal-cell.is-gym {
+  background: var(--green-soft);
+  border-color: var(--green-border);
+  color: var(--green);
+}
+
+.fitness-sidebar .cal-cell.is-gym.is-selected {
+  color: var(--text);
+}
+
+[data-theme="light"] .fitness-sidebar .cal-cell.is-gym {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+}
+
+[data-theme="light"] .fitness-page .panel-dark {
+  background: rgba(255, 255, 255, 0.84);
+}
+
+[data-theme="light"] .empty-state-icon {
+  background: #edf4f0;
+}
+
+[data-theme="light"] .fs-day-pill {
+  background: #f5f9f7;
+  color: var(--text-soft);
+}
+
+[data-theme="light"] .fs-day-bar {
+  background: rgba(10, 25, 19, 0.14);
 }
 
 .day-nav-block {
@@ -3322,7 +3665,8 @@ textarea:focus-visible {
     grid-column: 1 / -1;
   }
 
-  .panel-dark.daily-progress-card {
+  .panel-dark.daily-progress-card,
+  .panel-dark.fitness-summary-strip {
     grid-template-columns: 1fr;
     gap: 16px;
   }

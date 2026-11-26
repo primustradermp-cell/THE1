@@ -1,4 +1,4 @@
-/* GymSync — Weekly Preset Routine (Mon–Sun) + Individual Per-Set Editing (Sets / Reps / Weight) */
+/* GymSync — Minimalist Weekly Routine, Per-Set Logger & Training Summary */
 
 const FITNESS_LOGS_KEY = "salahsync_fitness_logs_v1";
 const FITNESS_PLAN_KEY = "salahsync_fitness_plan_v1";
@@ -23,40 +23,17 @@ const DEFAULT_PLAN = {
   0: { title: "Rest", exercises: [] },
 };
 
-const SAMPLE_SPLITS = {
-  Push: [
-    { name: "Barbell Bench Press", sets: 4, reps: "8", weight: "60 kg" },
-    { name: "Incline Dumbbell Press", sets: 3, reps: "10", weight: "22 kg" },
-    { name: "Overhead Shoulder Press", sets: 3, reps: "10", weight: "35 kg" },
-    { name: "Lateral Raises", sets: 3, reps: "12", weight: "10 kg" },
-    { name: "Tricep Rope Pushdown", sets: 3, reps: "12", weight: "25 kg" },
-  ],
-  Pull: [
-    { name: "Pull-Ups / Lat Pulldown", sets: 4, reps: "8", weight: "55 kg" },
-    { name: "Barbell Bent-Over Row", sets: 4, reps: "8", weight: "60 kg" },
-    { name: "Seated Cable Row", sets: 3, reps: "10", weight: "50 kg" },
-    { name: "Face Pulls", sets: 3, reps: "15", weight: "20 kg" },
-    { name: "Dumbbell Bicep Curls", sets: 3, reps: "12", weight: "14 kg" },
-  ],
-  Legs: [
-    { name: "Barbell Squat", sets: 4, reps: "8", weight: "80 kg" },
-    { name: "Romanian Deadlift", sets: 3, reps: "10", weight: "70 kg" },
-    { name: "Leg Press", sets: 3, reps: "12", weight: "120 kg" },
-    { name: "Hamstring Curl", sets: 3, reps: "12", weight: "40 kg" },
-    { name: "Standing Calf Raises", sets: 4, reps: "15", weight: "45 kg" },
-  ],
-};
-
 const fitnessState = {
   selectedDate: toDateKey(new Date()),
   openDropdownId: null,
+  splitEditorOpen: false,
   calYear: new Date().getFullYear(),
   calMonth: new Date().getMonth(),
   logs: loadJSON(FITNESS_LOGS_KEY, {}),
   plan: loadPlan(),
 };
 
-/* ---------- Storage & Migration ---------- */
+/* ---------- Storage & Backwards-Compatible Migration ---------- */
 
 function loadJSON(key, fallback) {
   try {
@@ -71,10 +48,6 @@ function makeId() {
   return `ex_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
 }
 
-/**
- * Normalizes any exercise (legacy { sets, reps, weight } OR new { setList: [...] })
- * into the per-set format without losing existing saved user data.
- */
 function normalizeExercise(ex, resetDone = false) {
   let setList;
   if (Array.isArray(ex.setList) && ex.setList.length > 0) {
@@ -150,6 +123,14 @@ function getWeekdayInfo(wd) {
   return WEEKDAYS.find((w) => w.id === wd) || WEEKDAYS[0];
 }
 
+function getDateForWeekdayInWeek(baseDateKey, targetWd) {
+  const cur = fromDateKey(baseDateKey);
+  const curOffset = (cur.getDay() + 6) % 7;
+  const targetOffset = (targetWd + 6) % 7;
+  cur.setDate(cur.getDate() - curOffset + targetOffset);
+  return toDateKey(cur);
+}
+
 function formatReadableDate(key) {
   const d = fromDateKey(key);
   const label = d.toLocaleDateString("en-GB", {
@@ -172,6 +153,14 @@ function escapeHtml(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+function classifyTrainingCategory(title) {
+  const t = (title || "").trim().toLowerCase();
+  if (!t) return { label: "UNSCHEDULED", isRest: false };
+  if (t.includes("rest") || t.includes("recovery") || t.includes("off")) return { label: "RECOVERY", isRest: true };
+  if (t.includes("cardio") || t.includes("run") || t.includes("hiit")) return { label: "CONDITIONING", isRest: false };
+  return { label: "STRENGTH", isRest: false };
 }
 
 function formatExerciseSummary(ex) {
@@ -215,6 +204,11 @@ function countExerciseSets(ex) {
   return ex.setList ? ex.setList.length : Number(ex.sets) || 0;
 }
 
+function countCompletedSets(ex) {
+  if (!ex.setList) return ex.done ? Number(ex.sets) || 0 : 0;
+  return ex.setList.filter((s) => s.done).length;
+}
+
 function countExerciseReps(ex) {
   if (ex.setList) {
     return ex.setList.reduce((sum, s) => sum + Math.round(parseLeadingNumber(s.reps)), 0);
@@ -222,7 +216,7 @@ function countExerciseReps(ex) {
   return (Number(ex.sets) || 0) * Math.round(parseLeadingNumber(ex.reps));
 }
 
-/* ---------- Preset + Daily Override Resolution ---------- */
+/* ---------- Preset + Daily Log Resolution ---------- */
 
 function getEffectiveExercises(dateKey) {
   const wd = getWeekdayForDate(dateKey);
@@ -277,9 +271,13 @@ function renderWeekdayBar() {
     const planDay = fitnessState.plan[w.id];
     const count = (planDay?.exercises || []).length;
     const splitName = planDay?.title ? planDay.title.trim() : "";
+    const dateForWd = getDateForWeekdayInWeek(fitnessState.selectedDate, w.id);
+    const wentThatDay = isGymDay(dateForWd);
+
     return `
       <button type="button" class="weekday-pill${w.id === activeWd ? " is-active" : ""}" data-weekday="${w.id}" role="tab" aria-selected="${w.id === activeWd}" title="${w.full}${splitName ? ` · ${splitName}` : ""}">
         <span class="wd-top">
+          ${wentThatDay ? `<span class="wd-done-dot" aria-hidden="true"></span>` : ""}
           <span>${w.short}</span>
           ${count > 0 ? `<span class="wd-count mono">${count}</span>` : ""}
         </span>
@@ -298,18 +296,30 @@ function renderMainWorkout() {
   const exercises = getEffectiveExercises(key);
   const went = isGymDay(key);
   const title = (savedLog && savedLog.title) || planDay.title || "";
+  const category = classifyTrainingCategory(title);
 
   document.getElementById("selected-date-title").textContent = formatReadableDate(key);
+  document.getElementById("workout-display-title").textContent = title || `${wdInfo.full} Workout`;
+
+  const catPill = document.getElementById("workout-cat-pill");
+  catPill.textContent = category.label;
+  catPill.classList.toggle("is-rest", category.isRest);
+
+  const drawer = document.getElementById("split-editor-drawer");
+  const editBtn = document.getElementById("btn-toggle-split-editor");
+  drawer.hidden = !fitnessState.splitEditorOpen;
+  editBtn.setAttribute("aria-expanded", String(fitnessState.splitEditorOpen));
+  editBtn.textContent = fitnessState.splitEditorOpen ? "Done" : "Edit split";
 
   const toggleBtn = document.getElementById("btn-toggle-gym");
   const toggleText = document.getElementById("btn-toggle-gym-text");
   toggleBtn.classList.toggle("is-active", went);
   toggleBtn.setAttribute("aria-pressed", String(went));
-  toggleText.textContent = went ? "Went to Gym ✓" : "Mark Gym Day";
+  toggleText.textContent = went ? "Session Logged ✓" : "Mark Gym Day";
 
-  document.getElementById("split-day-label").textContent = `${wdInfo.full} Workout Split`;
+  document.getElementById("split-day-label").textContent = `${wdInfo.full} Workout Name`;
   document.getElementById("list-day-heading").textContent = `${wdInfo.full} Exercises`;
-  document.getElementById("input-preset-exercise").placeholder = `+ Add exercise to ${wdInfo.full}’s preset list…`;
+  document.getElementById("input-preset-exercise").placeholder = `+ Add exercise to ${wdInfo.full}’s routine…`;
 
   const titleInput = document.getElementById("workout-title-input");
   if (document.activeElement !== titleInput) {
@@ -325,33 +335,43 @@ function renderMainWorkout() {
     notesInput.value = (savedLog && savedLog.notes) || "";
   }
 
+  const headEl = document.getElementById("exercise-list-head");
   const listEl = document.getElementById("exercise-list");
+
   if (!exercises.length) {
-    const sampleKey = SAMPLE_SPLITS[title] ? title : null;
-    listEl.innerHTML = `
-      <div class="empty-exercises">
-        No exercises preset for <strong>${wdInfo.full}</strong> yet — add them below once and they’ll load every ${wdInfo.full}.
-        ${
-          sampleKey
-            ? `<div style="margin-top:10px;"><button type="button" class="hud-btn" id="btn-load-sample">Load starter ${sampleKey} exercises</button></div>`
-            : ""
-        }
-      </div>
-    `;
-    const sampleBtn = document.getElementById("btn-load-sample");
-    if (sampleBtn && sampleKey) {
-      sampleBtn.addEventListener("click", () => {
-        fitnessState.plan[wd].exercises = SAMPLE_SPLITS[sampleKey].map((s) => normalizeExercise({ ...s, id: makeId() }, true));
-        savePlan();
-        renderAll();
-      });
+    headEl.style.display = "none";
+    if (category.isRest) {
+      listEl.innerHTML = `
+        <div class="empty-state-box is-rest">
+          <div class="empty-state-icon" aria-hidden="true">☽</div>
+          <div class="empty-state-title">Rest &amp; Recovery Day</div>
+          <div class="empty-state-sub">No exercises scheduled for ${wdInfo.full}. Recover well, or add an exercise below if you decide to train.</div>
+        </div>
+      `;
+    } else {
+      listEl.innerHTML = `
+        <div class="empty-state-box">
+          <div class="empty-state-icon" aria-hidden="true">+</div>
+          <div class="empty-state-title">No exercises scheduled for ${wdInfo.full}</div>
+          <div class="empty-state-sub">Add your preset exercises below once—they’ll load automatically every ${wdInfo.full} so you only need to adjust sets, reps, and weights.</div>
+        </div>
+      `;
     }
   } else {
+    headEl.style.display = "";
     listEl.innerHTML = exercises
       .map((ex, idx) => {
         const isOpen = fitnessState.openDropdownId === ex.id;
         const safeName = escapeHtml(ex.name);
         const summary = escapeHtml(formatExerciseSummary(ex));
+        const doneSets = countCompletedSets(ex);
+        const totalSets = countExerciseSets(ex);
+        const progressLabel =
+          doneSets === totalSets && totalSets > 0
+            ? `All ${totalSets} sets completed`
+            : doneSets > 0
+            ? `${doneSets} of ${totalSets} sets completed`
+            : "";
 
         const setRowsHtml = isOpen
           ? ex.setList
@@ -393,7 +413,10 @@ function renderMainWorkout() {
                   aria-label="Mark ${safeName} done"
                   aria-pressed="${Boolean(ex.done)}"
                 >${ex.done ? "✓" : ""}</button>
-                <span class="ex-name">${safeName}</span>
+                <div class="ex-title-stack">
+                  <span class="ex-name">${safeName}</span>
+                  ${progressLabel ? `<span class="ex-progress-sub mono">${progressLabel}</span>` : ""}
+                </div>
               </div>
 
               <div class="ex-right-controls">
@@ -443,24 +466,16 @@ function renderMainWorkout() {
       .join("");
   }
 
-  updateDayStats(exercises, went, title);
+  updateDayStats(exercises);
 }
 
-function updateDayStats(exercises, went, title) {
+function updateDayStats(exercises) {
   const totalSets = exercises.reduce((sum, ex) => sum + countExerciseSets(ex), 0);
+  const doneSets = exercises.reduce((sum, ex) => sum + countCompletedSets(ex), 0);
   const totalReps = exercises.reduce((sum, ex) => sum + countExerciseReps(ex), 0);
 
-  document.getElementById("stat-day-sets").textContent = String(totalSets);
-  document.getElementById("stat-day-ex").textContent = String(exercises.length);
+  document.getElementById("stat-day-sets").textContent = totalSets > 0 ? `${doneSets} / ${totalSets}` : "0";
   document.getElementById("stat-day-reps").textContent = String(totalReps);
-  document.getElementById("insp-total-ex").textContent = String(exercises.length);
-  document.getElementById("stat-day-status").textContent = went
-    ? title
-      ? `${title} · Logged ✓`
-      : "Gym day logged ✓"
-    : exercises.length
-    ? "Tap any exercise dropdown ▾ to edit each set"
-    : "Add exercises below to build this day’s routine";
 }
 
 function renderCalendar() {
@@ -471,7 +486,7 @@ function renderCalendar() {
   const startOffset = (firstDay.getDay() + 6) % 7;
 
   document.getElementById("cal-month-label").textContent = firstDay.toLocaleDateString("en-GB", {
-    month: "long",
+    month: "short",
     year: "numeric",
   });
 
@@ -481,11 +496,9 @@ function renderCalendar() {
   }
 
   const tKey = todayKey();
-  let monthGymDays = 0;
   for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
     const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
     const went = isGymDay(key);
-    if (went) monthGymDays++;
 
     const cls = [
       "cal-cell",
@@ -512,57 +525,38 @@ function renderCalendar() {
     }
   }
 
-  document.getElementById("stat-month-days").textContent = String(curMonthDays);
   document.getElementById("stat-all-days").textContent = `${allTimeDays} d`;
-  document.getElementById("insp-month-count").textContent = String(monthGymDays);
   const monthBadge = document.getElementById("gym-widget-month");
   if (monthBadge) monthBadge.textContent = `${curMonthDays} ${curMonthDays === 1 ? "day" : "days"} this month`;
-
-  const goalPct = Math.min(100, Math.round((curMonthDays / 16) * 100));
-  const goalPctEl = document.getElementById("gym-goal-pct");
-  const goalFillEl = document.getElementById("gym-goal-fill");
-  const todayEl = document.getElementById("gym-widget-today");
-  if (goalPctEl) goalPctEl.textContent = `${goalPct}%`;
-  if (goalFillEl) goalFillEl.style.width = `${goalPct}%`;
-  if (todayEl) {
-    todayEl.textContent = now.toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-    });
-  }
 }
 
-function renderWeeklySparkBars() {
+function renderWeeklyProgress() {
   const now = new Date();
   const dow = (now.getDay() + 6) % 7;
   const monday = new Date(now);
   monday.setDate(now.getDate() - dow);
 
+  const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const tKey = todayKey();
   let weekGymCount = 0;
 
-  document.getElementById("week-spark-bars").innerHTML = Array.from({ length: 7 }, (_, i) => {
+  document.getElementById("week-progress-pills").innerHTML = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
     const key = toDateKey(d);
     const went = isGymDay(key);
-    const exCount = (fitnessState.logs[key]?.exercises || []).length;
     if (went) weekGymCount++;
 
-    const heightPct = went ? Math.min(100, Math.max(36, exCount * 16 + 24)) : 10;
-    const cls = ["spark-needle", went ? "is-gym-bar" : "is-rest-bar", key === tKey ? "is-today-bar" : ""]
-      .filter(Boolean)
-      .join(" ");
-
+    const cls = ["fs-day-pill", went ? "is-gym" : "", key === tKey ? "is-today" : ""].filter(Boolean).join(" ");
     return `
-      <button type="button" class="spark-col spark-col-btn" data-date="${key}" title="${key}">
-        <span class="spark-pct">${went ? exCount || "✓" : "·"}</span>
-        <div class="spark-track"><div class="${cls}" style="height:${heightPct}%"></div></div>
+      <button type="button" class="${cls}" data-date="${key}" title="${key}">
+        <span class="mono">${labels[i]}</span>
+        <span class="fs-day-bar" aria-hidden="true"></span>
       </button>
     `;
   }).join("");
 
-  document.getElementById("stat-week-days").textContent = `${weekGymCount} / 7`;
+  document.getElementById("stat-week-days").textContent = `${weekGymCount} / 7 days`;
 }
 
 function renderRecentWorkouts() {
@@ -571,10 +565,10 @@ function renderRecentWorkouts() {
     .filter((k) => isGymDay(k))
     .sort()
     .reverse()
-    .slice(0, 5);
+    .slice(0, 4);
 
   if (!gymKeys.length) {
-    list.innerHTML = `<div class="insp-stat-sub">No gym days logged yet.</div>`;
+    list.innerHTML = `<div class="insp-stat-sub">No sessions logged yet.</div>`;
     return;
   }
 
@@ -602,7 +596,7 @@ function renderAll() {
   renderWeekdayBar();
   renderMainWorkout();
   renderCalendar();
-  renderWeeklySparkBars();
+  renderWeeklyProgress();
   renderRecentWorkouts();
 }
 
@@ -615,14 +609,6 @@ function selectDate(dateKey) {
   fitnessState.calYear = d.getFullYear();
   fitnessState.calMonth = d.getMonth();
   renderAll();
-}
-
-function jumpToWeekdayInCurrentWeek(targetWd) {
-  const cur = fromDateKey(fitnessState.selectedDate);
-  const curOffset = (cur.getDay() + 6) % 7;
-  const targetOffset = (targetWd + 6) % 7;
-  cur.setDate(cur.getDate() - curOffset + targetOffset);
-  selectDate(toDateKey(cur));
 }
 
 function shiftSelectedDay(delta) {
@@ -673,11 +659,20 @@ function bindEvents() {
   document.getElementById("btn-today").addEventListener("click", () => selectDate(todayKey()));
   document.getElementById("btn-jump-today-cta").addEventListener("click", () => selectDate(todayKey()));
 
+  // Collapsible split editor toggle
+  document.getElementById("btn-toggle-split-editor").addEventListener("click", () => {
+    fitnessState.splitEditorOpen = !fitnessState.splitEditorOpen;
+    renderMainWorkout();
+    if (fitnessState.splitEditorOpen) {
+      document.getElementById("workout-title-input").focus();
+    }
+  });
+
   // Mon–Sun weekday strip
   document.getElementById("weekday-bar").addEventListener("click", (e) => {
     const pill = e.target.closest("[data-weekday]");
     if (!pill) return;
-    jumpToWeekdayInCurrentWeek(Number(pill.dataset.weekday));
+    selectDate(getDateForWeekdayInWeek(fitnessState.selectedDate, Number(pill.dataset.weekday)));
   });
 
   // Mark Gym Day toggle
@@ -688,7 +683,7 @@ function bindEvents() {
     renderAll();
   });
 
-  // Split title
+  // Split title updates preset & current log
   document.getElementById("workout-title-input").addEventListener("input", (e) => {
     const wd = getWeekdayForDate(fitnessState.selectedDate);
     fitnessState.plan[wd].title = e.target.value;
@@ -697,6 +692,12 @@ function bindEvents() {
       fitnessState.logs[fitnessState.selectedDate].title = e.target.value;
       saveLogs();
     }
+    const cat = classifyTrainingCategory(e.target.value);
+    const wdInfo = getWeekdayInfo(wd);
+    document.getElementById("workout-display-title").textContent = e.target.value || `${wdInfo.full} Workout`;
+    const catPill = document.getElementById("workout-cat-pill");
+    catPill.textContent = cat.label;
+    catPill.classList.toggle("is-rest", cat.isRest);
     renderWeekdayBar();
     renderRecentWorkouts();
   });
@@ -714,7 +715,7 @@ function bindEvents() {
     });
   });
 
-  // Add new preset exercise (defaults to 3 editable individual sets)
+  // Add new preset exercise
   document.getElementById("add-preset-form").addEventListener("submit", (e) => {
     e.preventDefault();
     const input = document.getElementById("input-preset-exercise");
@@ -873,7 +874,7 @@ function bindEvents() {
     }
   });
 
-  // Live typing inside any individual set's Reps or Weight input (keeps keyboard focus!)
+  // Live typing inside per-set inputs
   exList.addEventListener("input", (e) => {
     const input = e.target.closest(".dd-input");
     if (!input) return;
@@ -889,16 +890,15 @@ function bindEvents() {
     if (field === "weight") ex.setList[setIdx].weight = input.value;
     saveLogs();
 
-    // Update collapsed summary pill & stats without re-rendering focused input
     const item = input.closest(".exercise-item");
     if (item) {
       const summaryEl = item.querySelector(".dd-summary");
       if (summaryEl) summaryEl.textContent = formatExerciseSummary(ex);
     }
 
-    updateDayStats(day.exercises, day.attended, day.title);
+    updateDayStats(day.exercises);
     renderCalendar();
-    renderWeeklySparkBars();
+    renderWeeklyProgress();
     renderRecentWorkouts();
   });
 
@@ -926,9 +926,9 @@ function bindEvents() {
     if (cell) selectDate(cell.dataset.date);
   });
 
-  document.getElementById("week-spark-bars").addEventListener("click", (e) => {
-    const col = e.target.closest("[data-date]");
-    if (col) selectDate(col.dataset.date);
+  document.getElementById("week-progress-pills").addEventListener("click", (e) => {
+    const pill = e.target.closest("[data-date]");
+    if (pill) selectDate(pill.dataset.date);
   });
 
   document.getElementById("recent-list").addEventListener("click", (e) => {
