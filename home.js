@@ -2,6 +2,7 @@
 
 const STORAGE_PRAYER_LOGS = "preston_prayer_logs_v1";
 const STORAGE_PRAYER_SETTINGS = "preston_prayer_settings_v2";
+const STORAGE_PRAYER_META = "preston_prayer_meta_v1";
 const STORAGE_FITNESS_LOGS = "salahsync_fitness_logs_v1";
 const STORAGE_FITNESS_PLAN = "salahsync_fitness_plan_v1";
 
@@ -93,9 +94,23 @@ const homeState = {
 function loadJSON(key, fallback) {
   try {
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return parsed;
+    }
+    return fallback;
   } catch {
     return fallback;
+  }
+}
+
+function safeWriteJSON(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch {
+    return false;
   }
 }
 
@@ -122,12 +137,72 @@ function loadFitnessPlan() {
   return merged;
 }
 
+function computeHomeStreaks() {
+  const now = new Date();
+  let currentStreak = 0;
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    const c = countDayPrayers(toDateKey(d));
+    if (c === 5) currentStreak++;
+    else if (i === 0) continue;
+    else break;
+  }
+
+  const sortedKeys = Object.keys(homeState.prayerLogs).sort();
+  let bestStreak = currentStreak;
+  let run = 0;
+  let prev = null;
+  for (const k of sortedKeys) {
+    if (countDayPrayers(k) === 5) {
+      const dt = new Date(k + "T00:00:00");
+      run = prev && (dt - prev) / 86400000 === 1 ? run + 1 : 1;
+      if (run > bestStreak) bestStreak = run;
+      prev = dt;
+    } else {
+      run = 0;
+      prev = null;
+    }
+  }
+  return { currentStreak, bestStreak };
+}
+
 function savePrayerLogs() {
-  localStorage.setItem(STORAGE_PRAYER_LOGS, JSON.stringify(homeState.prayerLogs));
+  safeWriteJSON(STORAGE_PRAYER_LOGS, homeState.prayerLogs);
+  const { currentStreak, bestStreak } = computeHomeStreaks();
+  safeWriteJSON(STORAGE_PRAYER_META, {
+    currentStreak,
+    bestStreak,
+    updatedAt: new Date().toISOString(),
+  });
 }
 
 function saveFitnessLogs() {
-  localStorage.setItem(STORAGE_FITNESS_LOGS, JSON.stringify(homeState.fitnessLogs));
+  safeWriteJSON(STORAGE_FITNESS_LOGS, homeState.fitnessLogs);
+}
+
+function clonePresetExercises(list) {
+  if (!Array.isArray(list)) return [];
+  return list.map((ex) => ({
+    id: ex.id || `ex_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+    name: String(ex.name || "Exercise"),
+    done: false,
+    setList: Array.isArray(ex.setList) && ex.setList.length
+      ? ex.setList.map((s) => ({ reps: String(s.reps ?? "10"), weight: String(s.weight ?? ""), done: false }))
+      : Array.from({ length: Math.max(1, Number(ex.sets) || 3) }, () => ({
+          reps: String(ex.reps ?? "10"),
+          weight: String(ex.weight ?? ""),
+          done: false,
+        })),
+  }));
+}
+
+function rehydrateHomeFromStorage() {
+  homeState.settings = loadPrayerSettings();
+  homeState.prayerLogs = loadJSON(STORAGE_PRAYER_LOGS, {});
+  homeState.fitnessLogs = loadJSON(STORAGE_FITNESS_LOGS, {});
+  homeState.fitnessPlan = loadFitnessPlan();
+  renderAll();
 }
 
 function toDateKey(date) {
@@ -595,7 +670,7 @@ function bindEvents() {
         attended: true,
         title: planDay.title || "",
         notes: "",
-        exercises: Array.isArray(planDay.exercises) ? planDay.exercises : [],
+        exercises: clonePresetExercises(planDay.exercises),
       };
     } else {
       homeState.fitnessLogs[tKey].attended = !homeState.fitnessLogs[tKey].attended;
@@ -610,12 +685,13 @@ function bindEvents() {
     renderReflection();
   });
 
-  // Re-sync cleanly if user returns to tab after editing on Prayer or Fitness
-  window.addEventListener("storage", () => {
-    homeState.prayerLogs = loadJSON(STORAGE_PRAYER_LOGS, {});
-    homeState.fitnessLogs = loadJSON(STORAGE_FITNESS_LOGS, {});
-    homeState.fitnessPlan = loadFitnessPlan();
-    renderAll();
+  // Keep synced across browser tabs and iOS Safari bfcache restores
+  window.addEventListener("storage", rehydrateHomeFromStorage);
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) rehydrateHomeFromStorage();
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") rehydrateHomeFromStorage();
   });
 }
 

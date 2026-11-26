@@ -38,9 +38,23 @@ const fitnessState = {
 function loadJSON(key, fallback) {
   try {
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return parsed;
+    }
+    return fallback;
   } catch {
     return fallback;
+  }
+}
+
+function safeWriteJSON(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch {
+    return false;
   }
 }
 
@@ -90,11 +104,17 @@ function loadPlan() {
 }
 
 function saveLogs() {
-  localStorage.setItem(FITNESS_LOGS_KEY, JSON.stringify(fitnessState.logs));
+  safeWriteJSON(FITNESS_LOGS_KEY, fitnessState.logs);
 }
 
 function savePlan() {
-  localStorage.setItem(FITNESS_PLAN_KEY, JSON.stringify(fitnessState.plan));
+  safeWriteJSON(FITNESS_PLAN_KEY, fitnessState.plan);
+}
+
+function rehydrateFitnessFromStorage() {
+  fitnessState.logs = loadJSON(FITNESS_LOGS_KEY, {});
+  fitnessState.plan = loadPlan();
+  renderAll();
 }
 
 /* ---------- Date & Format Helpers ---------- */
@@ -641,19 +661,34 @@ function shiftSelectedDay(delta) {
 }
 
 function exportFitnessCSV() {
-  const keys = Object.keys(fitnessState.logs)
-    .filter((k) => isGymDay(k))
+  // Always read latest persisted workout history from localStorage
+  const persistedLogs = loadJSON(FITNESS_LOGS_KEY, fitnessState.logs);
+  const keys = Object.keys(persistedLogs)
+    .filter((k) => {
+      const d = persistedLogs[k];
+      if (!d || typeof d !== "object") return false;
+      const hasNotes = Boolean(d.notes && String(d.notes).trim());
+      const hasLoggedEx =
+        Array.isArray(d.exercises) &&
+        d.exercises.some(
+          (e) =>
+            e &&
+            (e.done ||
+              (Array.isArray(e.setList) && e.setList.some((s) => s && (s.done || String(s.weight || "").trim()))))
+        );
+      return Boolean(d.attended || hasNotes || hasLoggedEx);
+    })
     .sort();
 
   const lines = ["Date,Workout,Exercise,Set,Reps,Weight,Completed,Notes"];
   for (const k of keys) {
-    const d = fitnessState.logs[k];
+    const d = persistedLogs[k];
     const title = (d.title || "Gym Session").replace(/"/g, '""');
     const notes = (d.notes || "").replace(/"/g, '""').replace(/\n/g, " ");
     const exs = (d.exercises || []).map((e) => normalizeExercise(e, false));
 
     if (!exs.length) {
-      lines.push(`"${k}","${title}","",0,"","",true,"${notes}"`);
+      lines.push(`"${k}","${title}","",0,"","",${Boolean(d.attended)},"${notes}"`);
     } else {
       for (const ex of exs) {
         const name = ex.name.replace(/"/g, '""');
@@ -969,7 +1004,17 @@ function bindEvents() {
   });
 
   document.getElementById("btn-export-fitness").addEventListener("click", exportFitnessCSV);
+
+  // Keep synced across browser tabs and iOS Safari bfcache restores
+  window.addEventListener("storage", rehydrateFitnessFromStorage);
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) rehydrateFitnessFromStorage();
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") rehydrateFitnessFromStorage();
+  });
 }
 
+if (!loadJSON(FITNESS_PLAN_KEY, null)) savePlan();
 renderAll();
 bindEvents();
