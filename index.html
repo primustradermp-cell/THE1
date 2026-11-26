@@ -12,8 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20" />
-  <script src="theme.js?v=20"></script>
+  <link rel="stylesheet" href="styles.css?v=21" />
+  <script src="theme.js?v=21"></script>
 </head>
 <body class="prayer-page">
   <div class="viewport-frame">
@@ -31,8 +31,8 @@
         </div>
 
         <nav class="hud-nav" aria-label="Site navigation">
-          <a class="hud-tab hud-page-link is-active" href="index.html?v=20" aria-current="page">Prayer</a>
-          <a class="hud-tab hud-page-link" href="fitness.html?v=20">Fitness</a>
+          <a class="hud-tab hud-page-link is-active" href="index.html?v=21" aria-current="page">Prayer</a>
+          <a class="hud-tab hud-page-link" href="fitness.html?v=21">Fitness</a>
         </nav>
 
         <div class="hud-right">
@@ -131,6 +131,49 @@
             <div class="dp-metric">
               <span class="m-lbl">30-Day Rate</span>
               <span class="dp-metric-val mono" id="dp-rate">0%</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Monthly Prayer Log Calendar & Past-Day Catch-Up -->
+        <section class="panel-dark prayer-log-card" aria-label="Monthly prayer log calendar">
+          <!-- Left: Monthly Calendar Grid -->
+          <div class="plog-cal-col">
+            <div class="plog-cal-header">
+              <div>
+                <div class="panel-heading">Monthly Prayer Log</div>
+                <div class="panel-sub">Select any past day to mark missed prayers completed</div>
+              </div>
+              <div class="plog-cal-nav">
+                <button type="button" class="sq-btn" id="pcal-prev" aria-label="Previous month">‹</button>
+                <span class="mono plog-month-label" id="pcal-month-label">Month Year</span>
+                <button type="button" class="sq-btn" id="pcal-next" aria-label="Next month">›</button>
+                <button type="button" class="hud-btn" id="pcal-today">Today</button>
+              </div>
+            </div>
+
+            <div class="plog-weekdays mono">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div class="plog-grid" id="pcal-grid"></div>
+          </div>
+
+          <!-- Right: Selected Day Prayer Catch-Up Editor -->
+          <div class="plog-day-col">
+            <div class="plog-day-head">
+              <div>
+                <div class="m-lbl">Selected Day</div>
+                <div class="plog-day-title" id="pcal-selected-title">Today</div>
+              </div>
+              <span class="mono plog-day-badge" id="pcal-selected-count">0 / 5</span>
+            </div>
+
+            <div class="plog-day-prayers" id="pcal-day-prayers">
+              <!-- Populated by script.js -->
+            </div>
+
+            <div class="plog-day-footer">
+              <button type="button" class="hud-btn" id="pcal-mark-all">Mark All 5 Done</button>
             </div>
           </div>
         </section>
@@ -350,7 +393,7 @@
   <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
-  <script src="kaaba3d.js?v=20"></script>
-  <script src="script.js?v=20"></script>
+  <script src="kaaba3d.js?v=21"></script>
+  <script src="script.js?v=21"></script>
 </body>
 </html>

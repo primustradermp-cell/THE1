@@ -568,12 +568,286 @@ textarea:focus-visible {
 /* ==========================================================================
    SINGLE CONSOLIDATED DAILY PROGRESS CARD
    ========================================================================== */
-.daily-progress-card {
+.panel-dark.daily-progress-card {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) 1px minmax(0, 1fr);
   align-items: center;
   gap: 24px;
   padding: 20px 24px;
+}
+
+/* ==========================================================================
+   MONTHLY PRAYER LOG CALENDAR & PAST-DAY CATCH-UP
+   ========================================================================== */
+.panel-dark.prayer-log-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.85fr);
+  overflow: hidden;
+}
+
+.plog-cal-col {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-right: 1px solid var(--border);
+}
+
+.plog-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.plog-cal-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.plog-month-label {
+  min-width: 118px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.plog-weekdays,
+.plog-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.plog-weekdays span {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding-bottom: 2px;
+}
+
+.plog-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 50px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: border-color 150ms var(--ease), background-color 150ms var(--ease), transform 120ms var(--ease);
+}
+
+.plog-cell.is-empty {
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+}
+
+.plog-cell.is-future {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+
+.plog-cell:not(.is-empty):not(.is-future):hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+
+.plog-cell.is-complete {
+  background: var(--green-soft);
+  border-color: var(--green-border);
+  color: var(--text);
+}
+
+.plog-cell.is-partial {
+  background: rgba(196, 146, 92, 0.11);
+  border-color: rgba(196, 146, 92, 0.32);
+}
+
+.plog-cell.is-today {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.plog-cell.is-selected {
+  outline: 2px solid var(--orange);
+  outline-offset: -1px;
+  background: var(--orange-soft);
+}
+
+.plog-day-num {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.plog-pips {
+  display: flex;
+  gap: 3px;
+}
+
+.plog-pip {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.plog-pip.is-on {
+  background: var(--green);
+}
+
+.plog-cell.is-partial .plog-pip.is-on {
+  background: var(--orange);
+}
+
+/* Right Side: Selected Day Catch-Up Editor */
+.plog-day-col {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.plog-day-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.plog-day-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.plog-day-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--orange);
+  padding: 4px 9px;
+  border-radius: var(--r-sm);
+  background: var(--orange-soft);
+}
+
+.plog-day-prayers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.plog-prayer-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: all 150ms var(--ease);
+}
+
+.plog-prayer-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+
+.plog-prayer-btn.is-done {
+  background: var(--green-soft);
+  border-color: var(--green-border);
+}
+
+.plog-prayer-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.plog-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: transparent;
+}
+
+.plog-prayer-btn.is-done .plog-check {
+  background: var(--green);
+  border-color: var(--green);
+  color: #061b0f;
+}
+
+.plog-prayer-name {
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.plog-prayer-state {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.plog-prayer-btn.is-done .plog-prayer-state {
+  color: var(--green);
+}
+
+.plog-day-footer {
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.plog-day-footer .hud-btn {
+  width: 100%;
+}
+
+[data-theme="light"] .plog-cell {
+  background: #f6faf8;
+  color: var(--text);
+}
+
+[data-theme="light"] .plog-pip {
+  background: rgba(10, 25, 19, 0.16);
+}
+
+[data-theme="light"] .plog-day-col {
+  background: #f8fbf9;
+}
+
+[data-theme="light"] .plog-prayer-btn {
+  background: #ffffff;
+}
+
+[data-theme="light"] .plog-prayer-btn.is-done {
+  background: rgba(226, 248, 234, 0.95);
+}
+
+[data-theme="light"] .plog-prayer-btn.is-done .plog-check {
+  color: #ffffff;
 }
 
 .dp-left {
@@ -3048,9 +3322,18 @@ textarea:focus-visible {
     grid-column: 1 / -1;
   }
 
-  .daily-progress-card {
+  .panel-dark.daily-progress-card {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  .panel-dark.prayer-log-card {
+    grid-template-columns: 1fr;
+  }
+
+  .plog-cal-col {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
   }
 
   .dp-divider {

@@ -65,6 +65,9 @@ const state = {
   calendarMonth: new Date().getMonth() + 1,
   calendarYear: new Date().getFullYear(),
   calendarData: [],
+  logCalYear: new Date().getFullYear(),
+  logCalMonth: new Date().getMonth(), // 0-indexed
+  selectedLogDate: toDateKey(new Date()),
   reflectionIndex: 0,
 };
 
@@ -163,7 +166,7 @@ function buildAlAdhanQuery() {
     latitudeAdjustmentMethod: String(s.latAdj),
   });
   if (Number(s.method) === 99) {
-    params.set("methodSettings", `${s.fajrAngle},null,${s.ishaAngle}`);
+    params.set("methodSettings", `${s.fajrAngle},0 min,${s.ishaAngle}`);
   }
   return params.toString();
 }
@@ -481,8 +484,110 @@ function renderAll() {
     `;
   }).join("");
 
+  renderPrayerLogCalendar();
   renderHeatmap();
   updateLiveClocks();
+}
+
+/* ---------- Monthly Prayer Log Calendar & Past-Day Catch-Up ---------- */
+
+function fromDateKey(key) {
+  const [y, m, d] = key.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function renderPrayerLogCalendar() {
+  const grid = document.getElementById("pcal-grid");
+  const monthLabel = document.getElementById("pcal-month-label");
+  if (!grid || !monthLabel) return;
+
+  const year = state.logCalYear;
+  const month = state.logCalMonth;
+  const firstDay = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startOffset = (firstDay.getDay() + 6) % 7; // Mon=0..Sun=6
+
+  monthLabel.textContent = firstDay.toLocaleDateString("en-GB", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const tKey = todayKey();
+  const todayObj = fromDateKey(tKey);
+  const cells = [];
+
+  for (let i = 0; i < startOffset; i++) {
+    cells.push(`<span class="plog-cell is-empty"></span>`);
+  }
+
+  for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+    const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
+    const cellDate = new Date(year, month, dayNum);
+    const isFuture = cellDate > todayObj;
+    const log = getDayLog(key);
+    const count = countDayPrayers(key);
+
+    const cls = [
+      "plog-cell",
+      isFuture ? "is-future" : "",
+      !isFuture && count === 5 ? "is-complete" : "",
+      !isFuture && count > 0 && count < 5 ? "is-partial" : "",
+      key === tKey ? "is-today" : "",
+      key === state.selectedLogDate ? "is-selected" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    const pips = PRAYERS.map((p) => `<span class="plog-pip${log[p.key] ? " is-on" : ""}"></span>`).join("");
+
+    cells.push(`
+      <button type="button" class="${cls}" data-log-date="${key}" ${isFuture ? "disabled" : ""} title="${key} · ${count}/5 prayers">
+        <span class="plog-day-num">${dayNum}</span>
+        <span class="plog-pips" aria-hidden="true">${pips}</span>
+      </button>
+    `);
+  }
+
+  grid.innerHTML = cells.join("");
+  renderSelectedLogDay();
+}
+
+function renderSelectedLogDay() {
+  const key = state.selectedLogDate;
+  const log = getDayLog(key);
+  const count = countDayPrayers(key);
+  const d = fromDateKey(key);
+  const isToday = key === todayKey();
+
+  const readable = d.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  document.getElementById("pcal-selected-title").textContent = isToday ? `Today · ${readable}` : readable;
+  document.getElementById("pcal-selected-count").textContent = `${count} / 5`;
+
+  const list = document.getElementById("pcal-day-prayers");
+  list.innerHTML = PRAYERS.map((p) => {
+    const isDone = Boolean(log[p.key]);
+    const stateLabel = isDone ? "Completed" : isToday ? "Not logged" : "Missed · Tap to mark";
+    return `
+      <button type="button" class="plog-prayer-btn${isDone ? " is-done" : ""}" data-toggle-prayer="${p.key}" aria-pressed="${isDone}">
+        <span class="plog-prayer-left">
+          <span class="plog-check" aria-hidden="true">${isDone ? "✓" : ""}</span>
+          <span class="plog-prayer-name">${p.label}</span>
+        </span>
+        <span class="plog-prayer-state">${stateLabel}</span>
+      </button>
+    `;
+  }).join("");
+
+  const markAllBtn = document.getElementById("pcal-mark-all");
+  if (markAllBtn) {
+    markAllBtn.textContent = count === 5 ? "All 5 Completed ✓" : "Mark All 5 Done";
+  }
 }
 
 function renderHeatmap() {
@@ -766,6 +871,62 @@ function bindEvents() {
     const item = REFLECTIONS[state.reflectionIndex];
     document.getElementById("ref-source").textContent = item.source;
     document.getElementById("ref-quote").textContent = item.quote;
+  });
+
+  // Monthly Prayer Log Calendar events
+  document.getElementById("pcal-prev").addEventListener("click", () => {
+    state.logCalMonth--;
+    if (state.logCalMonth < 0) {
+      state.logCalMonth = 11;
+      state.logCalYear--;
+    }
+    renderPrayerLogCalendar();
+  });
+
+  document.getElementById("pcal-next").addEventListener("click", () => {
+    state.logCalMonth++;
+    if (state.logCalMonth > 11) {
+      state.logCalMonth = 0;
+      state.logCalYear++;
+    }
+    renderPrayerLogCalendar();
+  });
+
+  document.getElementById("pcal-today").addEventListener("click", () => {
+    const now = new Date();
+    state.logCalYear = now.getFullYear();
+    state.logCalMonth = now.getMonth();
+    state.selectedLogDate = todayKey();
+    renderPrayerLogCalendar();
+  });
+
+  document.getElementById("pcal-grid").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-log-date]");
+    if (!btn || btn.disabled) return;
+    state.selectedLogDate = btn.dataset.logDate;
+    renderPrayerLogCalendar();
+  });
+
+  document.getElementById("pcal-day-prayers").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-toggle-prayer]");
+    if (!btn) return;
+    const pKey = btn.dataset.togglePrayer;
+    const dKey = state.selectedLogDate;
+    if (!state.logs[dKey]) state.logs[dKey] = {};
+    state.logs[dKey][pKey] = !state.logs[dKey][pKey];
+    saveLogs();
+    renderAll();
+  });
+
+  document.getElementById("pcal-mark-all").addEventListener("click", () => {
+    const dKey = state.selectedLogDate;
+    const allDone = countDayPrayers(dKey) === 5;
+    if (!state.logs[dKey]) state.logs[dKey] = {};
+    for (const p of PRAYERS) {
+      state.logs[dKey][p.key] = !allDone;
+    }
+    saveLogs();
+    renderAll();
   });
 }
 
