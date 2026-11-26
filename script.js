@@ -176,10 +176,7 @@ async function fetchTodayTimings() {
     const h = json.data.date.hijri;
     state.todayHijri = `${h.day} ${h.month.en.toUpperCase()} ${h.year} AH`;
 
-    const coord = `${state.settings.lat.toFixed(4)}° N, ${Math.abs(state.settings.lng).toFixed(4)}° ${
-      state.settings.lng < 0 ? "W" : "E"
-    }`;
-    document.getElementById("hero-hijri-line").textContent = `${state.todayHijri} · ${coord}`;
+    document.getElementById("hero-hijri-line").textContent = state.todayHijri;
     document.getElementById("sunrise-pill").textContent = `Sunrise ${cleanTime(state.todayTimings.Sunrise)}`;
     document.getElementById("g-fajr").textContent = cleanTime(state.todayTimings.Fajr);
     document.getElementById("g-dhuhr").textContent = cleanTime(state.todayTimings.Dhuhr);
@@ -266,7 +263,7 @@ function countDayPrayers(key) {
 function updateLiveTelemetry() {
   const uk = getUKTime();
   document.getElementById("widget-clock").textContent = uk.text;
-  document.getElementById("scrubber-time").textContent = `${uk.text} / 24:00:00`;
+  document.getElementById("scrubber-time").textContent = uk.text.slice(0, 5);
 
   const dayPct = Math.round((uk.totalSeconds / 86400) * 100);
   document.getElementById("day-pct-label").textContent = `${dayPct}%`;
@@ -576,11 +573,8 @@ function renderTimetable() {
     })
     .join("");
 
-  const coord = `${state.settings.lat.toFixed(4)}° N, ${Math.abs(state.settings.lng).toFixed(4)}° ${
-    state.settings.lng < 0 ? "W" : "E"
-  } · ${state.settings.tz} · AlAdhan API`;
-  document.getElementById("tt-heading").textContent = `${state.settings.city} — Monthly Timetable`;
-  document.getElementById("tt-subheading").textContent = coord;
+  const shortCity = state.settings.city.split(",")[0];
+  document.getElementById("tt-heading").textContent = `${shortCity} Monthly Timetable`;
 }
 
 function exportTimetableCSV() {
@@ -684,11 +678,9 @@ function syncSettingsUI() {
   document.getElementById("row-isha-angle").classList.toggle("is-disabled", !isCustom);
 
   document.getElementById("widget-city").textContent = `${shortCity}, UK`;
-  document.getElementById("hero-city-span").textContent = shortCity;
   document.getElementById("insp-city-unit").textContent = `${shortCity} time`;
-  document.getElementById("settings-coords").textContent = `${s.city} · ${s.lat.toFixed(4)}° N, ${Math.abs(
-    s.lng
-  ).toFixed(4)}° ${s.lng < 0 ? "W" : "E"}`;
+  const locLabel = document.getElementById("settings-city-label");
+  if (locLabel) locLabel.textContent = `Location · ${s.city}`;
 
   document.querySelectorAll(".mini-mode-btn").forEach((btn) => {
     btn.classList.toggle("is-active", Number(btn.dataset.school) === Number(s.school));

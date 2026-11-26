@@ -1,4 +1,4 @@
-/* Shared Light / Dark Theme Toggle for Prayer & Fitness pages */
+/* Shared Light / Dark Segmented Theme Switcher for Prayer & Fitness pages */
 
 (function initTheme() {
   const STORAGE_KEY = "salahsync_theme_v1";
@@ -22,30 +22,26 @@
       }
     }
 
-    const btn = document.getElementById("theme-toggle-btn");
-    const label = document.getElementById("theme-toggle-label");
-    if (btn && label) {
-      const isLight = theme === "light";
-      btn.setAttribute("aria-pressed", String(isLight));
-      btn.setAttribute("title", isLight ? "Switch to Dark Mode" : "Switch to Light Mode");
-      label.textContent = isLight ? "Dark" : "Light";
-    }
+    document.querySelectorAll("[data-set-theme]").forEach((btn) => {
+      const active = btn.dataset.setTheme === theme;
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", String(active));
+    });
 
     window.dispatchEvent(new CustomEvent("themechange", { detail: { theme } }));
   }
 
-  // Apply immediately so there is no flash on load
+  // Apply immediately so there is zero flash on load
   const initial = getSavedTheme();
   document.documentElement.setAttribute("data-theme", initial);
 
   document.addEventListener("DOMContentLoaded", () => {
     applyTheme(getSavedTheme(), false);
-    const btn = document.getElementById("theme-toggle-btn");
-    if (btn) {
+
+    document.querySelectorAll("[data-set-theme]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const current = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
-        applyTheme(current === "light" ? "dark" : "light", true);
+        applyTheme(btn.dataset.setTheme, true);
       });
-    }
+    });
   });
 })();

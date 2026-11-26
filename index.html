@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=8" />
-  <script src="theme.js?v=8"></script>
+  <link rel="stylesheet" href="styles.css?v=10" />
+  <script src="theme.js?v=10"></script>
 </head>
 <body>
   <div class="viewport-frame">
@@ -26,20 +26,13 @@
             <a class="hud-tab hud-page-link is-active" href="index.html" aria-current="page">Prayer</a>
             <a class="hud-tab hud-page-link" href="fitness.html">Fitness</a>
           </nav>
+          <div class="theme-switch" role="group" aria-label="Theme switcher">
+            <button type="button" class="theme-opt is-active" data-set-theme="dark" aria-pressed="true">☾ Dark</button>
+            <button type="button" class="theme-opt" data-set-theme="light" aria-pressed="false">☀ Light</button>
+          </div>
         </div>
 
         <div class="hud-right">
-          <button class="theme-toggle-btn" id="theme-toggle-btn" type="button" aria-label="Toggle light and dark theme" aria-pressed="false">
-            <svg class="icon-sun" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <circle cx="10" cy="10" r="3.6" stroke="currentColor" stroke-width="1.6" />
-              <path d="M10 2.2v2M10 15.8v2M2.2 10h2M15.8 10h2M4.5 4.5l1.4 1.4M14.1 14.1l1.4 1.4M15.5 4.5l-1.4 1.4M5.9 14.1l-1.4 1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-            </svg>
-            <svg class="icon-moon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M15.8 12.6A6.4 6.4 0 0 1 7.4 4.2a6.6 6.6 0 1 0 8.4 8.4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-            </svg>
-            <span id="theme-toggle-label">Light</span>
-          </button>
-
           <!-- Floating Device/Sync Card (mirrors "My GymSync") -->
           <div class="sync-widget">
             <div class="sync-top">
@@ -79,13 +72,12 @@
           <div class="stage-top-row">
             <div class="stage-greeting">
               <p class="greeting-line">
-                Assalamu Alaikum, you’ve <strong id="hero-pct-text">Completed 0%</strong> of your daily prayers in <span id="hero-city-span">Preston</span>.
+                Assalamu Alaikum, you’ve <strong id="hero-pct-text">Completed 0%</strong> of your prayers today.
               </p>
-              <div class="greeting-sub mono" id="hero-hijri-line">LOADING HIJRI DATE · 53.7632° N, 2.7031° W</div>
+              <div class="greeting-sub mono" id="hero-hijri-line">LOADING HIJRI DATE</div>
             </div>
 
             <div class="controls-3d">
-              <span class="hint-3d mono">3D MODEL · DRAG TO ORBIT</span>
               <div class="btns-3d">
                 <button type="button" class="btn-3d is-active" id="btn-3d-spin">Auto-Orbit: On</button>
                 <button type="button" class="btn-3d" id="btn-3d-reset">Reset</button>
@@ -135,8 +127,8 @@
 
             <div class="scrubber-wrap">
               <div class="scrubber-head">
-                <span>Preston Solar Cycle</span>
-                <span class="mono" id="scrubber-time">00:00:00 / 24:00:00</span>
+                <span>Day Progress</span>
+                <span class="mono" id="scrubber-time">--:--</span>
               </div>
               <div class="scrubber-track" id="scrubber-track">
                 <div class="scrubber-progress" id="scrubber-progress"></div>
@@ -170,14 +162,8 @@
               </div>
             </div>
 
-            <div class="legend-row">
-              <span class="m-lbl">Consistency</span>
-              <span class="legend-item"><span class="l-dot l-white"></span>Completed</span>
-              <span class="legend-item"><span class="l-dot l-orange"></span>Focus</span>
-            </div>
-
             <div class="stepper-footer">
-              <span class="m-lbl">Fajr Angle</span>
+              <span class="m-lbl">Fajr / Isha</span>
               <div class="micro-scale mono" id="bento-angle-readout">15.5° / 15.0°</div>
               <div class="mini-stepper">
                 <button type="button" class="step-btn" data-step="fajr" data-delta="-0.5" aria-label="Decrease Fajr angle">−</button>
@@ -232,10 +218,7 @@
         </div>
         <section class="panel-dark timetable-panel">
           <div class="panel-toolbar">
-            <div>
-              <div class="panel-heading" id="tt-heading">Preston, Lancashire — Monthly Timetable</div>
-              <div class="panel-sub mono" id="tt-subheading">53.7632° N, 2.7031° W · Europe/London · AlAdhan API</div>
-            </div>
+            <div class="panel-heading" id="tt-heading">Preston Monthly Timetable</div>
             <div class="toolbar-btns">
               <button class="sq-btn" id="tt-prev" type="button" aria-label="Previous month">‹</button>
               <span class="month-readout mono" id="tt-month">Loading…</span>
@@ -277,10 +260,7 @@
         </div>
         <section class="panel-dark analytics-panel">
           <div class="panel-toolbar">
-            <div>
-              <div class="panel-heading">52-Week Salah Activity</div>
-              <div class="panel-sub">Click any prayer on Today or the Inspector to update your yearly telemetry</div>
-            </div>
+            <div class="panel-heading">52-Week Activity</div>
             <div class="mono" id="analytics-best-streak">Best streak · 0 days</div>
           </div>
 
@@ -318,19 +298,9 @@
           <span class="sub-line" aria-hidden="true"></span>
         </div>
         <section class="panel-dark settings-panel">
-          <div class="panel-toolbar">
-            <div>
-              <div class="panel-heading">Calculation &amp; Location</div>
-              <div class="panel-sub">Adjust AlAdhan parameters — Preston timings and timetable update live</div>
-            </div>
-          </div>
-
           <div class="settings-list">
             <div class="setting-item">
-              <div>
-                <div class="setting-label">Calculation Method</div>
-                <div class="panel-sub">Authority or Custom Fajr / Isha Angles</div>
-              </div>
+              <div class="setting-label">Method</div>
               <select class="dark-select" id="setting-method" aria-label="Calculation method">
                 <option value="99">Custom Angles</option>
                 <option value="15">Moonsighting Committee</option>
@@ -343,10 +313,7 @@
             </div>
 
             <div class="setting-item" id="row-fajr-angle">
-              <div>
-                <div class="setting-label">Fajr Angle</div>
-                <div class="panel-sub">Twilight depression angle (degrees)</div>
-              </div>
+              <div class="setting-label">Fajr Angle</div>
               <div class="mini-stepper">
                 <button type="button" class="step-btn" data-step="fajr" data-delta="-0.5">−</button>
                 <span class="step-val mono" id="val-fajr-angle">15.5°</span>
@@ -355,10 +322,7 @@
             </div>
 
             <div class="setting-item" id="row-isha-angle">
-              <div>
-                <div class="setting-label">Isha Angle</div>
-                <div class="panel-sub">Nightfall depression angle (degrees)</div>
-              </div>
+              <div class="setting-label">Isha Angle</div>
               <div class="mini-stepper">
                 <button type="button" class="step-btn" data-step="isha" data-delta="-0.5">−</button>
                 <span class="step-val mono" id="val-isha-angle">15.0°</span>
@@ -367,10 +331,7 @@
             </div>
 
             <div class="setting-item">
-              <div>
-                <div class="setting-label">Madhab (Asr)</div>
-                <div class="panel-sub">Hanafi (2x shadow) or Standard (1x shadow)</div>
-              </div>
+              <div class="setting-label">Madhab (Asr)</div>
               <select class="dark-select" id="setting-school" aria-label="Madhab for Asr">
                 <option value="1">Hanafi</option>
                 <option value="0">Standard (Shafi / Maliki / Hanbali)</option>
@@ -378,10 +339,7 @@
             </div>
 
             <div class="setting-item">
-              <div>
-                <div class="setting-label">High Latitude Rule</div>
-                <div class="panel-sub">Recommended for Preston (53.76° N) summer nights</div>
-              </div>
+              <div class="setting-label">High Latitude</div>
               <select class="dark-select" id="setting-lat-adj" aria-label="High latitude rule">
                 <option value="3">Angle-Based</option>
                 <option value="2">One Seventh of Night</option>
@@ -390,10 +348,7 @@
             </div>
 
             <div class="setting-item setting-item-col">
-              <div>
-                <div class="setting-label">Lancashire &amp; UK Location Presets</div>
-                <div class="panel-sub mono" id="settings-coords">Preston, Lancashire · 53.7632° N, 2.7031° W</div>
-              </div>
+              <div class="setting-label" id="settings-city-label">Location · Preston, Lancashire</div>
               <div class="city-row" id="city-chips">
                 <button class="city-btn is-selected" data-city="Preston, Lancashire" data-lat="53.7632" data-lng="-2.7031" type="button">Preston</button>
                 <button class="city-btn" data-city="Blackburn, Lancashire" data-lat="53.7488" data-lng="-2.4820" type="button">Blackburn</button>
@@ -516,7 +471,7 @@
   <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
-  <script src="kaaba3d.js?v=8"></script>
-  <script src="script.js?v=8"></script>
+  <script src="kaaba3d.js?v=10"></script>
+  <script src="script.js?v=10"></script>
 </body>
 </html>
