@@ -2280,8 +2280,13 @@
   .hud-btn,
   .sq-btn,
   .cal-nav-btn,
-  .edit-split-trigger {
+  .edit-split-trigger,
+  .btns-3d .btn-3d {
     min-height: 36px;
+  }
+
+  .insp-ghost-btn {
+    min-height: 40px;
   }
 
   .sq-btn,
