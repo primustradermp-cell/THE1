@@ -764,6 +764,25 @@ textarea:focus-visible {
   margin-bottom: var(--space-1);
 }
 
+.empty-state-icon-btn {
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.empty-state-icon-btn:hover {
+  background: var(--orange-soft);
+  border-color: var(--orange-border);
+  transform: translateY(-1px);
+}
+
+.empty-state-icon-btn:active {
+  transform: scale(0.96);
+}
+
 .empty-state-box.is-rest .empty-state-icon,
 .empty-state.is-calm .empty-state-icon {
   color: var(--bronze);

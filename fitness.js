@@ -353,9 +353,15 @@ function renderMainWorkout() {
     } else {
       listEl.innerHTML = `
         <div class="empty-state empty-state-box">
-          <div class="empty-state-icon" aria-hidden="true">
-            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-          </div>
+          <button
+            type="button"
+            class="empty-state-icon empty-state-icon-btn"
+            data-action="focus-add-exercise"
+            aria-label="Add exercise for ${wdInfo.full}"
+            title="Add exercise for ${wdInfo.full}"
+          >
+            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          </button>
           <div class="empty-state-title">No exercises scheduled for ${wdInfo.full}</div>
           <div class="empty-state-sub">Add your preset exercises below once—they’ll load automatically every ${wdInfo.full} so you only need to adjust sets, reps, and weights.</div>
         </div>
@@ -757,6 +763,15 @@ function bindEvents() {
     const btn = e.target.closest("[data-action]");
     if (!btn) return;
     const action = btn.dataset.action;
+
+    if (action === "focus-add-exercise") {
+      const addInput = document.getElementById("input-preset-exercise");
+      if (addInput) {
+        addInput.focus();
+        addInput.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      return;
+    }
 
     if (action === "toggle-dropdown") {
       const id = btn.dataset.exId;

@@ -1570,7 +1570,7 @@
   object-position: 64% 46%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.34;
+  opacity: 0.42;
   transition: opacity var(--dur-slow) var(--ease), filter var(--dur-slow) var(--ease);
 }
 
@@ -1579,36 +1579,65 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(11, 11, 12, 0.78) 0%,
-    rgba(11, 11, 12, 0.62) 38%,
-    rgba(11, 11, 12, 0.88) 100%
-  );
+  background:
+    radial-gradient(
+      ellipse 72% 62% at 50% 48%,
+      rgba(11, 11, 12, 0.72) 0%,
+      rgba(11, 11, 12, 0.44) 60%,
+      rgba(11, 11, 12, 0.68) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(11, 11, 12, 0.56) 0%,
+      rgba(11, 11, 12, 0.34) 40%,
+      rgba(11, 11, 12, 0.72) 100%
+    );
 }
 
 [data-theme="light"] .fitness-page-bg {
-  opacity: 0.52;
-  filter: brightness(1.1);
+  opacity: 0.59;
+  filter: brightness(1.08);
 }
 
 [data-theme="light"] .fitness-page-overlay {
-  background: linear-gradient(
-    180deg,
-    rgba(242, 245, 243, 0.72) 0%,
-    rgba(242, 245, 243, 0.45) 38%,
-    rgba(242, 245, 243, 0.78) 100%
-  );
+  background:
+    radial-gradient(
+      ellipse 72% 62% at 50% 48%,
+      rgba(242, 245, 243, 0.68) 0%,
+      rgba(242, 245, 243, 0.36) 62%,
+      rgba(242, 245, 243, 0.64) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(242, 245, 243, 0.54) 0%,
+      rgba(242, 245, 243, 0.3) 40%,
+      rgba(242, 245, 243, 0.64) 100%
+    );
 }
 
 /* Weekly Routine Bar (Mon–Sun) */
+.weekday-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px var(--card-pad-x) var(--space-4);
+  background: var(--surface-band);
+  border-bottom: 1px solid var(--border);
+}
+
+.weekday-bar-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.78;
+}
+
 .weekday-bar {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: var(--space-2);
-  padding: var(--space-4) var(--card-pad-x);
-  background: var(--surface-band);
-  border-bottom: 1px solid var(--border);
 }
 
 .weekday-pill {
@@ -2485,11 +2514,14 @@
     justify-content: center;
   }
 
+  .weekday-bar-wrap {
+    padding: 10px var(--space-3) var(--space-3);
+  }
+
   .weekday-bar {
     grid-template-columns: repeat(7, minmax(84px, 1fr));
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    padding: var(--space-3);
   }
 
   .quick-add-row {
