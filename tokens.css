@@ -7,35 +7,35 @@
   /* ------------------------------------------------------------------------
      1. COLOR SYSTEM — DARK CHARCOAL DEFAULT
      ------------------------------------------------------------------------ */
-  /* Canvas & Surfaces */
+  /* Canvas & Surfaces (+2.5–3% card elevation relative to canvas) */
   --bg-canvas: #0b0b0c;
-  --bg-surface: #121214;
-  --bg-panel: rgba(19, 19, 22, 0.82);
-  --bg-panel-solid: #141417;
-  --bg-elevated: #1a1a1e;
-  --bg-hover: #232328;
-  --bg-input: #0e0e10;
+  --bg-surface: #151518;
+  --bg-panel: rgba(25, 25, 29, 0.88);
+  --bg-panel-solid: #1a1a1e;
+  --bg-elevated: #212126;
+  --bg-hover: #2a2a30;
+  --bg-input: #111114;
 
   /* Subtle Nested Surfaces */
-  --surface-subtle: rgba(255, 255, 255, 0.03);
-  --surface-subtle-hover: rgba(255, 255, 255, 0.065);
-  --surface-band: rgba(255, 255, 255, 0.018);
-  --surface-glass-chip: rgba(16, 16, 18, 0.68);
-  --surface-track: rgba(255, 255, 255, 0.09);
+  --surface-subtle: rgba(255, 255, 255, 0.04);
+  --surface-subtle-hover: rgba(255, 255, 255, 0.08);
+  --surface-band: rgba(255, 255, 255, 0.024);
+  --surface-glass-chip: rgba(22, 22, 26, 0.76);
+  --surface-track: rgba(255, 255, 255, 0.1);
 
   /* Right Inspector Sidebar (Refined Obsidian-Bronze) */
-  --sidebar-top: #161412;
-  --sidebar-mid: #131210;
-  --sidebar-bot: #100f0e;
+  --sidebar-top: #181614;
+  --sidebar-mid: #151311;
+  --sidebar-bot: #12110f;
   --sidebar-glow: rgba(229, 106, 53, 0.08);
   --sidebar-text: #f5f4f0;
   --sidebar-text-soft: #d4d1c9;
   --sidebar-muted: #9e978b;
   --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-surface: rgba(255, 255, 255, 0.035);
-  --sidebar-surface-hover: rgba(255, 255, 255, 0.08);
-  --sidebar-cta: #1e1b17;
-  --sidebar-cta-hover: #28231d;
+  --sidebar-surface: rgba(255, 255, 255, 0.04);
+  --sidebar-surface-hover: rgba(255, 255, 255, 0.085);
+  --sidebar-cta: #211e1a;
+  --sidebar-cta-hover: #2b2620;
 
   /* Typography Colors */
   --text: #f5f4f0;
@@ -47,20 +47,23 @@
   --orange: #e56a35;
   --orange-hover: #ee7a47;
   --orange-active: #d45b27;
+  --orange-text: #f07b47;
   --orange-soft: rgba(229, 106, 53, 0.14);
   --orange-border: rgba(229, 106, 53, 0.44);
   --orange-glow: rgba(229, 106, 53, 0.16);
 
   /* Secondary Detail Accent — Subtle Bronze */
   --bronze: #c89a64;
-  --bronze-soft: rgba(200, 154, 100, 0.12);
+  --bronze-text: #d6ac78;
+  --bronze-soft: rgba(200, 154, 100, 0.13);
   --bronze-border: rgba(200, 154, 100, 0.36);
   --bronze-glow: rgba(196, 146, 92, 0.1);
 
   /* Functional Success — Muted Emerald */
   --green: #2fb36d;
-  --green-soft: rgba(47, 179, 109, 0.13);
-  --green-border: rgba(47, 179, 109, 0.4);
+  --green-text: #3cc87d;
+  --green-soft: rgba(47, 179, 109, 0.14);
+  --green-border: rgba(47, 179, 109, 0.42);
   --green-ink: #061b0f;
 
   /* Borders & Separators */
@@ -154,19 +157,19 @@
    LIGHT MODE THEME TOKENS (Preserves High-Contrast Botanical Light Theme)
    ========================================================================== */
 [data-theme="light"] {
-  --bg-canvas: #f2f5f3;
-  --bg-surface: #e8efeb;
-  --bg-panel: rgba(255, 255, 255, 0.88);
+  --bg-canvas: #ebf0ed;
+  --bg-surface: #e2eae5;
+  --bg-panel: rgba(255, 255, 255, 0.94);
   --bg-panel-solid: #ffffff;
-  --bg-elevated: #edf3ef;
-  --bg-hover: #e1ebe5;
-  --bg-input: #f7faf8;
+  --bg-elevated: #f1f6f3;
+  --bg-hover: #e4ede8;
+  --bg-input: #f8fbf9;
 
-  --surface-subtle: rgba(10, 25, 19, 0.035);
-  --surface-subtle-hover: rgba(10, 25, 19, 0.075);
-  --surface-band: rgba(10, 25, 19, 0.025);
-  --surface-glass-chip: rgba(255, 255, 255, 0.86);
-  --surface-track: rgba(10, 25, 19, 0.11);
+  --surface-subtle: rgba(10, 25, 19, 0.04);
+  --surface-subtle-hover: rgba(10, 25, 19, 0.08);
+  --surface-band: rgba(10, 25, 19, 0.028);
+  --surface-glass-chip: rgba(255, 255, 255, 0.92);
+  --surface-track: rgba(10, 25, 19, 0.12);
 
   --sidebar-top: #0f5c47;
   --sidebar-mid: #147359;
@@ -182,25 +185,28 @@
   --sidebar-cta-hover: #073629;
 
   --text: #0b1712;
-  --text-soft: #21382e;
-  --text-muted: #4b655a;
+  --text-soft: #1d332a;
+  --text-muted: #466055;
   --text-inverse: #ffffff;
 
-  --orange: #e35320;
-  --orange-hover: #cf4616;
-  --orange-active: #b83b10;
-  --orange-soft: rgba(227, 83, 32, 0.13);
-  --orange-border: rgba(227, 83, 32, 0.48);
-  --orange-glow: rgba(227, 83, 32, 0.14);
+  --orange: #d44716;
+  --orange-hover: #bd3c10;
+  --orange-active: #a3320b;
+  --orange-text: #9e3009;
+  --orange-soft: rgba(212, 71, 22, 0.12);
+  --orange-border: rgba(185, 58, 14, 0.48);
+  --orange-glow: rgba(212, 71, 22, 0.14);
 
-  --bronze: #8a5b1e;
-  --bronze-soft: rgba(168, 116, 52, 0.14);
-  --bronze-border: rgba(154, 102, 36, 0.45);
+  --bronze: #8a5616;
+  --bronze-text: #693f0c;
+  --bronze-soft: rgba(168, 112, 38, 0.14);
+  --bronze-border: rgba(138, 86, 22, 0.48);
   --bronze-glow: rgba(18, 145, 66, 0.08);
 
-  --green: #149646;
-  --green-soft: rgba(20, 150, 70, 0.13);
-  --green-border: rgba(20, 150, 70, 0.45);
+  --green: #12803c;
+  --green-text: #095727;
+  --green-soft: rgba(18, 128, 60, 0.14);
+  --green-border: rgba(14, 107, 49, 0.48);
   --green-ink: #ffffff;
 
   --border-subtle: rgba(10, 25, 19, 0.065);
@@ -350,10 +356,10 @@ textarea:focus-visible {
 .ds-kicker {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: var(--tracking-kicker);
   text-transform: uppercase;
-  color: var(--orange);
+  color: var(--orange-text);
 }
 
 .ds-label,
@@ -529,7 +535,7 @@ textarea:focus-visible {
 .btn-lg {
   height: var(--ctrl-lg);
   padding: 0 var(--space-4);
-  border-radius: var(--r-md);
+  border-radius: var(--r-sm);
 }
 
 .btn-full {
@@ -585,19 +591,22 @@ textarea:focus-visible {
 .badge-accent {
   background: var(--orange-soft);
   border-color: var(--orange-border);
-  color: var(--orange);
+  color: var(--orange-text);
+  font-weight: 600;
 }
 
 .badge-bronze {
   background: var(--bronze-soft);
   border-color: var(--bronze-border);
-  color: var(--bronze);
+  color: var(--bronze-text);
+  font-weight: 600;
 }
 
 .badge-success {
   background: var(--green-soft);
   border-color: var(--green-border);
-  color: var(--green);
+  color: var(--green-text);
+  font-weight: 600;
 }
 
 /* Form Controls */
@@ -744,7 +753,7 @@ textarea:focus-visible {
   align-items: flex-start;
   gap: var(--space-1);
   padding: var(--space-3);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-md);
   background: var(--sidebar-surface);
   border: 1px dashed var(--sidebar-border);
   color: var(--sidebar-muted);

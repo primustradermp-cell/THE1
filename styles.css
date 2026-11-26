@@ -50,8 +50,8 @@
   align-items: center;
   gap: var(--space-2);
   height: var(--ctrl-md);
-  padding: 0 var(--space-3);
-  border-radius: var(--r-sm);
+  padding: 0 14px;
+  border-radius: var(--r-pill);
   background: var(--bg-panel);
   border: 1px solid var(--border);
   font-size: var(--text-xs);
@@ -91,7 +91,7 @@
   box-shadow: none;
 }
 
-/* Segmented Controls (Primary Page Switcher, Theme Switcher, Prayer Sub-Nav) */
+/* Segmented Controls (Topbar Full Pills + Section Sub-Nav) */
 .hud-nav,
 .theme-switch,
 .subnav-bar {
@@ -99,7 +99,7 @@
   align-items: center;
   gap: 3px;
   padding: 3px;
-  border-radius: var(--r-md);
+  border-radius: var(--r-pill);
   background: var(--bg-panel);
   border: 1px solid var(--border);
   backdrop-filter: blur(var(--blur-sm));
@@ -112,6 +112,7 @@
 
 .subnav-bar {
   width: fit-content;
+  border-radius: var(--r-md);
   background: var(--bg-surface);
 }
 
@@ -128,7 +129,7 @@
   gap: 6px;
   height: var(--ctrl-sm);
   padding: 0 14px;
-  border-radius: var(--r-sm);
+  border-radius: var(--r-pill);
   color: var(--text-muted);
   font-size: var(--text-sm);
   font-weight: 500;
@@ -136,6 +137,10 @@
   transition:
     color var(--dur-fast) var(--ease),
     background-color var(--dur-fast) var(--ease);
+}
+
+.subnav-link {
+  border-radius: var(--r-sm);
 }
 
 .theme-opt {
@@ -369,7 +374,7 @@
 .fs-week-count {
   font-size: var(--text-sm);
   font-weight: 600;
-  color: var(--orange);
+  color: var(--orange-text);
 }
 
 .dp-segments {
@@ -586,9 +591,9 @@
   border-radius: var(--r-pill);
   background: var(--bronze-soft);
   border: 1px solid var(--bronze-border);
-  color: var(--bronze);
+  color: var(--bronze-text);
   font-size: 10.5px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   backdrop-filter: blur(var(--blur-sm));
@@ -611,7 +616,7 @@
 .focal-window-pill.is-logged {
   background: var(--green-soft);
   border-color: var(--green-border);
-  color: var(--green);
+  color: var(--green-text);
 }
 
 .focal-window-pill.is-logged .focal-window-dot {
@@ -647,7 +652,7 @@
 .focal-countdown {
   font-size: clamp(1.3rem, 2.1vw, 1.65rem);
   font-weight: 600;
-  color: var(--orange);
+  color: var(--orange-text);
   letter-spacing: var(--tracking-snug);
 }
 
@@ -790,15 +795,15 @@
 }
 
 [data-theme="light"] .tl-card.is-done {
-  background: rgba(226, 248, 234, 0.94);
+  background: rgba(218, 245, 228, 0.96);
 }
 
 [data-theme="light"] .tl-card.is-current:not(.is-done) {
-  background: rgba(252, 244, 230, 0.94);
+  background: rgba(252, 241, 222, 0.96);
 }
 
 [data-theme="light"] .tl-card.is-next:not(.is-done) {
-  background: rgba(255, 236, 229, 0.94);
+  background: rgba(255, 232, 222, 0.96);
 }
 
 .tl-top {
@@ -844,14 +849,14 @@
 }
 
 .tl-card.is-current:not(.is-done) .tl-check {
-  border-color: var(--bronze);
-  color: var(--bronze);
+  border-color: var(--bronze-text);
+  color: var(--bronze-text);
 }
 
 .tl-card.is-current:not(.is-done):hover .tl-check {
   border-color: var(--green-border);
   background: var(--green-soft);
-  color: var(--green);
+  color: var(--green-text);
 }
 
 .tl-card.is-current:not(.is-done):hover .tl-check-default {
@@ -859,13 +864,13 @@
 }
 
 .tl-card.is-current:not(.is-done):hover .tl-check-hover {
-  opacity: 0.78;
+  opacity: 0.85;
   transform: scale(1);
 }
 
 .tl-card.is-next:not(.is-done) .tl-check {
-  border-color: var(--orange);
-  color: var(--orange);
+  border-color: var(--orange-text);
+  color: var(--orange-text);
 }
 
 .tl-badge {
@@ -874,7 +879,7 @@
   align-items: center;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
   color: var(--text-muted);
@@ -890,7 +895,7 @@
 .tl-badge-hover {
   opacity: 0;
   transform: translateY(2px);
-  color: var(--green);
+  color: var(--green-text);
 }
 
 .tl-card.is-current:not(.is-done):hover .tl-badge-default {
@@ -904,15 +909,15 @@
 }
 
 .tl-card.is-done .tl-badge {
-  color: var(--green);
+  color: var(--green-text);
 }
 
 .tl-card.is-current:not(.is-done) .tl-badge {
-  color: var(--bronze);
+  color: var(--bronze-text);
 }
 
 .tl-card.is-next:not(.is-done) .tl-badge {
-  color: var(--orange);
+  color: var(--orange-text);
 }
 
 .tl-name {
@@ -1092,7 +1097,7 @@
 .plog-day-badge {
   font-size: var(--text-xs);
   font-weight: 600;
-  color: var(--orange);
+  color: var(--orange-text);
   padding: 3px 9px;
   border-radius: var(--r-sm);
   background: var(--orange-soft);
@@ -1112,7 +1117,7 @@
   gap: var(--space-3);
   width: 100%;
   padding: 10px var(--space-3);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-md);
   border: 1px solid var(--border);
   background: var(--surface-subtle);
   color: var(--text);
@@ -1169,7 +1174,8 @@
 }
 
 .plog-prayer-btn.is-done .plog-prayer-state {
-  color: var(--green);
+  color: var(--green-text);
+  font-weight: 500;
 }
 
 .plog-day-footer {
@@ -1309,7 +1315,7 @@
 
 .tag-jumuah {
   background: var(--bronze-soft);
-  color: var(--bronze);
+  color: var(--bronze-text);
 }
 
 .table-loading {
@@ -1492,7 +1498,7 @@
   text-align: center;
   gap: 8px;
   padding: 12px 10px;
-  border-radius: var(--r-sm);
+  border-radius: var(--r-md);
   background: var(--surface-subtle);
   border: 1px solid var(--border);
 }
@@ -1708,6 +1714,10 @@
   white-space: nowrap;
 }
 
+.weekday-pill.is-active .wd-split {
+  opacity: 0.96;
+}
+
 /* Prominent Workout Header */
 .workout-hero-header {
   display: flex;
@@ -1754,13 +1764,13 @@
 .workout-cat-pill.is-rest {
   background: var(--bronze-soft);
   border-color: var(--bronze-border);
-  color: var(--bronze);
+  color: var(--bronze-text);
 }
 
 .edit-split-trigger {
   height: var(--ctrl-sm);
   padding: 0 var(--space-2);
-  border-radius: var(--r-xs);
+  border-radius: var(--r-sm);
   border: none;
   background: transparent;
   color: var(--text-muted);
@@ -1784,7 +1794,7 @@
   gap: 9px;
   height: var(--ctrl-lg);
   padding: 0 var(--space-4);
-  border-radius: var(--r-md);
+  border-radius: var(--r-sm);
   border: 1px solid var(--border-strong);
   background: var(--bg-elevated);
   color: var(--text);
@@ -1804,7 +1814,7 @@
 .gym-check-btn.is-active {
   background: var(--green-soft);
   border-color: var(--green-border);
-  color: var(--text);
+  color: var(--green-text);
 }
 
 .gym-check-circle {
@@ -1935,7 +1945,7 @@
 }
 
 .exercise-item.is-done .ex-progress-sub {
-  color: var(--green);
+  color: var(--green-text);
 }
 
 .ex-check-btn {
@@ -2041,7 +2051,7 @@
 }
 
 .set-row.is-set-done .set-num {
-  color: var(--green);
+  color: var(--green-text);
 }
 
 .dd-stepper {
@@ -2179,7 +2189,7 @@
   align-items: center;
   gap: 5px;
   padding: 6px 4px;
-  border-radius: var(--r-sm);
+  border-radius: var(--r-md);
   border: 1px solid var(--border);
   background: var(--surface-subtle);
   color: var(--text-muted);
@@ -2328,7 +2338,7 @@
   justify-content: space-between;
   gap: 10px;
   padding: 9px var(--space-3);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-md);
   border: 1px solid var(--sidebar-border);
   background: var(--sidebar-surface);
   color: var(--sidebar-text);
@@ -2574,7 +2584,7 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--space-2);
     padding: 10px;
-    border-radius: var(--r-sm);
+    border-radius: var(--r-md);
     background: var(--surface-subtle);
     border: 1px solid var(--border);
   }
