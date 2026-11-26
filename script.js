@@ -262,13 +262,18 @@ function countDayPrayers(key) {
 
 function updateLiveTelemetry() {
   const uk = getUKTime();
-  document.getElementById("widget-clock").textContent = uk.text;
-  document.getElementById("scrubber-time").textContent = uk.text.slice(0, 5);
+  const clockEl = document.getElementById("widget-clock");
+  if (clockEl) clockEl.textContent = uk.text;
+  const scrubTimeEl = document.getElementById("scrubber-time");
+  if (scrubTimeEl) scrubTimeEl.textContent = uk.text.slice(0, 5);
 
   const dayPct = Math.round((uk.totalSeconds / 86400) * 100);
-  document.getElementById("day-pct-label").textContent = `${dayPct}%`;
-  document.getElementById("day-pct-fill").style.width = `${dayPct}%`;
-  document.getElementById("scrubber-progress").style.width = `${dayPct}%`;
+  const pctLabel = document.getElementById("day-pct-label");
+  const pctFill = document.getElementById("day-pct-fill");
+  if (pctLabel) pctLabel.textContent = `${dayPct}%`;
+  if (pctFill) pctFill.style.width = `${dayPct}%`;
+  const scrubProg = document.getElementById("scrubber-progress");
+  if (scrubProg) scrubProg.style.width = `${dayPct}%`;
 
   if (!state.todayTimings) return;
 
@@ -677,7 +682,8 @@ function syncSettingsUI() {
   document.getElementById("row-fajr-angle").classList.toggle("is-disabled", !isCustom);
   document.getElementById("row-isha-angle").classList.toggle("is-disabled", !isCustom);
 
-  document.getElementById("widget-city").textContent = `${shortCity}, UK`;
+  const widgetCity = document.getElementById("widget-city");
+  if (widgetCity) widgetCity.textContent = `${shortCity}, UK`;
   document.getElementById("insp-city-unit").textContent = `${shortCity} time`;
   const locLabel = document.getElementById("settings-city-label");
   if (locLabel) locLabel.textContent = `Location · ${s.city}`;

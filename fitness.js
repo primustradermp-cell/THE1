@@ -515,15 +515,21 @@ function renderCalendar() {
   document.getElementById("stat-month-days").textContent = String(curMonthDays);
   document.getElementById("stat-all-days").textContent = `${allTimeDays} d`;
   document.getElementById("insp-month-count").textContent = String(monthGymDays);
-  document.getElementById("gym-widget-month").textContent = `${curMonthDays} ${curMonthDays === 1 ? "day" : "days"}`;
+  const monthBadge = document.getElementById("gym-widget-month");
+  if (monthBadge) monthBadge.textContent = `${curMonthDays} ${curMonthDays === 1 ? "day" : "days"} this month`;
 
   const goalPct = Math.min(100, Math.round((curMonthDays / 16) * 100));
-  document.getElementById("gym-goal-pct").textContent = `${goalPct}%`;
-  document.getElementById("gym-goal-fill").style.width = `${goalPct}%`;
-  document.getElementById("gym-widget-today").textContent = now.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-  });
+  const goalPctEl = document.getElementById("gym-goal-pct");
+  const goalFillEl = document.getElementById("gym-goal-fill");
+  const todayEl = document.getElementById("gym-widget-today");
+  if (goalPctEl) goalPctEl.textContent = `${goalPct}%`;
+  if (goalFillEl) goalFillEl.style.width = `${goalPct}%`;
+  if (todayEl) {
+    todayEl.textContent = now.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+    });
+  }
 }
 
 function renderWeeklySparkBars() {

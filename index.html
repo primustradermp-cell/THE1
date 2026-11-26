@@ -12,45 +12,33 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=18" />
-  <script src="theme.js?v=18"></script>
+  <link rel="stylesheet" href="styles.css?v=19" />
+  <script src="theme.js?v=19"></script>
 </head>
 <body>
   <div class="viewport-frame">
     <!-- LEFT MAIN WORKSPACE (~72%) -->
     <div class="left-column">
-      <!-- Top HUD Bar -->
+      <!-- Unified Single-Row Top Bar -->
       <header class="hud-topbar">
         <div class="hud-left">
-          <span class="mode-pill">
+          <div class="status-cluster">
             <span class="pill-dot" id="api-dot"></span>
             <span id="api-status-text">Preston Live</span>
-          </span>
-          <nav class="hud-nav" aria-label="Site navigation">
-            <a class="hud-tab hud-page-link is-active" href="index.html?v=18" aria-current="page">Prayer</a>
-            <a class="hud-tab hud-page-link" href="fitness.html?v=18">Fitness</a>
-          </nav>
-          <div class="theme-switch" role="group" aria-label="Theme switcher">
-            <button type="button" class="theme-opt is-active" data-set-theme="dark" aria-pressed="true">☾ Dark</button>
-            <button type="button" class="theme-opt" data-set-theme="light" aria-pressed="false">☀ Light</button>
+            <span class="cluster-sep" aria-hidden="true">·</span>
+            <span class="mono cluster-clock" id="widget-clock">--:--:--</span>
           </div>
         </div>
 
+        <nav class="hud-nav" aria-label="Site navigation">
+          <a class="hud-tab hud-page-link is-active" href="index.html?v=19" aria-current="page">Prayer</a>
+          <a class="hud-tab hud-page-link" href="fitness.html?v=19">Fitness</a>
+        </nav>
+
         <div class="hud-right">
-          <!-- Floating Device/Sync Card (mirrors "My GymSync") -->
-          <div class="sync-widget">
-            <div class="sync-top">
-              <div class="sync-brand">My SalahSync</div>
-              <span class="sync-check" aria-hidden="true"></span>
-            </div>
-            <div class="sync-meta">
-              <span class="mono" id="widget-clock">--:--:--</span>
-              <span class="sync-loc" id="widget-city">Preston, UK</span>
-            </div>
-            <div class="sync-bar-row">
-              <span class="mono" id="day-pct-label">0%</span>
-              <div class="sync-bar"><div class="sync-bar-fill" id="day-pct-fill"></div></div>
-            </div>
+          <div class="theme-switch" role="group" aria-label="Theme switcher">
+            <button type="button" class="theme-opt is-active" data-set-theme="dark" aria-pressed="true">☾ Dark</button>
+            <button type="button" class="theme-opt" data-set-theme="light" aria-pressed="false">☀ Light</button>
           </div>
         </div>
       </header>
@@ -389,16 +377,10 @@
         <!-- Salah Completion Blocks + Qibla Wireframe -->
         <div class="insp-split-section">
           <div>
-            <div class="insp-label">Today’s Salah:</div>
+            <div class="insp-label">Today’s Salah</div>
             <div class="block-meter" id="insp-block-meter"></div>
 
-            <div class="insp-label" style="margin-top: 16px;">Qibla Bearing:</div>
-            <div class="glyph-row" id="qibla-glyphs" aria-hidden="true">
-              <span class="glyph g-full"></span>
-              <span class="glyph g-half"></span>
-              <span class="glyph g-half"></span>
-              <span class="glyph g-orange"></span>
-            </div>
+            <div class="insp-label" style="margin-top: 16px;">Qibla Bearing</div>
             <div class="insp-qibla-readout mono" id="insp-qibla-deg">117.7° ESE</div>
           </div>
 
@@ -475,7 +457,7 @@
   <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
-  <script src="kaaba3d.js?v=13"></script>
-  <script src="script.js?v=13"></script>
+  <script src="kaaba3d.js?v=19"></script>
+  <script src="script.js?v=19"></script>
 </body>
 </html>

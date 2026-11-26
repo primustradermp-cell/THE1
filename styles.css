@@ -1,30 +1,54 @@
+/* ==========================================================================
+   SALAHSYNC / GYMSYNC — UNIFIED DESIGN SYSTEM
+   Dark Charcoal · Warm Bronze & Orange · Apple × Linear Hierarchy
+   ========================================================================== */
+
 :root {
-  /* GymSync-inspired Warm Dark Charcoal, Khaki-Taupe Glass & Burnt Orange Telemetry */
-  --bg-outer: #0d0d0b;
-  --bg-stage: #151411;
-  --bg-card: rgba(24, 23, 19, 0.86);
-  --bg-card-solid: #1b1a16;
-  --bg-elevated: rgba(38, 36, 30, 0.85);
+  /* Core Surfaces (Dark Default) */
+  --bg-canvas: #0b0b0c;
+  --bg-surface: #121214;
+  --bg-panel: rgba(20, 20, 22, 0.84);
+  --bg-elevated: #1a1a1d;
+  --bg-hover: #222226;
+  --bg-input: #0f0f11;
 
-  --taupe-top: #5e5849;
-  --taupe-mid: #6f6756;
-  --taupe-bot: #7b7360;
-  --taupe-cta: #544e41;
-  --taupe-cta-hover: #494438;
+  /* Elevated Right Inspector (Refined Obsidian-Bronze) */
+  --sidebar-top: #171513;
+  --sidebar-mid: #141311;
+  --sidebar-bot: #11100f;
+  --sidebar-cta: #1f1c18;
+  --sidebar-cta-hover: #29241e;
 
-  --border: rgba(255, 255, 255, 0.11);
-  --border-strong: rgba(255, 255, 255, 0.2);
-  --dashed: rgba(255, 255, 255, 0.22);
+  /* Borders & Dividers */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --dashed: rgba(255, 255, 255, 0.12);
 
-  --text: #ffffff;
-  --text-soft: #eae7df;
-  --text-muted: #9b9588;
-  --taupe-muted: #dbd5c8;
+  /* Typography Colors */
+  --text: #f5f4f0;
+  --text-soft: #d4d1c9;
+  --text-muted: #98938a;
+  --sidebar-muted: #a69f93;
 
-  --orange: #e85d2a;
-  --orange-soft: rgba(232, 93, 42, 0.18);
-  --green: #32b86b;
-  --green-soft: rgba(50, 184, 107, 0.16);
+  /* Accents — Warm Orange/Bronze + Functional Emerald */
+  --orange: #e56a35;
+  --orange-hover: #ee7a47;
+  --orange-soft: rgba(229, 106, 53, 0.14);
+  --orange-border: rgba(229, 106, 53, 0.42);
+  --bronze-glow: rgba(196, 146, 92, 0.12);
+
+  --green: #2fb36d;
+  --green-soft: rgba(47, 179, 109, 0.14);
+  --green-border: rgba(47, 179, 109, 0.42);
+
+  /* Unified Geometry & Rhythm */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --ctrl-h: 34px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 
 *,
@@ -42,82 +66,182 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: var(--bg-outer);
+  background: var(--bg-canvas);
   color: var(--text);
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 13.5px;
-  line-height: 1.45;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .mono {
   font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Outer Desktop Frame */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   APP SHELL & UNIFIED TOP BAR
+   ========================================================================== */
 .viewport-frame {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 336px;
+  grid-template-columns: minmax(0, 1fr) 332px;
   min-height: 100vh;
   background:
-    radial-gradient(ellipse at 32% 28%, rgba(122, 113, 94, 0.2), transparent 56%),
-    radial-gradient(ellipse at 70% 80%, rgba(232, 93, 42, 0.06), transparent 50%),
-    var(--bg-stage);
+    radial-gradient(ellipse 65% 40% at 35% 0%, var(--bronze-glow), transparent 65%),
+    var(--bg-canvas);
 }
 
-/* LEFT COLUMN */
 .left-column {
   display: flex;
   flex-direction: column;
-  padding: 18px 20px 20px;
-  gap: 14px;
+  padding: 16px 24px 32px;
+  gap: 16px;
   min-width: 0;
 }
 
-/* Top HUD Bar */
+/* Single-Row Apple × Linear Top Bar */
 .hud-topbar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   gap: 16px;
-  flex-wrap: wrap;
+  min-height: 44px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 
 .hud-left {
   display: flex;
   align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .hud-right {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
 }
 
+.status-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--ctrl-h);
+  padding: 0 12px;
+  border-radius: var(--r-sm);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-soft);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.cluster-sep {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.cluster-clock {
+  color: var(--text);
+  font-size: 12px;
+}
+
+.pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(47, 179, 109, 0.7);
+  flex-shrink: 0;
+}
+
+.pill-dot.is-error {
+  background: var(--orange);
+  box-shadow: none;
+}
+
+/* Centered Segmented Page Switcher (Prayer | Fitness) */
+.hud-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border-radius: var(--r-md);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.hud-tab,
+.hud-page-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 16px;
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 180ms var(--ease), background-color 180ms var(--ease);
+}
+
+.hud-tab:hover {
+  color: var(--text);
+}
+
+.hud-tab.is-active {
+  background: var(--bg-elevated);
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Theme Switcher */
 .theme-switch {
   display: inline-flex;
   align-items: center;
-  padding: 3px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-strong);
   gap: 2px;
+  padding: 3px;
+  border-radius: var(--r-md);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .theme-opt {
   border: none;
   background: transparent;
   color: var(--text-muted);
-  font: inherit;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 4px;
+  height: 28px;
+  padding: 0 11px;
+  border-radius: var(--r-sm);
   cursor: pointer;
-  transition: background-color 0.16s ease, color 0.16s ease;
+  transition: background-color 180ms var(--ease), color 180ms var(--ease);
 }
 
 .theme-opt:hover {
@@ -129,193 +253,57 @@ body {
   color: #ffffff;
 }
 
-[data-theme="light"] .theme-switch {
-  background: #e9f1ed;
-  border-color: var(--border-strong);
-}
-
-[data-theme="light"] .theme-opt {
-  color: var(--text-muted);
-}
-
-[data-theme="light"] .theme-opt.is-active {
-  background: var(--orange);
-  color: #ffffff;
-}
-
-.mode-pill {
+/* ==========================================================================
+   PRAYER SUB-NAV & SECTIONS
+   ========================================================================== */
+.subnav-bar {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 6px 12px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.08);
+  gap: 4px;
+  width: fit-content;
+  padding: 3px;
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
   border: 1px solid var(--border);
-  font-size: 12px;
-  color: var(--text-soft);
-}
-
-.pill-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px rgba(50, 184, 107, 0.8);
-}
-
-.pill-dot.is-error {
-  background: var(--orange);
-  box-shadow: none;
-}
-
-.hud-nav {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.hud-tab {
-  background: none;
-  border: none;
-  padding: 6px 2px;
-  color: var(--text-muted);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 400;
-  cursor: pointer;
-  position: relative;
-  transition: color 0.15s ease;
-}
-
-.hud-tab:hover {
-  color: var(--text-soft);
-}
-
-.hud-tab.is-active {
-  color: var(--text);
-  font-weight: 500;
-}
-
-.hud-tab.is-active::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1.5px;
-  background: var(--orange);
-}
-
-/* Floating Sync Widget (mirrors "My GymSync") */
-.sync-widget {
-  width: 196px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  background: rgba(22, 21, 18, 0.78);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-}
-
-.sync-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.sync-brand {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-soft);
-}
-
-.sync-check {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--green);
-}
-
-.sync-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 7px;
-}
-
-.sync-bar-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.sync-bar {
-  flex: 1;
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.12);
-  overflow: hidden;
-}
-
-.sync-bar-fill {
-  height: 100%;
-  width: 0%;
-  background: var(--green);
-  transition: width 0.35s ease;
-}
-
-/* Unified Prayer Page Sections & Subheadings */
-.subnav-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 0 2px;
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
 }
 
 .subnav-link {
   text-decoration: none;
-  font-size: 12px;
+  font-size: 12.5px;
+  font-weight: 500;
   color: var(--text-muted);
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px solid transparent;
-  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  padding: 6px 12px;
+  border-radius: var(--r-sm);
+  transition: color 180ms var(--ease), background-color 180ms var(--ease);
 }
 
 .subnav-link:hover {
-  color: var(--text-soft);
-  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .subnav-link.is-active {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--border);
+  color: var(--text);
+  background: var(--bg-elevated);
 }
 
 .prayer-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  scroll-margin-top: 18px;
+  gap: 14px;
+  scroll-margin-top: 20px;
 }
 
 .section-subheading {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 10px;
-  padding: 0 2px;
+  margin-top: 8px;
 }
 
 .sub-index {
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 500;
   color: var(--orange);
   letter-spacing: 0.08em;
 }
@@ -323,9 +311,9 @@ body {
 .sub-title {
   margin: 0;
   font-size: 15px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: var(--text-soft);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text);
 }
 
 .sub-line {
@@ -334,19 +322,130 @@ body {
   background: var(--border);
 }
 
-/* Main Atmospheric HUD Stage */
+/* ==========================================================================
+   SHARED BUTTONS, INPUTS & CONTROLS (Unified 34px Height)
+   ========================================================================== */
+.sq-btn,
+.hud-btn,
+.btn-3d,
+.step-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--ctrl-h);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-soft);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease), transform 120ms var(--ease);
+}
+
+.sq-btn {
+  width: var(--ctrl-h);
+  padding: 0;
+  font-size: 16px;
+}
+
+.sq-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.hud-btn,
+.btn-3d {
+  padding: 0 13px;
+  gap: 6px;
+}
+
+.step-btn {
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+}
+
+.sq-btn:hover,
+.hud-btn:hover,
+.btn-3d:hover,
+.step-btn:hover {
+  background: var(--bg-hover);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--text);
+}
+
+.sq-btn:active,
+.hud-btn:active,
+.btn-3d:active {
+  transform: scale(0.98);
+}
+
+.hud-btn-accent,
+.btn-3d.is-active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #ffffff;
+}
+
+.hud-btn-accent:hover,
+.btn-3d.is-active:hover {
+  background: var(--orange-hover);
+  border-color: var(--orange-hover);
+  color: #ffffff;
+}
+
+.dark-input,
+.dark-select {
+  height: var(--ctrl-h);
+  width: 100%;
+  padding: 0 12px;
+  border-radius: var(--r-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease);
+}
+
+.dark-select {
+  width: auto;
+  cursor: pointer;
+}
+
+.dark-input:focus,
+.dark-select:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(229, 106, 53, 0.16);
+}
+
+.dark-input::placeholder {
+  color: var(--text-muted);
+}
+
+.dark-textarea {
+  height: auto;
+  padding: 10px 12px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* ==========================================================================
+   3D KAABA STAGE (PRAYER HERO)
+   ========================================================================== */
 .hud-stage {
   position: relative;
-  flex: 1;
-  min-height: 460px;
+  min-height: 410px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 20px;
-  padding: 20px 22px 16px;
-  border-radius: 8px;
-  background: radial-gradient(circle at 54% 38%, rgba(122, 113, 94, 0.22), #151411 72%);
+  gap: 18px;
+  padding: 20px 22px 18px;
+  border-radius: var(--r-lg);
+  background: radial-gradient(circle at 54% 38%, rgba(164, 128, 86, 0.18), #121213 74%);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
   overflow: hidden;
   cursor: grab;
   user-select: none;
@@ -388,8 +487,8 @@ body {
   z-index: 2;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(16, 15, 13, 0.72) 0%, rgba(16, 15, 13, 0.08) 32%, rgba(16, 15, 13, 0.05) 75%, rgba(16, 15, 13, 0.35) 100%),
-    linear-gradient(180deg, rgba(16, 15, 13, 0.42) 0%, rgba(16, 15, 13, 0) 36%, rgba(16, 15, 13, 0.14) 70%, rgba(16, 15, 13, 0.78) 100%);
+    linear-gradient(90deg, rgba(11, 11, 12, 0.78) 0%, rgba(11, 11, 12, 0.12) 34%, rgba(11, 11, 12, 0.08) 74%, rgba(11, 11, 12, 0.42) 100%),
+    linear-gradient(180deg, rgba(11, 11, 12, 0.48) 0%, rgba(11, 11, 12, 0) 36%, rgba(11, 11, 12, 0.22) 70%, rgba(11, 11, 12, 0.84) 100%);
 }
 
 .stage-bg-pattern {
@@ -397,15 +496,14 @@ body {
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  opacity: 0.08;
+  opacity: 0.06;
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
 .stage-top-row,
-.stage-greeting,
 .stage-middle,
 .transport-bar {
   position: relative;
@@ -420,55 +518,13 @@ body {
   flex-wrap: wrap;
 }
 
-.controls-3d {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-
-.hint-3d {
-  font-size: 9.5px;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-}
-
-.btns-3d {
-  display: flex;
-  gap: 6px;
-}
-
-.btn-3d {
-  padding: 4px 9px;
-  border-radius: 4px;
-  background: rgba(20, 19, 16, 0.72);
-  border: 1px solid var(--border);
-  color: var(--text-soft);
-  font: inherit;
-  font-size: 11px;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: border-color 0.15s ease, background-color 0.15s ease;
-}
-
-.btn-3d:hover {
-  background: rgba(36, 34, 28, 0.85);
-  border-color: var(--border-strong);
-}
-
-.btn-3d.is-active {
-  border-color: rgba(232, 93, 42, 0.55);
-  color: #ffffff;
-}
-
 .greeting-line {
   margin: 0;
-  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
-  font-weight: 300;
-  color: #cfcabf;
-  max-width: 600px;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  font-weight: 400;
+  color: var(--text-soft);
   line-height: 1.3;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
 }
 
 .greeting-line strong {
@@ -478,30 +534,47 @@ body {
 
 .greeting-sub {
   margin-top: 6px;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
+  font-size: 11.5px;
+  letter-spacing: 0.07em;
   color: var(--text-muted);
+}
+
+.btns-3d {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: var(--r-md);
+  background: rgba(16, 16, 18, 0.62);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.btns-3d .btn-3d {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
 }
 
 /* Middle Telemetry Area */
 .stage-middle {
   display: grid;
-  grid-template-columns: 148px minmax(0, 1fr);
-  gap: 24px;
+  grid-template-columns: 144px minmax(0, 1fr);
+  gap: 20px;
   align-items: end;
   margin-top: auto;
-  padding-top: 96px;
+  padding-top: 52px;
 }
 
-/* Vertical Ruler (mirrors Target Height: 52 inches) */
 .vertical-ruler {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .ruler-label {
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 500;
   color: var(--text-muted);
 }
 
@@ -512,33 +585,34 @@ body {
 }
 
 .kpi-num {
-  font-size: 32px;
-  font-weight: 300;
+  font-size: 30px;
+  font-weight: 500;
   letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
   color: var(--text);
-  line-height: 1;
+  line-height: 1.05;
 }
 
 .kpi-unit {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
 .ruler-scale {
   display: flex;
   align-items: stretch;
-  gap: 12px;
+  gap: 10px;
   margin-top: 8px;
-  height: 140px;
+  height: 122px;
 }
 
 .ruler-track {
   position: relative;
   width: 10px;
-  border-left: 1px solid rgba(255, 255, 255, 0.25);
+  border-left: 1px solid rgba(255, 255, 255, 0.22);
   background-image: repeating-linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.25) 0 1px,
+    rgba(255, 255, 255, 0.22) 0 1px,
     transparent 1px 10px
   );
 }
@@ -550,8 +624,8 @@ body {
   width: 14px;
   height: 2px;
   background: var(--orange);
-  box-shadow: 0 0 8px rgba(232, 93, 42, 0.8);
-  transition: top 0.4s ease;
+  box-shadow: 0 0 8px rgba(229, 106, 53, 0.8);
+  transition: top 0.4s var(--ease);
 }
 
 .ruler-ticks {
@@ -559,11 +633,11 @@ body {
   flex-direction: column;
   justify-content: space-between;
   font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
-/* Interactive HUD Prayer Cards */
+/* Interactive 5 Prayer HUD Cards */
 .hud-prayer-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -575,33 +649,37 @@ body {
   flex-direction: column;
   justify-content: space-between;
   gap: 12px;
-  padding: 12px 12px;
-  border-radius: 6px;
-  background: rgba(16, 15, 13, 0.64);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 13px 14px;
+  border-radius: var(--r-md);
+  background: rgba(16, 16, 18, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--text);
-  font: inherit;
   cursor: pointer;
   text-align: left;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: border-color 0.16s ease, background-color 0.16s ease, transform 0.12s ease;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: border-color 180ms var(--ease), background-color 180ms var(--ease), transform 140ms var(--ease);
 }
 
 .hud-prayer-card:hover {
-  background: rgba(34, 32, 26, 0.85);
-  border-color: var(--border-strong);
+  background: rgba(28, 28, 32, 0.84);
+  border-color: rgba(255, 255, 255, 0.22);
   transform: translateY(-2px);
+}
+
+.hud-prayer-card:active {
+  transform: scale(0.985);
 }
 
 .hud-prayer-card.is-done {
   background: var(--green-soft);
-  border-color: rgba(50, 184, 107, 0.45);
+  border-color: var(--green-border);
 }
 
 .hud-prayer-card.is-next:not(.is-done) {
   background: var(--orange-soft);
-  border-color: rgba(232, 93, 42, 0.55);
+  border-color: var(--orange-border);
 }
 
 .hud-card-top {
@@ -611,20 +689,21 @@ body {
 }
 
 .hud-status-badge {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  border: 1px solid var(--border-strong);
+  border: 1.5px solid var(--border-strong);
   display: grid;
   place-items: center;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 600;
   color: transparent;
 }
 
 .hud-prayer-card.is-done .hud-status-badge {
   background: var(--green);
   border-color: var(--green);
-  color: #081c10;
+  color: #061b0f;
 }
 
 .hud-prayer-card.is-next:not(.is-done) .hud-status-badge {
@@ -634,9 +713,10 @@ body {
 
 .hud-tag {
   font-family: "JetBrains Mono", monospace;
-  font-size: 9px;
+  font-size: 11px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   color: var(--text-muted);
 }
 
@@ -649,24 +729,26 @@ body {
 }
 
 .hud-p-name {
-  font-size: 12.5px;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-soft);
 }
 
 .hud-p-time {
   font-family: "JetBrains Mono", monospace;
+  font-variant-numeric: tabular-nums;
   font-size: 19px;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--text);
   margin-top: 2px;
 }
 
-/* Transport / Solar Scrubber Bar */
+/* Stage Bottom Transport Bar */
 .transport-bar {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding-top: 12px;
+  padding-top: 14px;
   border-top: 1px solid var(--border);
   flex-wrap: wrap;
 }
@@ -674,30 +756,6 @@ body {
 .transport-controls {
   display: flex;
   gap: 6px;
-}
-
-.sq-btn {
-  width: 30px;
-  height: 30px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--border);
-  color: var(--text-soft);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  font-size: 15px;
-  transition: background-color 0.15s ease;
-}
-
-.sq-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--text);
-}
-
-.sq-btn svg {
-  width: 14px;
-  height: 14px;
 }
 
 .scrubber-wrap {
@@ -708,7 +766,7 @@ body {
 .scrubber-head {
   display: flex;
   justify-content: space-between;
-  font-size: 10.5px;
+  font-size: 11.5px;
   color: var(--text-muted);
   margin-bottom: 6px;
 }
@@ -716,7 +774,7 @@ body {
 .scrubber-track {
   position: relative;
   height: 4px;
-  border-radius: 2px;
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.14);
 }
 
@@ -724,7 +782,7 @@ body {
   height: 100%;
   width: 0%;
   background: var(--text);
-  border-radius: 2px;
+  border-radius: 999px;
 }
 
 .scrubber-markers {
@@ -753,95 +811,113 @@ body {
 
 .school-toggle {
   display: inline-flex;
-  background: rgba(255, 255, 255, 0.06);
+  align-items: center;
+  height: var(--ctrl-h);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 2px;
+  border-radius: var(--r-sm);
+  padding: 3px;
+  gap: 2px;
 }
 
 .mini-mode-btn {
   border: none;
   background: transparent;
   color: var(--text-muted);
-  font: inherit;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background-color 160ms var(--ease), color 160ms var(--ease);
 }
 
 .mini-mode-btn.is-active {
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--bg-hover);
   color: var(--text);
 }
 
 .boost-pill {
-  padding: 5px 10px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.07);
+  display: inline-flex;
+  align-items: center;
+  height: var(--ctrl-h);
+  padding: 0 12px;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-soft);
 }
 
-/* BOTTOM 3-COLUMN BENTO GRID */
+/* ==========================================================================
+   3-COLUMN BENTO SUMMARY GRID
+   ========================================================================== */
 .bento-3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .bento-card {
-  background: var(--bg-card);
+  background: var(--bg-panel);
   border: 1px solid var(--border);
-  border-radius: 7px;
-  padding: 16px 18px;
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 12px;
-  min-height: 186px;
+  gap: 14px;
+  min-height: 152px;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .bento-title {
-  font-size: 12.5px;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-soft);
-  font-weight: 400;
 }
 
 .bento-kpi-row {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
 }
 
 .big-metric {
   font-size: 32px;
-  font-weight: 300;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   line-height: 1;
   letter-spacing: -0.03em;
+  color: var(--text);
 }
 
 .metric-unit {
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 400;
   color: var(--text-muted);
-  margin-left: 3px;
+  margin-left: 4px;
 }
 
 .side-metrics {
   display: flex;
-  gap: 14px;
-  font-size: 11.5px;
+  gap: 16px;
+  font-size: 12.5px;
 }
 
 .side-metrics > div {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .m-lbl {
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 500;
   color: var(--text-muted);
 }
 
@@ -849,74 +925,55 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 10.5px;
+  font-size: 11.5px;
   color: var(--text-muted);
-  padding-top: 8px;
+  padding-top: 10px;
   border-top: 1px solid var(--border);
 }
-
-.legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.l-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.l-white { background: #ffffff; }
-.l-orange { background: var(--orange); }
 
 .stepper-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
 }
 
 .micro-scale {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-soft);
 }
 
 .mini-stepper {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-}
-
-.step-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-soft);
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.step-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
+  gap: 6px;
 }
 
 .step-val {
-  min-width: 42px;
+  min-width: 44px;
   text-align: center;
-  font-size: 12px;
+  font-size: 12.5px;
 }
 
-/* Card 2: Vertical Needle Spark-Bars (mirrors "Muscle Fatigue") */
+/* Vertical Needle Spark-Bars */
 .spark-bars {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
   align-items: end;
-  height: 92px;
-  padding: 6px 4px;
+  height: 82px;
+  padding: 4px 2px;
+}
+
+.week-spark-bars {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  align-items: end;
+  height: 82px;
+  padding: 4px 2px;
 }
 
 .spark-col {
@@ -925,20 +982,27 @@ body {
   align-items: center;
   justify-content: flex-end;
   height: 100%;
-  gap: 5px;
+  gap: 6px;
+}
+
+.spark-col-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .spark-pct {
   font-family: "JetBrains Mono", monospace;
-  font-size: 9.5px;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
 .spark-track {
-  width: 4px;
-  height: 66px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.1);
+  width: 5px;
+  height: 54px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -946,58 +1010,77 @@ body {
 
 .spark-needle {
   width: 100%;
-  border-radius: 2px;
-  background: #ffffff;
-  transition: height 0.35s ease;
+  border-radius: 999px;
+  background: var(--text);
+  transition: height 0.35s var(--ease);
 }
 
-.spark-needle.is-focus {
+.spark-needle.is-focus,
+.spark-needle.is-today-bar {
   background: var(--orange);
 }
 
-.spark-scale {
+.spark-needle.is-gym-bar {
+  background: var(--green);
+}
+
+.spark-needle.is-rest-bar {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.spark-scale,
+.week-spark-scale {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
   text-align: center;
-  font-size: 9.5px;
+  font-size: 11px;
   color: var(--text-muted);
-  padding-top: 6px;
+  padding-top: 8px;
   border-top: 1px solid var(--border);
 }
 
-/* Card 3: Semicircular Arc Gauge (mirrors "Hydration Level") */
+.spark-scale {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.week-spark-scale {
+  grid-template-columns: repeat(7, 1fr);
+}
+
+/* Semicircular Daylight Gauge */
 .arc-gauge-wrap {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  height: 102px;
+  height: 92px;
 }
 
 .arc-gauge-svg {
   width: 100%;
-  max-width: 210px;
+  max-width: 200px;
   height: auto;
 }
 
 .gauge-center-label {
   position: absolute;
-  bottom: 14px;
+  bottom: 10px;
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--text);
 }
 
 .gauge-scale {
   display: flex;
   justify-content: space-between;
-  font-size: 9.5px;
+  font-size: 11px;
   color: var(--text-muted);
-  padding-top: 6px;
+  padding-top: 8px;
   border-top: 1px solid var(--border);
 }
 
-/* RIGHT KHAKI-TAUPE INSPECTOR SIDEBAR (Signature GymSync Element) */
+/* ==========================================================================
+   RIGHT INSPECTOR SIDEBAR (Refined Obsidian-Bronze Panel)
+   ========================================================================== */
 .inspector-sidebar {
   position: sticky;
   top: 0;
@@ -1006,23 +1089,25 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: linear-gradient(180deg, var(--taupe-top) 0%, var(--taupe-mid) 45%, var(--taupe-bot) 100%);
-  border-left: 1px solid rgba(255, 255, 255, 0.16);
-  color: #ffffff;
+  background:
+    radial-gradient(ellipse 100% 35% at 50% 0%, rgba(229, 106, 53, 0.09), transparent 70%),
+    linear-gradient(180deg, var(--sidebar-top) 0%, var(--sidebar-mid) 50%, var(--sidebar-bot) 100%);
+  border-left: 1px solid var(--border);
+  color: var(--text);
 }
 
 .inspector-body {
-  padding: 22px 20px 16px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   flex: 1;
 }
 
 .inspector-title {
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: -0.015em;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   margin-bottom: 12px;
 }
 
@@ -1033,15 +1118,17 @@ body {
 }
 
 .insp-big {
-  font-size: 28px;
-  font-weight: 300;
+  font-size: 26px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   line-height: 1.05;
+  letter-spacing: -0.025em;
 }
 
 .insp-unit {
-  font-size: 11px;
-  color: var(--taupe-muted);
-  margin-top: 2px;
+  font-size: 12px;
+  color: var(--sidebar-muted);
+  margin-top: 4px;
 }
 
 .dashed-divider {
@@ -1051,113 +1138,90 @@ body {
 }
 
 .insp-label {
-  font-size: 11.5px;
-  color: var(--taupe-muted);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sidebar-muted);
   margin-bottom: 8px;
 }
 
 .insp-split-section {
   display: grid;
-  grid-template-columns: 1fr 108px;
+  grid-template-columns: 1fr 100px;
   gap: 12px;
   align-items: center;
 }
 
-/* Block Meter (mirrors "Muscle Fatigue:" blocks) */
 .block-meter {
   display: flex;
   gap: 5px;
   align-items: flex-end;
-  height: 26px;
+  height: 24px;
 }
 
 .b-seg {
   width: 14px;
-  height: 16px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.22);
-  transition: all 0.2s ease;
+  height: 14px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.14);
+  transition: all 200ms var(--ease);
 }
 
 .b-seg.is-on {
   height: 22px;
-  background: #ffffff;
+  background: var(--green);
 }
 
 .b-seg.is-next {
   background: var(--orange);
 }
 
-/* Geometric Half-Circle Glyphs (mirrors "Reps to failure" & "Balance") */
-.glyph-row,
-.balance-glyphs {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.glyph {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.glyph.g-full { background: #ffffff; }
-.glyph.g-half { background: linear-gradient(90deg, #ffffff 50%, rgba(255,255,255,0.22) 50%); }
-.glyph.g-orange { background: linear-gradient(90deg, var(--orange) 50%, rgba(255,255,255,0.22) 50%); }
-
 .insp-qibla-readout {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
 }
 
 .compass-svg {
-  width: 104px;
-  height: 104px;
+  width: 96px;
+  height: 96px;
 }
 
-/* Reminder Row */
 .insp-info-row {
-  display: grid;
-  grid-template-columns: 68px 1fr;
-  gap: 10px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .insp-info-title {
-  font-size: 12px;
-  font-weight: 500;
-  color: #ffffff;
-  margin-bottom: 3px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--orange);
+  margin-bottom: 2px;
 }
 
 .insp-info-body {
-  font-size: 11.5px;
-  color: var(--taupe-muted);
-  line-height: 1.4;
+  font-size: 13px;
+  color: var(--text-soft);
+  line-height: 1.5;
 }
 
 .insp-cycle-btn {
-  margin-top: 6px;
+  margin-top: 8px;
   background: none;
   border: none;
   padding: 0;
-  color: #ffffff;
-  font: inherit;
-  font-size: 11px;
+  color: var(--sidebar-muted);
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
-  opacity: 0.8;
+  transition: color 160ms var(--ease);
 }
 
 .insp-cycle-btn:hover {
-  opacity: 1;
-  text-decoration: underline;
+  color: var(--text);
 }
 
-/* 30-Day Barcode Telemetry (mirrors "Bar Velocity") */
+/* 30-Day Barcode Telemetry */
 .barcode-track {
   display: grid;
   grid-template-columns: repeat(30, 1fr);
@@ -1168,18 +1232,18 @@ body {
 
 .bc-tick {
   width: 100%;
-  border-radius: 1px;
-  background: rgba(255, 255, 255, 0.22);
-  height: 8px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  height: 7px;
 }
 
 .bc-tick.lvl-mid {
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.48);
   height: 14px;
 }
 
 .bc-tick.lvl-high {
-  background: #ffffff;
+  background: var(--green);
   height: 20px;
 }
 
@@ -1191,9 +1255,9 @@ body {
 .barcode-scale {
   display: flex;
   justify-content: space-between;
-  font-size: 9.5px;
-  color: var(--taupe-muted);
-  margin-top: 4px;
+  font-size: 11px;
+  color: var(--sidebar-muted);
+  margin-top: 6px;
 }
 
 /* Bottom 2-Column Inspector Split */
@@ -1204,51 +1268,78 @@ body {
 }
 
 .dotted-arc-svg {
-  width: 78px;
-  height: 44px;
+  width: 76px;
+  height: 42px;
   display: block;
   margin: 2px 0 6px;
 }
 
+.balance-glyphs {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 24px;
+}
+
+.glyph {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.glyph.g-full {
+  background: var(--green);
+}
+
+.glyph.g-orange {
+  background: var(--orange);
+}
+
 .insp-stat-big {
-  font-size: 19px;
-  font-weight: 400;
-  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 4px;
 }
 
 .insp-stat-sub {
-  font-size: 10.5px;
-  color: var(--taupe-muted);
+  font-size: 11.5px;
+  color: var(--sidebar-muted);
+  margin-top: 2px;
 }
 
-/* Pinned Bottom CTA (mirrors "Start Training") */
 .inspector-cta {
   width: 100%;
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
-  background: var(--taupe-cta);
-  color: #ffffff;
-  font: inherit;
+  border-top: 1px solid var(--border);
+  background: var(--sidebar-cta);
+  color: var(--text);
   font-size: 13.5px;
   font-weight: 500;
   padding: 16px 20px;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 160ms var(--ease), color 160ms var(--ease);
 }
 
 .inspector-cta:hover {
-  background: var(--taupe-cta-hover);
+  background: var(--sidebar-cta-hover);
+  color: #ffffff;
 }
 
-/* DARK PANELS FOR TIMETABLE / ACTIVITY / SETTINGS TABS */
+/* ==========================================================================
+   CONTENT PANELS — TIMETABLE, ACTIVITY, CALCULATION
+   ========================================================================== */
 .panel-dark {
-  background: var(--bg-card);
+  background: var(--bg-panel);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--r-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  flex: 1;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .panel-toolbar {
@@ -1262,56 +1353,32 @@ body {
 }
 
 .panel-heading {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .panel-sub {
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--text-muted);
   margin-top: 2px;
 }
 
 .toolbar-btns {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .month-readout {
   min-width: 124px;
   text-align: center;
-  font-size: 12px;
-}
-
-.hud-btn {
-  padding: 6px 12px;
-  border-radius: 5px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-soft);
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.hud-btn:hover {
-  background: rgba(255, 255, 255, 0.13);
-}
-
-.hud-btn-accent {
-  background: var(--orange);
-  border-color: var(--orange);
-  color: #ffffff;
+  font-size: 12.5px;
   font-weight: 500;
 }
 
-.hud-btn-accent:hover {
-  filter: brightness(1.08);
-}
-
-/* Timetable Table */
+/* Timetable */
 .table-scroll {
   overflow: auto;
   max-height: 440px;
@@ -1320,33 +1387,37 @@ body {
 .timetable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12.5px;
+  font-size: 13px;
 }
 
 .timetable thead th {
   position: sticky;
   top: 0;
-  background: #141310;
+  z-index: 2;
+  background: var(--bg-surface);
   color: var(--text-muted);
   font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.06em;
   text-align: left;
-  padding: 11px 14px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--border);
 }
 
 .timetable tbody td {
-  padding: 9px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border-subtle);
   color: var(--text-soft);
   white-space: nowrap;
 }
 
 .timetable tbody td.t-time {
   font-family: "JetBrains Mono", monospace;
-  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  font-weight: 500;
 }
 
 .timetable tbody tr:hover {
@@ -1358,17 +1429,19 @@ body {
 }
 
 .timetable tbody tr.is-today-row td {
-  color: #ffffff;
-  font-weight: 500;
+  color: var(--text);
+  font-weight: 600;
 }
 
 .row-tag {
   display: inline-block;
-  margin-left: 6px;
-  padding: 1px 5px;
-  border-radius: 3px;
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 5px;
   font-family: "JetBrains Mono", monospace;
-  font-size: 9px;
+  font-size: 10px;
+  font-weight: 600;
+  vertical-align: middle;
 }
 
 .tag-today {
@@ -1377,7 +1450,7 @@ body {
 }
 
 .tag-jumuah {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--text-soft);
 }
 
@@ -1387,30 +1460,30 @@ body {
   color: var(--text-muted) !important;
 }
 
-/* Heatmap & Activity Tab */
+/* 52-Week Activity Heatmap */
 .analytics-panel {
   padding-bottom: 20px;
 }
 
 .heatmap-scroll {
   overflow-x: auto;
-  padding: 18px 20px 6px;
+  padding: 18px 20px 8px;
 }
 
 .heatmap-months {
   display: grid;
   grid-template-columns: repeat(53, 12px);
   gap: 3px;
-  margin-left: 32px;
+  margin-left: 34px;
   margin-bottom: 6px;
   font-family: "JetBrains Mono", monospace;
-  font-size: 9.5px;
+  font-size: 10.5px;
   color: var(--text-muted);
 }
 
 .heatmap-body {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .heatmap-days {
@@ -1419,7 +1492,7 @@ body {
   justify-content: space-between;
   padding: 12px 0;
   font-family: "JetBrains Mono", monospace;
-  font-size: 9px;
+  font-size: 10.5px;
   color: var(--text-muted);
   width: 26px;
 }
@@ -1435,23 +1508,23 @@ body {
 .cell {
   width: 12px;
   height: 12px;
-  border-radius: 2px;
+  border-radius: 3px;
   display: inline-block;
 }
 
-.cell.lvl-0 { background: rgba(255, 255, 255, 0.07); }
-.cell.lvl-1 { background: rgba(232, 93, 42, 0.35); }
-.cell.lvl-2 { background: rgba(232, 93, 42, 0.65); }
-.cell.lvl-3 { background: rgba(50, 184, 107, 0.65); }
-.cell.lvl-4 { background: #32b86b; }
-.cell.is-today { outline: 1.5px solid #ffffff; }
+.cell.lvl-0 { background: rgba(255, 255, 255, 0.06); }
+.cell.lvl-1 { background: rgba(229, 106, 53, 0.35); }
+.cell.lvl-2 { background: rgba(229, 106, 53, 0.65); }
+.cell.lvl-3 { background: rgba(47, 179, 109, 0.65); }
+.cell.lvl-4 { background: var(--green); }
+.cell.is-today { outline: 1.5px solid var(--text); }
 
 .heatmap-legend {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 8px 20px 16px;
-  font-size: 10px;
+  gap: 6px;
+  padding: 8px 20px 18px;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
@@ -1464,25 +1537,27 @@ body {
 
 .bd-row {
   display: grid;
-  grid-template-columns: 74px 1fr 48px 40px;
+  grid-template-columns: 78px 1fr 52px 44px;
   align-items: center;
   gap: 12px;
-  font-size: 12.5px;
+  font-size: 13px;
 }
 
 .bd-track {
-  height: 5px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
   overflow: hidden;
 }
 
 .bd-fill {
   height: 100%;
-  background: #ffffff;
+  border-radius: 999px;
+  background: var(--orange);
+  transition: width 0.35s var(--ease);
 }
 
-/* Settings Tab */
+/* Calculation Settings */
 .settings-list {
   display: flex;
   flex-direction: column;
@@ -1492,8 +1567,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  padding: 15px 20px;
+  gap: 16px;
+  padding: 14px 20px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -1509,21 +1584,12 @@ body {
 .setting-item-col {
   flex-direction: column;
   align-items: flex-start;
+  gap: 12px;
 }
 
 .setting-label {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 500;
-}
-
-.dark-select {
-  background: #141310;
-  color: var(--text);
-  border: 1px solid var(--border-strong);
-  border-radius: 5px;
-  padding: 6px 10px;
-  font: inherit;
-  font-size: 12px;
 }
 
 .city-row {
@@ -1533,14 +1599,21 @@ body {
 }
 
 .city-btn {
-  padding: 6px 12px;
-  border-radius: 5px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.05);
+  height: 32px;
+  padding: 0 13px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
   color: var(--text-soft);
-  font: inherit;
-  font-size: 12px;
+  font-size: 12.5px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 160ms var(--ease);
+}
+
+.city-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text);
 }
 
 .city-btn.is-selected {
@@ -1554,1032 +1627,19 @@ body {
   position: fixed;
   z-index: 60;
   pointer-events: none;
-  background: #100f0d;
+  background: #0d0d0f;
   color: #ffffff;
   border: 1px solid var(--border-strong);
-  border-radius: 5px;
-  padding: 5px 9px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
-}
-
-/* Cross-Page Nav & Fitness Page Styles (same warm charcoal & khaki-taupe theme) */
-.nav-sep {
-  width: 1px;
-  height: 14px;
-  background: var(--border-strong);
-}
-
-.hud-page-link {
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  color: var(--text-soft);
-}
-
-.hud-page-link:hover {
-  color: var(--orange);
-}
-
-.fitness-main-panel {
-  gap: 0;
-}
-
-.fitness-day-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-
-.day-nav-block {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.day-nav-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.fitness-date-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  color: var(--text);
-}
-
-.gym-check-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: 1px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-soft);
-  font: inherit;
-  font-size: 12.5px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
-}
-
-.gym-check-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.gym-check-btn.is-active {
-  background: var(--green-soft);
-  border-color: rgba(50, 184, 107, 0.55);
-  color: #ffffff;
-}
-
-.gym-check-circle {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 1px solid var(--border-strong);
-  display: grid;
-  place-items: center;
-  font-size: 10px;
-  color: transparent;
-}
-
-.gym-check-btn.is-active .gym-check-circle {
-  background: var(--green);
-  border-color: var(--green);
-  color: #081c10;
-}
-
-.workout-meta-bar {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-
-.workout-field {
-  flex: 1;
-  min-width: 220px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.dark-input {
-  width: 100%;
-  padding: 8px 11px;
-  border-radius: 5px;
-  background: #13120f;
-  border: 1px solid var(--border);
-  color: var(--text);
-  font: inherit;
-  font-size: 12.5px;
-  outline: none;
-  transition: border-color 0.15s ease;
-}
-
-.dark-input:focus {
-  border-color: var(--orange);
-}
-
-.dark-input::placeholder {
-  color: var(--text-muted);
-}
-
-.dark-textarea {
-  resize: vertical;
-  min-height: 54px;
-}
-
-.split-presets {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.preset-chip {
+  border-radius: var(--r-sm);
   padding: 6px 10px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-muted);
-  font: inherit;
-  font-size: 11.5px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.preset-chip:hover {
-  color: var(--text-soft);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.preset-chip.is-selected {
-  background: var(--orange-soft);
-  border-color: rgba(232, 93, 42, 0.55);
-  color: #ffffff;
-}
-
-.add-exercise-form {
-  display: grid;
-  grid-template-columns: minmax(0, 1.9fr) 82px 96px 124px auto;
-  gap: 10px;
-  align-items: end;
-  padding: 14px 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid var(--border);
-}
-
-.form-col {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.add-ex-btn {
-  height: 35px;
-  padding: 0 16px;
-  white-space: nowrap;
-}
-
-.exercise-list-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 190px;
-}
-
-.exercise-list-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) 140px 110px 36px;
-  gap: 12px;
-  padding: 10px 20px;
-  background: #141310;
-  border-bottom: 1px solid var(--border);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-}
-
-.exercise-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.empty-exercises {
-  padding: 36px 20px;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 12.5px;
-}
-
-.exercise-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) 140px 110px 36px;
-  gap: 12px;
-  align-items: center;
-  padding: 11px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  transition: background-color 0.14s ease;
-}
-
-.exercise-row:hover {
-  background: rgba(255, 255, 255, 0.025);
-}
-
-.exercise-row.is-done .ex-name {
-  text-decoration: line-through;
-  color: var(--text-muted);
-}
-
-.ex-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.ex-name {
-  font-size: 13px;
-  color: var(--text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.ex-check-btn {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 1px solid var(--border-strong);
-  background: transparent;
-  color: transparent;
-  font-size: 10px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.exercise-row.is-done .ex-check-btn {
-  background: var(--green);
-  border-color: var(--green);
-  color: #081c10;
-}
-
-.ex-sets-reps {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
-  color: var(--text-soft);
-}
-
-.tiny-step {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 12px;
-  line-height: 1;
-}
-
-.tiny-step:hover {
-  background: rgba(255, 255, 255, 0.14);
-  color: var(--text);
-}
-
-.ex-weight {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.ex-del-btn {
-  width: 26px;
-  height: 26px;
-  border-radius: 4px;
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.ex-del-btn:hover {
-  background: var(--orange-soft);
-  color: var(--orange);
-}
-
-.workout-notes-bar {
-  padding: 14px 20px 18px;
-  border-top: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.015);
-}
-
-.notes-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.l-green {
-  background: var(--green);
-}
-
-/* Weekly 7-Day Spark Bars on Fitness Page */
-.week-spark-bars {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  align-items: end;
-  height: 92px;
-  padding: 6px 4px;
-}
-
-.spark-col-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  font: inherit;
-}
-
-.spark-needle.is-gym-bar {
-  background: var(--green);
-}
-
-.spark-needle.is-rest-bar {
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.spark-needle.is-today-bar {
-  background: var(--orange);
-}
-
-.week-spark-scale {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-  font-size: 9.5px;
-  color: var(--text-muted);
-  padding-top: 6px;
-  border-top: 1px solid var(--border);
-}
-
-/* Right Khaki-Taupe Sidebar: Monthly Gym Calendar & Recent Workouts */
-.gym-cal-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.gym-cal-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.gym-cal-month {
-  font-size: 12px;
-  color: #ffffff;
-}
-
-.cal-nav-btn {
-  width: 26px;
-  height: 26px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(0, 0, 0, 0.14);
-  color: #ffffff;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.cal-nav-btn:hover {
-  background: rgba(0, 0, 0, 0.26);
-}
-
-.gym-cal-weekdays,
-.gym-cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
-
-.gym-cal-weekdays span {
-  text-align: center;
-  font-size: 9.5px;
-  color: var(--taupe-muted);
-}
-
-.cal-cell {
-  height: 30px;
-  border-radius: 4px;
-  border: 1px solid transparent;
-  background: rgba(0, 0, 0, 0.14);
-  color: var(--taupe-muted);
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  transition: all 0.14s ease;
-}
-
-.cal-cell.is-empty {
-  background: transparent;
-  cursor: default;
-}
-
-.cal-cell:not(.is-empty):hover {
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-}
-
-.cal-cell.is-gym {
-  background: var(--green);
-  color: #081c10;
-  font-weight: 600;
-}
-
-.cal-cell.is-today {
-  border-color: #ffffff;
-}
-
-.cal-cell.is-selected {
-  outline: 2px solid var(--orange);
-  outline-offset: -1px;
-  color: #ffffff;
-}
-
-.cal-cell.is-gym.is-selected {
-  color: #081c10;
-}
-
-.recent-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.recent-item {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(0, 0, 0, 0.14);
-  color: #ffffff;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.14s ease;
-}
-
-.recent-item:hover,
-.recent-item.is-selected {
-  background: rgba(0, 0, 0, 0.28);
-  border-color: rgba(255, 255, 255, 0.32);
-}
-
-.recent-title {
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.recent-meta,
-.recent-date {
-  font-size: 10px;
-  color: var(--taupe-muted);
-}
-
-.insp-bottom-actions {
-  display: flex;
-}
-
-.insp-ghost-btn {
-  width: 100%;
-  padding: 8px 12px;
-  border-radius: 5px;
-  border: 1px dashed rgba(255, 255, 255, 0.3);
-  background: transparent;
-  color: #ffffff;
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.insp-ghost-btn:hover {
-  background: rgba(0, 0, 0, 0.16);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
 }
 
 /* ==========================================================================
-   VIBRANT LIGHT MODE THEME
+   FITNESS PAGE — TRANSLUCENT GYM BACKDROP, WEEKLY PLAN & PER-SET LOGGING
    ========================================================================== */
-[data-theme="light"] {
-  --bg-outer: #eef4f1;
-  --bg-stage: #f2f6f4;
-  --bg-card: #ffffff;
-  --bg-card-solid: #ffffff;
-  --bg-elevated: #e7f0ec;
-
-  --taupe-top: #0d5944;
-  --taupe-mid: #137359;
-  --taupe-bot: #1a8a6b;
-  --taupe-cta: #094535;
-  --taupe-cta-hover: #073629;
-
-  --border: rgba(10, 25, 19, 0.14);
-  --border-strong: rgba(10, 25, 19, 0.26);
-  --dashed: rgba(255, 255, 255, 0.34);
-
-  --text: #09140f;
-  --text-soft: #14261e;
-  --text-muted: #2f473d;
-  --taupe-muted: #effaf5;
-
-  --orange: #e64c1c;
-  --orange-soft: rgba(230, 76, 28, 0.15);
-  --green: #129142;
-  --green-soft: rgba(18, 145, 66, 0.16);
-}
-
-[data-theme="light"] .viewport-frame {
-  background:
-    radial-gradient(ellipse at 25% 15%, rgba(18, 145, 66, 0.11), transparent 52%),
-    radial-gradient(ellipse at 75% 85%, rgba(230, 76, 28, 0.1), transparent 52%),
-    var(--bg-stage);
-}
-
-/* Crisp, bolder light-mode typography */
-[data-theme="light"] body {
-  color: var(--text);
-  font-weight: 450;
-}
-
-[data-theme="light"] .hud-tab,
-[data-theme="light"] .subnav-link,
-[data-theme="light"] .bento-title,
-[data-theme="light"] .sub-title,
-[data-theme="light"] .panel-heading,
-[data-theme="light"] .setting-label,
-[data-theme="light"] .mode-pill,
-[data-theme="light"] .sync-brand {
-  color: var(--text);
-  font-weight: 600;
-}
-
-[data-theme="light"] .hud-tab:not(.is-active),
-[data-theme="light"] .subnav-link:not(.is-active) {
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-[data-theme="light"] .kpi-num,
-[data-theme="light"] .big-metric,
-[data-theme="light"] .hud-p-time,
-[data-theme="light"] .gauge-center-label {
-  color: var(--text);
-  font-weight: 600;
-}
-
-[data-theme="light"] .hud-p-name,
-[data-theme="light"] .m-lbl,
-[data-theme="light"] .metric-unit,
-[data-theme="light"] .spark-pct,
-[data-theme="light"] .spark-scale,
-[data-theme="light"] .gauge-scale,
-[data-theme="light"] .timetable tbody td {
-  color: var(--text-soft);
-  font-weight: 500;
-}
-
-[data-theme="light"] .timetable thead th,
-[data-theme="light"] .exercise-list-head {
-  color: var(--text);
-  font-weight: 600;
-}
-
-[data-theme="light"] .mode-pill,
-[data-theme="light"] .sync-widget,
-[data-theme="light"] .bento-card,
-[data-theme="light"] .panel-dark {
-  background: #ffffff;
-  border-color: var(--border);
-  box-shadow: 0 4px 16px rgba(10, 25, 19, 0.06);
-}
-
-[data-theme="light"] .sq-btn:hover,
-[data-theme="light"] .hud-btn:hover {
-  background: #e1ece7;
-}
-
-[data-theme="light"] .sync-bar {
-  background: rgba(10, 25, 19, 0.14);
-}
-
-[data-theme="light"] .subnav-link:hover {
-  background: rgba(10, 25, 19, 0.06);
-  color: var(--text);
-}
-
-[data-theme="light"] .subnav-link.is-active {
-  color: var(--text);
-  background: #ffffff;
-  border-color: var(--border-strong);
-  box-shadow: 0 2px 6px rgba(10, 25, 19, 0.08);
-}
-
-/* Light Mode 3D Kaaba Stage */
-[data-theme="light"] .hud-stage {
-  background:
-    radial-gradient(circle at 54% 34%, rgba(255, 224, 163, 0.45), transparent 58%),
-    linear-gradient(180deg, #e7f0ec 0%, #f4efe3 100%);
-  border-color: var(--border);
-  box-shadow: 0 6px 24px rgba(10, 25, 19, 0.07);
-}
-
-[data-theme="light"] .stage-vignette {
-  background:
-    linear-gradient(90deg, rgba(246, 249, 247, 0.94) 0%, rgba(246, 249, 247, 0.42) 34%, rgba(246, 249, 247, 0.1) 72%, rgba(246, 249, 247, 0.5) 100%),
-    linear-gradient(180deg, rgba(246, 249, 247, 0.84) 0%, rgba(246, 249, 247, 0.08) 38%, rgba(246, 249, 247, 0.28) 72%, rgba(246, 249, 247, 0.95) 100%);
-}
-
-[data-theme="light"] .stage-bg-pattern {
-  opacity: 0.16;
-  background-image:
-    linear-gradient(to right, rgba(10, 25, 19, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(10, 25, 19, 0.07) 1px, transparent 1px);
-}
-
-[data-theme="light"] .greeting-line {
-  color: #10241c;
-  font-weight: 500;
-  text-shadow: 0 1px 12px rgba(255, 255, 255, 0.95);
-}
-
-[data-theme="light"] .greeting-line strong {
-  color: #07120d;
-  font-weight: 700;
-}
-
-[data-theme="light"] .greeting-sub,
-[data-theme="light"] .ruler-label,
-[data-theme="light"] .kpi-unit,
-[data-theme="light"] .ruler-ticks,
-[data-theme="light"] .scrubber-head {
-  color: #162b22;
-  font-weight: 600;
-  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.92);
-}
-
-[data-theme="light"] .kpi-num {
-  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.95);
-}
-
-[data-theme="light"] .ruler-track {
-  border-left-color: rgba(10, 25, 19, 0.4);
-  background-image: repeating-linear-gradient(
-    to bottom,
-    rgba(10, 25, 19, 0.4) 0 1px,
-    transparent 1px 10px
-  );
-}
-
-[data-theme="light"] .btn-3d {
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--text);
-  font-weight: 600;
-  border-color: var(--border-strong);
-}
-
-[data-theme="light"] .btn-3d.is-active {
-  background: var(--orange);
-  border-color: var(--orange);
-  color: #ffffff;
-}
-
-[data-theme="light"] .hud-prayer-card {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(10, 25, 19, 0.16);
-  color: var(--text);
-  box-shadow: 0 4px 14px rgba(10, 25, 19, 0.08);
-}
-
-[data-theme="light"] .hud-prayer-card:hover {
-  background: #ffffff;
-  border-color: var(--border-strong);
-}
-
-[data-theme="light"] .hud-prayer-card.is-done {
-  background: rgba(226, 248, 234, 0.95);
-  border-color: rgba(18, 145, 66, 0.55);
-}
-
-[data-theme="light"] .hud-prayer-card.is-next:not(.is-done) {
-  background: rgba(255, 236, 229, 0.95);
-  border-color: rgba(230, 76, 28, 0.6);
-}
-
-[data-theme="light"] .hud-prayer-card.is-done .hud-status-badge {
-  color: #ffffff;
-}
-
-[data-theme="light"] .sq-btn,
-[data-theme="light"] .hud-btn,
-[data-theme="light"] .step-btn,
-[data-theme="light"] .boost-pill,
-[data-theme="light"] .school-toggle {
-  background: #f1f6f3;
-  border-color: var(--border);
-  color: var(--text-soft);
-}
-
-[data-theme="light"] .hud-btn-accent {
-  background: var(--orange);
-  border-color: var(--orange);
-  color: #ffffff;
-}
-
-[data-theme="light"] .mini-mode-btn.is-active {
-  background: #ffffff;
-  color: var(--text);
-  box-shadow: 0 1px 3px rgba(17, 34, 27, 0.12);
-}
-
-[data-theme="light"] .scrubber-track {
-  background: rgba(17, 34, 27, 0.14);
-}
-
-[data-theme="light"] .scrub-tick {
-  background: rgba(17, 34, 27, 0.4);
-}
-
-/* Light Mode Bento Charts & Gauges */
-[data-theme="light"] .l-white {
-  background: var(--green);
-}
-
-[data-theme="light"] .spark-track,
-[data-theme="light"] .bd-track {
-  background: rgba(17, 34, 27, 0.09);
-}
-
-[data-theme="light"] .spark-needle,
-[data-theme="light"] .bd-fill {
-  background: #167b60;
-}
-
-[data-theme="light"] .spark-needle.is-focus,
-[data-theme="light"] .spark-needle.is-today-bar {
-  background: var(--orange);
-}
-
-[data-theme="light"] .spark-needle.is-gym-bar {
-  background: var(--green);
-}
-
-[data-theme="light"] .spark-needle.is-rest-bar {
-  background: rgba(17, 34, 27, 0.16);
-}
-
-[data-theme="light"] .arc-gauge-svg path:first-child {
-  stroke: rgba(17, 34, 27, 0.14);
-}
-
-[data-theme="light"] #gauge-arc-active {
-  stroke: #167b60;
-}
-
-/* Light Mode Timetable, Heatmap & Settings */
-[data-theme="light"] .timetable thead th,
-[data-theme="light"] .exercise-list-head {
-  background: #e6f0eb;
-  color: var(--text);
-  font-weight: 600;
-}
-
-[data-theme="light"] .fitness-date-title,
-[data-theme="light"] .ex-name,
-[data-theme="light"] .ex-sets-reps,
-[data-theme="light"] .ex-weight,
-[data-theme="light"] .week-spark-scale {
-  color: var(--text);
-  font-weight: 600;
-}
-
-[data-theme="light"] .empty-exercises {
-  color: var(--text-soft);
-  font-weight: 500;
-}
-
-[data-theme="light"] .dark-input {
-  font-weight: 500;
-}
-
-[data-theme="light"] .dark-input::placeholder {
-  color: #4a6358;
-}
-
-[data-theme="light"] .preset-chip,
-[data-theme="light"] .gym-check-btn,
-[data-theme="light"] .hud-btn,
-[data-theme="light"] .sq-btn {
-  color: var(--text);
-  font-weight: 600;
-}
-
-[data-theme="light"] .timetable tbody td,
-[data-theme="light"] .exercise-row {
-  border-bottom-color: rgba(17, 34, 27, 0.08);
-}
-
-[data-theme="light"] .timetable tbody td.t-time {
-  color: var(--text);
-}
-
-[data-theme="light"] .timetable tbody tr:hover,
-[data-theme="light"] .exercise-row:hover {
-  background: rgba(22, 123, 96, 0.05);
-}
-
-[data-theme="light"] .timetable tbody tr.is-today-row {
-  background: rgba(240, 90, 40, 0.12);
-}
-
-[data-theme="light"] .timetable tbody tr.is-today-row td {
-  color: var(--text);
-}
-
-[data-theme="light"] .tag-jumuah {
-  background: rgba(22, 123, 96, 0.12);
-  color: #0f5e49;
-}
-
-[data-theme="light"] .cell.lvl-0 {
-  background: rgba(17, 34, 27, 0.08);
-}
-
-[data-theme="light"] .cell.is-today {
-  outline-color: var(--text);
-}
-
-[data-theme="light"] .dark-select,
-[data-theme="light"] .dark-input {
-  background: #f5f9f7;
-  color: var(--text);
-  border-color: var(--border-strong);
-}
-
-[data-theme="light"] .city-btn,
-[data-theme="light"] .preset-chip,
-[data-theme="light"] .tiny-step {
-  background: #f1f6f3;
-  border-color: var(--border);
-  color: var(--text-soft);
-}
-
-[data-theme="light"] .city-btn.is-selected,
-[data-theme="light"] .preset-chip.is-selected {
-  background: var(--orange);
-  border-color: var(--orange);
-  color: #ffffff;
-}
-
-/* Light Mode Fitness Controls */
-[data-theme="light"] .add-exercise-form,
-[data-theme="light"] .workout-notes-bar {
-  background: #f8fbf9;
-}
-
-[data-theme="light"] .gym-check-btn {
-  background: #f1f6f3;
-  color: var(--text-soft);
-}
-
-[data-theme="light"] .gym-check-btn.is-active {
-  background: rgba(22, 163, 74, 0.15);
-  border-color: rgba(22, 163, 74, 0.5);
-  color: #0e5a2b;
-}
-
-[data-theme="light"] .gym-check-btn.is-active .gym-check-circle,
-[data-theme="light"] .exercise-row.is-done .ex-check-btn {
-  color: #ffffff;
-}
-
-[data-theme="light"] .tooltip {
-  background: #11221b;
-  color: #ffffff;
-}
-
-/* ==========================================================================
-   TRANSLUCENT FITNESS BACKGROUND & APPLE iOS PANEL VIEW SWITCH
-   ========================================================================== */
-
-/* Apple iOS-Style Toggle Pill */
-.ios-toggle-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 8px 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-strong);
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.16s ease, border-color 0.16s ease;
-}
-
-.ios-toggle-pill:hover {
-  background: rgba(255, 255, 255, 0.11);
-}
-
-.ios-toggle-label {
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--text-soft);
-}
-
-.ios-switch {
-  position: relative;
-  display: inline-block;
-  width: 36px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-.ios-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-  position: absolute;
-}
-
-.ios-slider {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.22);
-  transition: background-color 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.ios-slider::before {
-  content: "";
-  position: absolute;
-  left: 2px;
-  top: 2px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
-  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.ios-switch input:checked + .ios-slider {
-  background: #34c759;
-}
-
-.ios-switch input:checked + .ios-slider::before {
-  transform: translateX(16px);
-}
-
-[data-theme="light"] .ios-toggle-pill {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: var(--border-strong);
-}
-
-[data-theme="light"] .ios-toggle-label {
-  color: var(--text);
-  font-weight: 600;
-}
-
-[data-theme="light"] .ios-slider {
-  background: rgba(10, 25, 19, 0.22);
-}
-
-/* Full-Bleed Translucent Fitness Background */
 .fitness-left {
   position: relative;
   overflow: hidden;
@@ -2599,7 +1659,7 @@ body {
   object-position: 64% 46%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.96;
+  opacity: 0.78;
   transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
@@ -2609,225 +1669,216 @@ body {
   z-index: 1;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(16, 15, 13, 0.42) 0%, rgba(16, 15, 13, 0.14) 32%, rgba(16, 15, 13, 0.56) 100%);
+    linear-gradient(180deg, rgba(11, 11, 12, 0.62) 0%, rgba(11, 11, 12, 0.34) 28%, rgba(11, 11, 12, 0.72) 100%);
 }
 
-[data-theme="light"] .fitness-page-bg {
-  opacity: 0.88;
-  filter: brightness(1.12) saturate(1.08);
+.fitness-page .panel-dark,
+.fitness-page .bento-card {
+  background: rgba(16, 16, 18, 0.56);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
-[data-theme="light"] .fitness-page-overlay {
-  background:
-    linear-gradient(180deg, rgba(242, 246, 244, 0.46) 0%, rgba(242, 246, 244, 0.16) 34%, rgba(242, 246, 244, 0.58) 100%);
-}
-
-/* Open Gym Hero Banner above the workout card so the gym photo is clearly showcased */
 .fitness-hero-banner {
-  min-height: 175px;
+  min-height: 104px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  padding: 18px 6px 4px;
+  padding: 12px 2px 4px;
   flex-wrap: wrap;
 }
 
-.fitness-hero-banner .fitness-date-title {
-  font-size: 24px;
-  font-weight: 600;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.72);
-}
-
-[data-theme="light"] .fitness-hero-banner .fitness-date-title {
-  color: #09140f;
-  text-shadow: 0 1px 14px rgba(255, 255, 255, 0.96);
-}
-
-/* See-Through Frosted Glass Cards over the Gym Background */
-.fitness-page .panel-dark,
-.fitness-page .bento-card,
-.fitness-page .sync-widget,
-.fitness-page .mode-pill {
-  background: rgba(16, 15, 13, 0.44);
-  backdrop-filter: blur(10px) saturate(1.18);
-  -webkit-backdrop-filter: blur(10px) saturate(1.18);
-  border-color: rgba(255, 255, 255, 0.16);
-}
-
-.fitness-page .exercise-list-head {
-  background: rgba(14, 13, 10, 0.48);
-}
-
-.fitness-page .add-exercise-form,
-.fitness-page .workout-notes-bar {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.fitness-page .dark-input {
-  background: rgba(14, 13, 10, 0.52);
-}
-
-[data-theme="light"] .fitness-page .panel-dark,
-[data-theme="light"] .fitness-page .bento-card,
-[data-theme="light"] .fitness-page .sync-widget,
-[data-theme="light"] .fitness-page .mode-pill {
-  background: rgba(255, 255, 255, 0.58);
-  backdrop-filter: blur(10px) saturate(1.22);
-  -webkit-backdrop-filter: blur(10px) saturate(1.22);
-  border-color: rgba(10, 25, 19, 0.16);
-}
-
-[data-theme="light"] .fitness-page .exercise-list-head {
-  background: rgba(230, 240, 235, 0.72);
-}
-
-[data-theme="light"] .fitness-page .add-exercise-form,
-[data-theme="light"] .fitness-page .workout-notes-bar {
-  background: rgba(255, 255, 255, 0.36);
-}
-
-[data-theme="light"] .fitness-page .dark-input {
-  background: rgba(255, 255, 255, 0.82);
-}
-
-/* Apple iOS PANEL VIEW ON: Frosted floating glass panels around buttons & controls */
-[data-panel-view="on"] .hud-nav,
-[data-panel-view="on"] .day-nav-controls,
-[data-panel-view="on"] .split-presets,
-[data-panel-view="on"] .btns-3d,
-[data-panel-view="on"] .subnav-bar,
-[data-panel-view="on"] .toolbar-btns {
-  padding: 5px 8px;
-  border-radius: 14px;
-  background: rgba(26, 25, 22, 0.58);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    0 8px 24px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(18px) saturate(1.3);
-  -webkit-backdrop-filter: blur(18px) saturate(1.3);
-}
-
-[data-panel-view="on"] .subnav-bar {
-  width: fit-content;
-  border-bottom-color: rgba(255, 255, 255, 0.16);
-}
-
-[data-panel-view="on"] .hud-prayer-card,
-[data-panel-view="on"] .gym-check-btn,
-[data-panel-view="on"] .preset-chip,
-[data-panel-view="on"] .city-btn,
-[data-panel-view="on"] .sq-btn,
-[data-panel-view="on"] .hud-btn,
-[data-panel-view="on"] .btn-3d {
-  border-radius: 10px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-}
-
-[data-panel-view="on"] .panel-dark,
-[data-panel-view="on"] .bento-card,
-[data-panel-view="on"] .hud-stage {
-  border-radius: 16px;
-}
-
-[data-theme="light"][data-panel-view="on"] .hud-nav,
-[data-theme="light"][data-panel-view="on"] .day-nav-controls,
-[data-theme="light"][data-panel-view="on"] .split-presets,
-[data-theme="light"][data-panel-view="on"] .btns-3d,
-[data-theme="light"][data-panel-view="on"] .subnav-bar,
-[data-theme="light"][data-panel-view="on"] .toolbar-btns {
-  background: rgba(255, 255, 255, 0.72);
-  border-color: rgba(10, 25, 19, 0.14);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 8px 20px rgba(10, 25, 19, 0.08);
-}
-
-/* Apple iOS PANEL VIEW OFF: Ultra-clean open flat buttons letting the background breathe */
-[data-panel-view="off"] .fitness-page .panel-dark,
-[data-panel-view="off"] .fitness-page .bento-card {
-  background: rgba(18, 17, 14, 0.36);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-[data-theme="light"][data-panel-view="off"] .fitness-page .panel-dark,
-[data-theme="light"][data-panel-view="off"] .fitness-page .bento-card {
-  background: rgba(255, 255, 255, 0.48);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-[data-panel-view="off"] .preset-chip,
-[data-panel-view="off"] .sq-btn,
-[data-panel-view="off"] .hud-btn:not(.hud-btn-accent),
-[data-panel-view="off"] .btn-3d:not(.is-active),
-[data-panel-view="off"] .gym-check-btn:not(.is-active) {
-  background: transparent;
-  box-shadow: none;
-}
-
-/* ==========================================================================
-   FITNESS WEEKLY PLAN & INLINE EXERCISE DROPDOWNS
-   ========================================================================== */
-.fitness-mode-bar {
+.day-nav-block {
   display: flex;
   align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.day-nav-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border-radius: var(--r-md);
+  background: rgba(16, 16, 18, 0.66);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.fitness-date-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+}
+
+.gym-check-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: rgba(18, 18, 20, 0.74);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 160ms var(--ease);
+}
+
+.gym-check-btn:hover {
+  background: var(--bg-hover);
+}
+
+.gym-check-btn.is-active {
+  background: var(--green-soft);
+  border-color: var(--green-border);
+  color: #ffffff;
+}
+
+.gym-check-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  color: transparent;
+}
+
+.gym-check-btn.is-active .gym-check-circle {
+  background: var(--green);
+  border-color: var(--green);
+  color: #061b0f;
+}
+
+/* Weekday Strip (Mon–Sun) */
+.weekday-bar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.weekday-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 9px 6px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 160ms var(--ease);
+}
+
+.weekday-pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+.weekday-pill.is-active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #ffffff;
+}
+
+.wd-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wd-count {
+  font-size: 10.5px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+}
+
+.wd-split {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.85;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Workout Split Bar */
+.workout-meta-bar {
+  display: flex;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 12px;
-  padding: 14px 18px;
+  gap: 14px;
+  padding: 14px 20px;
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
 }
 
-.fitness-mode-tabs {
-  display: inline-flex;
-  padding: 3px;
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.28);
+.workout-field {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.split-presets {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.preset-chip {
+  height: var(--ctrl-h);
+  padding: 0 11px;
+  border-radius: var(--r-sm);
   border: 1px solid var(--border);
-  gap: 3px;
-}
-
-.fit-mode-btn {
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font: inherit;
-  font-size: 12.5px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-soft);
+  font-size: 12px;
   font-weight: 500;
-  padding: 6px 13px;
-  border-radius: 7px;
   cursor: pointer;
-  transition: all 0.16s ease;
+  transition: all 150ms var(--ease);
 }
 
-.fit-mode-btn:hover {
+.preset-chip:hover {
+  background: rgba(255, 255, 255, 0.12);
   color: var(--text);
 }
 
-.fit-mode-btn.is-active {
-  background: var(--orange);
+.preset-chip.is-selected {
+  background: var(--orange-soft);
+  border-color: var(--orange-border);
   color: #ffffff;
 }
 
-.fit-split-badge {
-  font-size: 11px;
-  padding: 5px 10px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--border);
-  color: var(--text-soft);
-}
-
-.fit-view {
-  display: none;
-  flex-direction: column;
-}
-
-.fit-view.is-active {
+/* Exercise List & Per-Set Dropdowns */
+.exercise-list-wrap {
   display: flex;
+  flex-direction: column;
+  min-height: 120px;
 }
 
 .exercise-list-head-simple {
@@ -2835,27 +1886,34 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
-  background: rgba(14, 13, 10, 0.48);
+  background: rgba(12, 12, 14, 0.55);
   border-bottom: 1px solid var(--border);
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
 }
 
+.exercise-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-exercises {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
 .exercise-item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .exercise-item.is-done .ex-name {
   text-decoration: line-through;
   color: var(--text-muted);
-}
-
-.exercise-item.is-done .ex-check-btn {
-  background: var(--green);
-  border-color: var(--green);
-  color: #081c10;
 }
 
 .exercise-row-simple {
@@ -2864,11 +1922,49 @@ body {
   justify-content: space-between;
   gap: 12px;
   padding: 12px 20px;
-  transition: background-color 0.14s ease;
+  transition: background-color 140ms var(--ease);
 }
 
 .exercise-row-simple:hover {
   background: rgba(255, 255, 255, 0.03);
+}
+
+.ex-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ex-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ex-check-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  background: transparent;
+  color: transparent;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 150ms var(--ease);
+}
+
+.exercise-item.is-done .ex-check-btn {
+  background: var(--green);
+  border-color: var(--green);
+  color: #061b0f;
 }
 
 .ex-right-controls {
@@ -2882,72 +1978,63 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 11px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
+  height: var(--ctrl-h);
+  padding: 0 12px;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.07);
   border: 1px solid var(--border-strong);
   color: var(--text);
-  font-size: 12px;
+  font-size: 12.5px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 150ms var(--ease);
 }
 
 .ex-dropdown-trigger:hover,
 .ex-dropdown-trigger.is-open {
   background: var(--orange-soft);
-  border-color: rgba(232, 93, 42, 0.65);
+  border-color: var(--orange-border);
 }
 
 .dd-caret {
   font-size: 11px;
-  transition: transform 0.18s ease;
+  transition: transform 180ms var(--ease);
 }
 
 .ex-dropdown-trigger.is-open .dd-caret {
   transform: rotate(180deg);
 }
 
-.ex-dropdown-panel {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(120px, 1fr)) auto;
-  gap: 12px;
-  align-items: end;
-  padding: 12px 20px 16px 48px;
-  background: rgba(0, 0, 0, 0.24);
-  border-top: 1px dashed var(--border);
-}
-
-/* Per-Set Editable Table Inside Exercise Dropdown */
+/* Per-Set Editable Table */
 .perset-dropdown {
-  padding: 12px 20px 14px 48px;
-  background: rgba(0, 0, 0, 0.24);
+  padding: 14px 20px 16px 52px;
+  background: rgba(10, 10, 12, 0.42);
   border-top: 1px dashed var(--border);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .perset-head {
   display: grid;
-  grid-template-columns: 58px minmax(110px, 1fr) minmax(130px, 1.2fr) 62px;
-  gap: 10px;
-  font-size: 10px;
+  grid-template-columns: 60px minmax(120px, 1fr) minmax(140px, 1.2fr) 68px;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
-  padding: 0 2px;
 }
 
 .perset-rows {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
 }
 
 .set-row {
   display: grid;
-  grid-template-columns: 58px minmax(110px, 1fr) minmax(130px, 1.2fr) 62px;
-  gap: 10px;
+  grid-template-columns: 60px minmax(120px, 1fr) minmax(140px, 1.2fr) 68px;
+  gap: 12px;
   align-items: center;
 }
 
@@ -2956,118 +2043,9 @@ body {
 }
 
 .set-num {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-soft);
-}
-
-.set-row-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-}
-
-.set-check-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.05);
-  color: transparent;
-  font-size: 11px;
-  font-weight: 700;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: all 0.14s ease;
-}
-
-.set-check-btn.is-checked {
-  background: var(--green);
-  border-color: var(--green);
-  color: #ffffff;
-}
-
-.set-remove-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 5px;
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 15px;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-}
-
-.set-remove-btn:hover:not(:disabled) {
-  background: var(--orange-soft);
-  color: var(--orange);
-}
-
-.set-remove-btn:disabled {
-  opacity: 0.28;
-  cursor: default;
-}
-
-.perset-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-  padding-top: 8px;
-  margin-top: 2px;
-  border-top: 1px solid var(--border);
-}
-
-[data-theme="light"] .perset-dropdown {
-  background: rgba(230, 240, 235, 0.62);
-}
-
-[data-theme="light"] .perset-head,
-[data-theme="light"] .set-num {
-  color: var(--text);
-  font-weight: 600;
-}
-
-[data-theme="light"] .set-check-btn {
-  background: rgba(255, 255, 255, 0.85);
-}
-
-[data-theme="light"] .set-check-btn.is-checked {
-  background: var(--green);
-  border-color: var(--green);
-  color: #ffffff;
-}
-
-@media (max-width: 720px) {
-  .perset-dropdown {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-
-  .perset-head {
-    display: none;
-  }
-
-  .set-row {
-    grid-template-columns: 48px 1fr 1fr auto;
-    gap: 6px;
-  }
-}
-
-.tiny-step:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.dd-field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
 }
 
 .dd-stepper {
@@ -3078,83 +2056,110 @@ body {
 
 .dd-stepper .dd-input {
   text-align: center;
-  padding: 7px 6px;
+  padding: 0 6px;
+}
+
+.tiny-step {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-soft);
+  cursor: pointer;
+  font-size: 13px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: background-color 140ms var(--ease), color 140ms var(--ease);
+}
+
+.tiny-step:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.tiny-step:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.set-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.set-check-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 140ms var(--ease);
+}
+
+.set-check-btn.is-checked {
+  background: var(--green);
+  border-color: var(--green);
+  color: #ffffff;
+}
+
+.set-remove-btn,
+.ex-del-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color 140ms var(--ease), color 140ms var(--ease);
+}
+
+.set-remove-btn:hover:not(:disabled),
+.ex-del-btn:hover {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.set-remove-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.perset-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
 }
 
 .dd-actions {
   display: flex;
   align-items: center;
   gap: 6px;
-}
-
-.quick-add-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 8px;
-  padding: 12px 20px;
-  border-top: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.inline-plan-link {
-  margin-left: 6px;
-  background: none;
-  border: none;
-  color: var(--orange);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-/* Weekday Selector Bar (Mon–Sun) */
-.weekday-bar {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-}
-
-.weekday-pill {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 8px 6px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-soft);
-  font: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.wd-top {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.wd-split {
-  font-size: 9.5px;
-  font-weight: 500;
-  opacity: 0.78;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  flex-wrap: wrap;
 }
 
 .quick-add-row {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 8px;
-  padding: 12px 20px;
+  gap: 10px;
+  padding: 14px 20px;
   border-top: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.02);
 }
@@ -3163,83 +2168,374 @@ body {
   white-space: nowrap;
 }
 
-.weekday-pill:hover {
+.workout-notes-bar {
+  padding: 14px 20px 18px;
+  border-top: 1px solid var(--border);
+}
+
+.notes-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Right Sidebar: Gym Calendar & Recent Workouts */
+.gym-cal-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gym-cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gym-cal-month {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.cal-nav-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.cal-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.gym-cal-weekdays,
+.gym-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.gym-cal-weekdays span {
+  text-align: center;
+  font-size: 11px;
+  color: var(--sidebar-muted);
+}
+
+.cal-cell {
+  height: 32px;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--sidebar-muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11.5px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 140ms var(--ease);
+}
+
+.cal-cell.is-empty {
+  background: transparent;
+  cursor: default;
+}
+
+.cal-cell:not(.is-empty):hover {
   background: rgba(255, 255, 255, 0.12);
   color: var(--text);
 }
 
-.weekday-pill.is-active {
-  background: var(--orange);
-  border-color: var(--orange);
-  color: #ffffff;
+.cal-cell.is-gym {
+  background: var(--green);
+  color: #061b0f;
   font-weight: 600;
 }
 
-.wd-count {
-  font-size: 10px;
-  padding: 1px 5px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.28);
-  color: #ffffff;
+.cal-cell.is-today {
+  border-color: var(--text);
 }
 
-.plan-row {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.plan-meta-pill {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-/* Light Mode Overrides for Weekly Plan & Dropdowns */
-[data-theme="light"] .fitness-mode-tabs {
-  background: rgba(230, 240, 235, 0.85);
-}
-
-[data-theme="light"] .fit-mode-btn {
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-[data-theme="light"] .fit-mode-btn.is-active {
-  color: #ffffff;
-}
-
-[data-theme="light"] .fit-split-badge {
-  background: rgba(255, 255, 255, 0.85);
+.cal-cell.is-selected {
+  outline: 2px solid var(--orange);
+  outline-offset: -1px;
   color: var(--text);
-  font-weight: 600;
 }
 
-[data-theme="light"] .exercise-list-head-simple {
-  background: rgba(230, 240, 235, 0.78);
+.cal-cell.is-gym.is-selected {
+  color: #061b0f;
+}
+
+.recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recent-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--text);
-  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease), border-color 140ms var(--ease);
 }
 
-[data-theme="light"] .exercise-item {
-  border-bottom-color: rgba(10, 25, 19, 0.09);
+.recent-item:hover,
+.recent-item.is-selected {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-strong);
 }
 
+.recent-title {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.recent-meta,
+.recent-date {
+  font-size: 11px;
+  color: var(--sidebar-muted);
+}
+
+.insp-ghost-btn {
+  width: 100%;
+  height: var(--ctrl-h);
+  border-radius: var(--r-sm);
+  border: 1px dashed var(--border-strong);
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease), color 140ms var(--ease);
+}
+
+.insp-ghost-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+/* ==========================================================================
+   VIBRANT, HIGH-CONTRAST LIGHT MODE
+   ========================================================================== */
+[data-theme="light"] {
+  --bg-canvas: #f2f5f3;
+  --bg-surface: #e8efeb;
+  --bg-panel: rgba(255, 255, 255, 0.92);
+  --bg-elevated: #edf3ef;
+  --bg-hover: #e1ebe5;
+  --bg-input: #f7faf8;
+
+  --sidebar-top: #0f5c47;
+  --sidebar-mid: #147359;
+  --sidebar-bot: #1a886a;
+  --sidebar-cta: #0a4636;
+  --sidebar-cta-hover: #073629;
+
+  --border: rgba(10, 25, 19, 0.12);
+  --border-strong: rgba(10, 25, 19, 0.22);
+  --border-subtle: rgba(10, 25, 19, 0.07);
+  --dashed: rgba(255, 255, 255, 0.3);
+
+  --text: #0a1611;
+  --text-soft: #1b3127;
+  --text-muted: #3d564b;
+  --sidebar-muted: #e2f5ee;
+
+  --orange: #e35320;
+  --orange-hover: #cf4616;
+  --orange-soft: rgba(227, 83, 32, 0.14);
+  --orange-border: rgba(227, 83, 32, 0.5);
+  --bronze-glow: rgba(18, 145, 66, 0.08);
+
+  --green: #149646;
+  --green-soft: rgba(20, 150, 70, 0.14);
+  --green-border: rgba(20, 150, 70, 0.48);
+
+  --shadow-card: 0 2px 12px rgba(10, 25, 19, 0.06);
+}
+
+[data-theme="light"] .inspector-sidebar {
+  color: #ffffff;
+  border-left-color: rgba(10, 25, 19, 0.12);
+}
+
+[data-theme="light"] .inspector-sidebar .insp-qibla-readout,
+[data-theme="light"] .inspector-sidebar .insp-info-body,
+[data-theme="light"] .inspector-sidebar .gym-cal-month,
+[data-theme="light"] .inspector-sidebar .recent-item,
+[data-theme="light"] .inspector-sidebar .insp-ghost-btn,
+[data-theme="light"] .inspector-sidebar .inspector-cta,
+[data-theme="light"] .inspector-sidebar .cal-nav-btn {
+  color: #ffffff;
+}
+
+[data-theme="light"] .inspector-sidebar .insp-info-title {
+  color: #ffd79a;
+}
+
+[data-theme="light"] .inspector-sidebar .b-seg {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+[data-theme="light"] .inspector-sidebar .b-seg.is-on {
+  background: #ffffff;
+}
+
+[data-theme="light"] .inspector-sidebar .bc-tick {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+[data-theme="light"] .inspector-sidebar .bc-tick.lvl-high {
+  background: #ffffff;
+}
+
+[data-theme="light"] .hud-tab.is-active,
+[data-theme="light"] .subnav-link.is-active {
+  background: #ffffff;
+  color: var(--text);
+  box-shadow: 0 1px 4px rgba(10, 25, 19, 0.08);
+}
+
+[data-theme="light"] .hud-stage {
+  background:
+    radial-gradient(circle at 54% 34%, rgba(255, 224, 163, 0.45), transparent 58%),
+    linear-gradient(180deg, #e7f0ec 0%, #f4efe3 100%);
+}
+
+[data-theme="light"] .stage-vignette {
+  background:
+    linear-gradient(90deg, rgba(246, 249, 247, 0.92) 0%, rgba(246, 249, 247, 0.36) 34%, rgba(246, 249, 247, 0.08) 72%, rgba(246, 249, 247, 0.45) 100%),
+    linear-gradient(180deg, rgba(246, 249, 247, 0.8) 0%, rgba(246, 249, 247, 0.06) 38%, rgba(246, 249, 247, 0.24) 72%, rgba(246, 249, 247, 0.94) 100%);
+}
+
+[data-theme="light"] .greeting-line,
+[data-theme="light"] .greeting-sub,
+[data-theme="light"] .ruler-label,
+[data-theme="light"] .kpi-num,
+[data-theme="light"] .kpi-unit,
+[data-theme="light"] .ruler-ticks,
+[data-theme="light"] .scrubber-head {
+  color: var(--text);
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.94);
+}
+
+[data-theme="light"] .ruler-track {
+  border-left-color: rgba(10, 25, 19, 0.35);
+  background-image: repeating-linear-gradient(to bottom, rgba(10, 25, 19, 0.35) 0 1px, transparent 1px 10px);
+}
+
+[data-theme="light"] .btns-3d {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+[data-theme="light"] .hud-prayer-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(10, 25, 19, 0.14);
+}
+
+[data-theme="light"] .hud-prayer-card.is-done {
+  background: rgba(226, 248, 234, 0.95);
+  border-color: var(--green-border);
+}
+
+[data-theme="light"] .hud-prayer-card.is-next:not(.is-done) {
+  background: rgba(255, 236, 229, 0.95);
+  border-color: var(--orange-border);
+}
+
+[data-theme="light"] .hud-prayer-card.is-done .hud-status-badge,
+[data-theme="light"] .gym-check-btn.is-active .gym-check-circle,
 [data-theme="light"] .exercise-item.is-done .ex-check-btn {
   color: #ffffff;
 }
 
-[data-theme="light"] .ex-dropdown-trigger {
-  background: rgba(255, 255, 255, 0.88);
-  color: var(--text);
-  font-weight: 600;
+[data-theme="light"] .scrubber-track,
+[data-theme="light"] .spark-track,
+[data-theme="light"] .bd-track {
+  background: rgba(10, 25, 19, 0.12);
 }
 
-[data-theme="light"] .ex-dropdown-panel {
-  background: rgba(230, 240, 235, 0.55);
+[data-theme="light"] .scrubber-progress,
+[data-theme="light"] .spark-needle {
+  background: #147359;
+}
+
+[data-theme="light"] .spark-needle.is-focus,
+[data-theme="light"] .spark-needle.is-today-bar {
+  background: var(--orange);
+}
+
+[data-theme="light"] .spark-needle.is-gym-bar {
+  background: var(--green);
+}
+
+[data-theme="light"] .spark-needle.is-rest-bar {
+  background: rgba(10, 25, 19, 0.16);
+}
+
+[data-theme="light"] .arc-gauge-svg path:first-child {
+  stroke: rgba(10, 25, 19, 0.14);
+}
+
+[data-theme="light"] #gauge-arc-active {
+  stroke: #147359;
+}
+
+[data-theme="light"] .tag-jumuah {
+  background: rgba(20, 115, 89, 0.12);
+  color: #0f5c47;
+}
+
+[data-theme="light"] .cell.lvl-0 {
+  background: rgba(10, 25, 19, 0.08);
+}
+
+[data-theme="light"] .fitness-page-bg {
+  opacity: 0.78;
+  filter: brightness(1.12);
+}
+
+[data-theme="light"] .fitness-page-overlay {
+  background: linear-gradient(180deg, rgba(242, 245, 243, 0.5) 0%, rgba(242, 245, 243, 0.24) 34%, rgba(242, 245, 243, 0.65) 100%);
+}
+
+[data-theme="light"] .fitness-page .panel-dark,
+[data-theme="light"] .fitness-page .bento-card {
+  background: rgba(255, 255, 255, 0.74);
+  border-color: rgba(10, 25, 19, 0.14);
+}
+
+[data-theme="light"] .fitness-hero-banner .fitness-date-title {
+  color: var(--text);
+  text-shadow: 0 1px 14px rgba(255, 255, 255, 0.96);
+}
+
+[data-theme="light"] .day-nav-controls,
+[data-theme="light"] .gym-check-btn {
+  background: rgba(255, 255, 255, 0.84);
+}
+
+[data-theme="light"] .gym-check-btn.is-active {
+  background: rgba(226, 248, 234, 0.95);
+  color: #0b5a2a;
 }
 
 [data-theme="light"] .weekday-pill {
   background: rgba(255, 255, 255, 0.78);
   color: var(--text);
-  font-weight: 600;
 }
 
 [data-theme="light"] .weekday-pill.is-active {
@@ -3247,28 +2543,34 @@ body {
   color: #ffffff;
 }
 
-[data-theme="light"] .plan-meta-pill {
-  color: var(--text-soft);
-  font-weight: 600;
+[data-theme="light"] .exercise-list-head-simple {
+  background: rgba(232, 239, 235, 0.85);
+  color: var(--text);
 }
 
-@media (max-width: 820px) {
-  .ex-dropdown-panel {
-    grid-template-columns: 1fr 1fr;
-    padding-left: 20px;
-  }
-
-  .dd-actions {
-    grid-column: 1 / -1;
-    justify-content: flex-end;
-  }
-
-  .weekday-bar {
-    grid-template-columns: repeat(4, 1fr);
-  }
+[data-theme="light"] .ex-dropdown-trigger {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
 }
 
-/* Responsive */
+[data-theme="light"] .perset-dropdown {
+  background: rgba(232, 239, 235, 0.65);
+}
+
+[data-theme="light"] .preset-chip {
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text);
+}
+
+[data-theme="light"] .preset-chip.is-selected {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   RESPONSIVE & PHONE / iOS OPTIMISATION
+   ========================================================================== */
 @media (max-width: 1120px) {
   .viewport-frame {
     grid-template-columns: 1fr;
@@ -3278,18 +2580,22 @@ body {
     position: static;
     height: auto;
     border-left: none;
-    border-top: 1px solid var(--border-strong);
+    border-top: 1px solid var(--border);
   }
 }
 
-@media (max-width: 820px) {
-  .stage-middle {
-    grid-template-columns: 1fr;
+@media (max-width: 860px) {
+  .hud-topbar {
+    grid-template-columns: 1fr auto;
   }
 
-  .ruler-scale {
-    height: auto;
-    flex-direction: row;
+  .hud-left {
+    grid-column: 1 / -1;
+    order: 2;
+  }
+
+  .stage-middle {
+    grid-template-columns: 1fr;
   }
 
   .hud-prayer-grid {
@@ -3299,29 +2605,8 @@ body {
   .bento-3 {
     grid-template-columns: 1fr;
   }
-
-  .add-exercise-form {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .form-col-name,
-  .add-ex-btn {
-    grid-column: 1 / -1;
-  }
-
-  .exercise-list-head {
-    display: none;
-  }
-
-  .exercise-row {
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-  }
 }
 
-/* ==========================================================================
-   PHONE / iOS MOBILE OPTIMIZATION (<= 640px)
-   ========================================================================== */
 @media (max-width: 640px) {
   body {
     padding-top: env(safe-area-inset-top);
@@ -3330,66 +2615,45 @@ body {
   }
 
   .left-column {
-    padding: 12px 12px 18px;
+    padding: 12px 12px 20px;
     gap: 12px;
   }
 
-  /* Compact phone top bar */
   .hud-topbar {
     gap: 10px;
   }
 
-  .hud-left {
+  .status-cluster {
     width: 100%;
-    justify-content: space-between;
-    gap: 8px;
+    justify-content: center;
   }
 
-  .mode-pill {
-    display: none;
-  }
-
-  .hud-right {
-    width: 100%;
-  }
-
-  .sync-widget {
-    width: 100%;
-    padding: 8px 12px;
-  }
-
-  /* Single-row scrollable prayer subnav */
   .subnav-bar {
-    width: 100% !important;
+    width: 100%;
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
 
-  .subnav-bar::-webkit-scrollbar {
+  .subnav-bar::-webkit-scrollbar,
+  .weekday-bar::-webkit-scrollbar,
+  .split-presets::-webkit-scrollbar {
     display: none;
   }
 
   .subnav-link {
     white-space: nowrap;
-    padding: 7px 12px;
   }
 
-  /* Prayer 3D Stage on phone */
   .hud-stage {
-    min-height: 380px;
+    min-height: 360px;
     padding: 14px;
-    gap: 14px;
     touch-action: pan-y;
   }
 
-  .greeting-line {
-    font-size: 1.12rem;
-  }
-
   .stage-middle {
-    padding-top: 72px;
+    padding-top: 40px;
     gap: 14px;
   }
 
@@ -3397,22 +2661,8 @@ body {
     display: none;
   }
 
-  .hud-prayer-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-
   .hud-prayer-card:last-child {
     grid-column: 1 / -1;
-  }
-
-  .hud-prayer-card {
-    padding: 12px;
-    min-height: 76px;
-  }
-
-  .transport-bar {
-    gap: 10px;
   }
 
   .transport-right {
@@ -3420,136 +2670,76 @@ body {
     justify-content: space-between;
   }
 
-  /* Timetable & Settings on phone */
-  .panel-toolbar {
-    padding: 14px;
-    gap: 10px;
-  }
-
-  .toolbar-btns {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .timetable thead th,
-  .timetable tbody td {
-    padding: 9px 10px;
-    font-size: 12px;
-  }
-
-  .setting-item {
-    padding: 13px 14px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  /* Prevent iOS Safari auto-zoom when tapping form fields */
+  /* Prevent iOS Safari input auto-zoom */
   .dark-input,
   .dark-select,
   .dd-input {
     font-size: 16px !important;
   }
 
-  /* Fitness Hero & Swipeable Mon–Sun Strip on phone */
   .fitness-hero-banner {
-    min-height: 126px;
-    padding: 10px 2px 2px;
+    min-height: 90px;
     gap: 10px;
   }
 
-  .fitness-hero-banner .fitness-date-title {
+  .fitness-date-title {
     font-size: 19px;
   }
 
   .gym-check-btn {
     width: 100%;
     justify-content: center;
-    padding: 11px 14px;
-    font-size: 13.5px;
   }
 
   .weekday-bar {
-    display: grid;
-    grid-template-columns: repeat(7, minmax(64px, 1fr));
+    grid-template-columns: repeat(7, minmax(66px, 1fr));
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
     padding: 12px;
-    gap: 6px;
-  }
-
-  .weekday-bar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .workout-meta-bar {
-    padding: 12px;
-    gap: 10px;
   }
 
   .split-presets {
     width: 100%;
     overflow-x: auto;
     flex-wrap: nowrap;
-    scrollbar-width: none;
-  }
-
-  .split-presets::-webkit-scrollbar {
-    display: none;
   }
 
   .preset-chip {
     white-space: nowrap;
-    padding: 8px 12px;
-  }
-
-  /* Exercise rows & thumb-friendly per-set dropdowns on phone */
-  .exercise-list-head-simple {
-    padding: 9px 14px;
   }
 
   .exercise-row-simple {
     flex-wrap: wrap;
     padding: 12px 14px;
-    gap: 8px;
   }
 
   .ex-name-cell {
     flex: 1 1 180px;
   }
 
-  .ex-check-btn {
-    width: 24px;
-    height: 24px;
-    font-size: 12px;
-  }
-
-  .ex-dropdown-trigger {
-    padding: 8px 12px;
-    font-size: 12px;
-  }
-
   .perset-dropdown {
     padding: 12px;
-    gap: 10px;
+  }
+
+  .perset-head {
+    display: none;
   }
 
   .set-row {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: var(--r-sm);
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--border);
   }
 
   [data-theme="light"] .set-row {
-    background: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.8);
   }
 
   .set-num {
     grid-column: 1 / 2;
-    font-size: 12.5px;
   }
 
   .set-row-actions {
@@ -3562,12 +2752,6 @@ body {
   .set-remove-btn {
     width: 32px;
     height: 32px;
-    font-size: 14px;
-  }
-
-  .dd-stepper .dd-input {
-    min-width: 0;
-    padding: 6px 4px;
   }
 
   .perset-footer {
@@ -3579,28 +2763,8 @@ body {
     justify-content: space-between;
   }
 
-  .quick-add-row {
-    padding: 12px;
-    grid-template-columns: 1fr auto;
-  }
-
-  .workout-notes-bar {
-    padding: 12px;
-  }
-
-  /* Inspector Sidebar on phone */
-  .inspector-body {
-    padding: 18px 14px 14px;
-  }
-
   .cal-cell {
     height: 36px;
-    font-size: 12px;
-  }
-
-  .inspector-cta {
-    padding: 16px;
-    font-size: 14px;
   }
 }
 
