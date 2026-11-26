@@ -221,7 +221,7 @@ async function fetchTodayTimings() {
   const shortCity = state.settings.city.split(",")[0];
   const heroFocal = document.getElementById("hero-focal");
   if (heroFocal && !state.todayTimings) heroFocal.classList.add("is-loading");
-  setApiStatus(`Syncing ${shortCity}…`, "loading");
+  setApiStatus("Syncing…", "loading");
 
   try {
     const res = await fetch(url);
@@ -388,6 +388,7 @@ function renderTimeline() {
   const key = todayKey();
   const todayLog = getDayLog(key);
   const { currentKey, next } = getPrayerPhaseInfo();
+  const nowSec = getTimeInZone(state.settings.tz).totalSeconds;
 
   const grid = document.getElementById("hud-prayer-grid");
   grid.innerHTML = "";
@@ -396,6 +397,8 @@ function renderTimeline() {
     const isDone = Boolean(todayLog[p.key]);
     const isNext = next && next.key === p.key && !next.tomorrow;
     const isCurrent = currentKey === p.key;
+    const pSec = state.todayTimings ? parseSeconds(state.todayTimings[p.key]) : null;
+    const isPassed = pSec !== null && pSec < nowSec && !isCurrent;
     const timeStr = state.todayTimings ? cleanTime(state.todayTimings[p.key]) : "--:--";
 
     let badgeText = "Upcoming";
@@ -409,6 +412,8 @@ function renderTimeline() {
     } else if (isCurrent) {
       badgeText = "Now";
       checkGlyph = "○";
+    } else if (isPassed) {
+      badgeText = "Passed";
     }
 
     const cls = [
@@ -416,6 +421,7 @@ function renderTimeline() {
       isDone ? "is-done" : "",
       isCurrent ? "is-current" : "",
       isNext ? "is-next" : "",
+      isPassed ? "is-passed" : "",
     ]
       .filter(Boolean)
       .join(" ");
@@ -662,13 +668,18 @@ function renderHeatmap() {
   start.setDate(today.getDate() - 364 - today.getDay());
 
   let lastMonth = -1;
+  let lastLabelCol = -10;
   for (let i = 0; i < 53 * 7; i++) {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
     if (i % 7 === 0) {
+      const col = i / 7;
       const span = document.createElement("span");
       if (d.getMonth() !== lastMonth) {
-        span.textContent = d.toLocaleString("en-GB", { month: "short" });
+        if (col - lastLabelCol >= 3) {
+          span.textContent = d.toLocaleString("en-US", { month: "short" });
+          lastLabelCol = col;
+        }
         lastMonth = d.getMonth();
       }
       monthsRow.appendChild(span);

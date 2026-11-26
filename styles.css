@@ -178,7 +178,7 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   background:
     radial-gradient(ellipse 100% 34% at 50% 0%, var(--sidebar-glow), transparent 68%),
     linear-gradient(180deg, var(--sidebar-top) 0%, var(--sidebar-mid) 52%, var(--sidebar-bot) 100%);
@@ -191,7 +191,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  flex: 1;
 }
 
 .inspector-sidebar .divider,
@@ -294,20 +293,28 @@
 }
 
 .inspector-cta {
-  width: 100%;
-  border: none;
-  border-top: 1px solid var(--sidebar-border);
+  width: calc(100% - var(--sidebar-pad) * 2);
+  margin: 0 var(--sidebar-pad) var(--sidebar-pad);
+  height: var(--ctrl-lg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--r-sm);
   background: var(--sidebar-cta);
   color: var(--sidebar-text);
   font-size: var(--text-sm);
   font-weight: 500;
-  padding: var(--space-4) var(--sidebar-pad);
+  padding: 0 var(--space-4);
   cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
 }
 
 .inspector-cta:hover {
   background: var(--sidebar-cta-hover);
+  border-color: var(--sidebar-muted);
 }
 
 /* ==========================================================================
@@ -418,7 +425,7 @@
   display: none;
   flex-direction: column;
   gap: var(--section-gap);
-  animation: fadeSlideIn var(--dur-base) var(--ease);
+  animation: fadeSlideIn var(--dur-fast) var(--ease);
 }
 
 .prayer-view.is-active {
@@ -428,11 +435,9 @@
 @keyframes fadeSlideIn {
   from {
     opacity: 0;
-    transform: translateY(4px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -686,6 +691,10 @@
   transform: scale(0.985);
 }
 
+.tl-card.is-passed:not(.is-done):not(.is-current):not(.is-next) {
+  opacity: 0.78;
+}
+
 .tl-card.is-done {
   background: var(--green-soft);
   border-color: var(--green-border);
@@ -865,7 +874,7 @@
 }
 
 .plog-cell.is-future {
-  opacity: 0.3;
+  opacity: 0.48;
   cursor: not-allowed;
 }
 
@@ -1094,12 +1103,11 @@
 }
 
 .table-scroll {
-  overflow: auto;
-  max-height: 440px;
+  overflow-x: auto;
 }
 
 .table-scroll-tall {
-  max-height: calc(100vh - 230px);
+  max-height: none;
 }
 
 .timetable {
@@ -1341,15 +1349,17 @@
 .tune-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(124px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 10px;
 }
 
 .tune-box {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 10px var(--space-3);
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 12px 10px;
   border-radius: var(--r-sm);
   background: var(--surface-subtle);
   border: 1px solid var(--border);
@@ -2260,8 +2270,28 @@
     gap: 10px;
   }
 
+  .hud-tab,
+  .hud-page-link,
+  .theme-opt,
+  .subnav-link {
+    height: 36px;
+  }
+
+  .hud-btn,
+  .sq-btn,
+  .cal-nav-btn,
+  .edit-split-trigger {
+    min-height: 36px;
+  }
+
+  .sq-btn,
+  .cal-nav-btn {
+    min-width: 36px;
+  }
+
   .status-cluster {
     width: 100%;
+    height: 36px;
     justify-content: center;
   }
 
@@ -2284,9 +2314,23 @@
   }
 
   .hud-stage.prayer-hero {
-    min-height: 380px;
+    min-height: 340px;
     padding: var(--space-4);
+    gap: var(--space-4);
     touch-action: pan-y;
+  }
+
+  .hero-quiet-meta {
+    row-gap: 4px;
+  }
+
+  .hero-quiet-meta > span:not(.meta-dot) {
+    white-space: nowrap;
+  }
+
+  .tl-card {
+    padding: 11px 12px;
+    gap: 8px;
   }
 
   /* Prevent iOS Safari input auto-zoom */
@@ -2296,6 +2340,7 @@
   .dark-select,
   .dd-input {
     font-size: 16px !important;
+    min-height: 40px;
   }
 
   .gym-check-btn {
@@ -2304,10 +2349,29 @@
   }
 
   .weekday-bar {
-    grid-template-columns: repeat(7, minmax(66px, 1fr));
+    grid-template-columns: repeat(7, minmax(84px, 1fr));
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     padding: var(--space-3);
+  }
+
+  .quick-add-row {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    padding: 12px var(--card-pad-x);
+  }
+
+  .add-preset-btn {
+    min-height: 40px;
+    padding: 0 12px;
+  }
+
+  .fs-day-pill {
+    padding: 8px 4px;
+  }
+
+  .cal-cell {
+    height: 38px;
   }
 
   .split-presets {
@@ -2369,10 +2433,6 @@
 
   .dd-actions {
     justify-content: space-between;
-  }
-
-  .cal-cell {
-    height: 34px;
   }
 }
 

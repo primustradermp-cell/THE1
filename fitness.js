@@ -319,7 +319,7 @@ function renderMainWorkout() {
 
   document.getElementById("split-day-label").textContent = `${wdInfo.full} Workout Name`;
   document.getElementById("list-day-heading").textContent = `${wdInfo.full} Exercises`;
-  document.getElementById("input-preset-exercise").placeholder = `+ Add exercise to ${wdInfo.full}’s routine…`;
+  document.getElementById("input-preset-exercise").placeholder = `Add exercise for ${wdInfo.short}…`;
 
   const titleInput = document.getElementById("workout-title-input");
   if (document.activeElement !== titleInput) {

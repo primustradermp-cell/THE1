@@ -12,6 +12,8 @@
   }
 
   function applyTheme(theme, persist = false) {
+    // Freeze transitions for one frame so Dark <-> Light flips cleanly in sync
+    document.documentElement.classList.add("is-theme-switching");
     document.documentElement.setAttribute("data-theme", theme);
     if (persist) {
       try {
@@ -28,6 +30,11 @@
     });
 
     window.dispatchEvent(new CustomEvent("themechange", { detail: { theme } }));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.documentElement.classList.remove("is-theme-switching");
+      });
+    });
   }
 
   // Apply immediately so there is zero flash on load
