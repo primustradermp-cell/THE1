@@ -508,6 +508,45 @@
   accentLight.position.set(3.2, 0.9, 2.4);
   scene.add(accentLight);
 
+  function apply3DTheme(isLight) {
+    if (isLight) {
+      scene.fog.color.setHex(0xeef3f0);
+      scene.fog.density = 0.036;
+      hemiLight.color.setHex(0xfff9ee);
+      hemiLight.groundColor.setHex(0xd8e4df);
+      hemiLight.intensity = 1.25;
+      keyLight.intensity = 2.6;
+      rimLight.color.setHex(0xffe0a3);
+      rimLight.intensity = 1.8;
+      accentLight.intensity = 0.5;
+      floorMat.color.setHex(0xdbe6e1);
+      archMat.color.setHex(0xc8d4ce);
+      marbleMat.color.setHex(0xebe6db);
+      pMat.color.setHex(0xe85d2a);
+      pMat.opacity = 0.32;
+    } else {
+      scene.fog.color.setHex(0x171612);
+      scene.fog.density = 0.052;
+      hemiLight.color.setHex(0xd9ceb7);
+      hemiLight.groundColor.setHex(0x1c1a15);
+      hemiLight.intensity = 0.65;
+      keyLight.intensity = 2.2;
+      rimLight.color.setHex(0xd8b473);
+      rimLight.intensity = 2.4;
+      accentLight.intensity = 0.75;
+      floorMat.color.setHex(0xffffff);
+      archMat.color.setHex(0x3b372e);
+      marbleMat.color.setHex(0x8f8878);
+      pMat.color.setHex(0xe6cfa0);
+      pMat.opacity = 0.45;
+    }
+  }
+
+  apply3DTheme(document.documentElement.getAttribute("data-theme") === "light");
+  window.addEventListener("themechange", (e) => {
+    apply3DTheme(e.detail && e.detail.theme === "light");
+  });
+
   /* ---------- Interactive Orbit & Auto-Rotate State ---------- */
   const DEFAULT_AZIMUTH = 0.76; // Classic 3/4 view matching reference photo
   const DEFAULT_POLAR = 1.36;   // Slightly upward heroic architectural angle

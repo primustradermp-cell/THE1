@@ -90,6 +90,53 @@ body {
   flex-wrap: wrap;
 }
 
+.hud-right {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.theme-toggle-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.theme-toggle-btn .icon-moon {
+  display: none;
+}
+
+[data-theme="light"] .theme-toggle-btn .icon-sun {
+  display: none;
+}
+
+[data-theme="light"] .theme-toggle-btn .icon-moon {
+  display: block;
+}
+
 .mode-pill {
   display: inline-flex;
   align-items: center;
@@ -2038,6 +2085,305 @@ body {
 
 .insp-ghost-btn:hover {
   background: rgba(0, 0, 0, 0.16);
+}
+
+/* ==========================================================================
+   VIBRANT LIGHT MODE THEME
+   ========================================================================== */
+[data-theme="light"] {
+  --bg-outer: #f3f6f4;
+  --bg-stage: #f5f7f5;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --bg-card-solid: #ffffff;
+  --bg-elevated: #eef3f0;
+
+  --taupe-top: #0f5e49;
+  --taupe-mid: #167b60;
+  --taupe-bot: #1e9172;
+  --taupe-cta: #0b4a39;
+  --taupe-cta-hover: #083b2d;
+
+  --border: rgba(17, 34, 27, 0.11);
+  --border-strong: rgba(17, 34, 27, 0.2);
+  --dashed: rgba(255, 255, 255, 0.28);
+
+  --text: #11221b;
+  --text-soft: #243b31;
+  --text-muted: #5b7167;
+  --taupe-muted: #d6efe6;
+
+  --orange: #f05a28;
+  --orange-soft: rgba(240, 90, 40, 0.13);
+  --green: #16a34a;
+  --green-soft: rgba(22, 163, 74, 0.13);
+}
+
+[data-theme="light"] .viewport-frame {
+  background:
+    radial-gradient(ellipse at 25% 15%, rgba(22, 163, 74, 0.1), transparent 52%),
+    radial-gradient(ellipse at 75% 85%, rgba(240, 90, 40, 0.09), transparent 52%),
+    var(--bg-stage);
+}
+
+[data-theme="light"] .mode-pill,
+[data-theme="light"] .theme-toggle-btn,
+[data-theme="light"] .sync-widget,
+[data-theme="light"] .bento-card,
+[data-theme="light"] .panel-dark {
+  background: #ffffff;
+  border-color: var(--border);
+  box-shadow: 0 4px 16px rgba(17, 34, 27, 0.05);
+}
+
+[data-theme="light"] .theme-toggle-btn:hover,
+[data-theme="light"] .sq-btn:hover,
+[data-theme="light"] .hud-btn:hover {
+  background: #e9f1ed;
+}
+
+[data-theme="light"] .sync-bar {
+  background: rgba(17, 34, 27, 0.1);
+}
+
+[data-theme="light"] .subnav-link:hover {
+  background: rgba(17, 34, 27, 0.05);
+}
+
+[data-theme="light"] .subnav-link.is-active {
+  color: var(--text);
+  background: #ffffff;
+  border-color: var(--border-strong);
+  box-shadow: 0 2px 6px rgba(17, 34, 27, 0.06);
+}
+
+/* Light Mode 3D Kaaba Stage */
+[data-theme="light"] .hud-stage {
+  background:
+    radial-gradient(circle at 54% 34%, rgba(255, 224, 163, 0.45), transparent 58%),
+    linear-gradient(180deg, #e7f0ec 0%, #f4efe3 100%);
+  border-color: var(--border);
+  box-shadow: 0 6px 24px rgba(17, 34, 27, 0.06);
+}
+
+[data-theme="light"] .stage-vignette {
+  background:
+    linear-gradient(90deg, rgba(245, 248, 246, 0.86) 0%, rgba(245, 248, 246, 0.2) 34%, rgba(245, 248, 246, 0.08) 72%, rgba(245, 248, 246, 0.42) 100%),
+    linear-gradient(180deg, rgba(245, 248, 246, 0.65) 0%, rgba(245, 248, 246, 0) 36%, rgba(245, 248, 246, 0.18) 72%, rgba(245, 248, 246, 0.9) 100%);
+}
+
+[data-theme="light"] .stage-bg-pattern {
+  opacity: 0.2;
+  background-image:
+    linear-gradient(to right, rgba(17, 34, 27, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(17, 34, 27, 0.06) 1px, transparent 1px);
+}
+
+[data-theme="light"] .greeting-line {
+  color: #344e43;
+}
+
+[data-theme="light"] .ruler-track {
+  border-left-color: rgba(17, 34, 27, 0.25);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(17, 34, 27, 0.25) 0 1px,
+    transparent 1px 10px
+  );
+}
+
+[data-theme="light"] .btn-3d {
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--text-soft);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .btn-3d.is-active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #ffffff;
+}
+
+[data-theme="light"] .hud-prayer-card {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(17, 34, 27, 0.13);
+  color: var(--text);
+  box-shadow: 0 4px 14px rgba(17, 34, 27, 0.06);
+}
+
+[data-theme="light"] .hud-prayer-card:hover {
+  background: #ffffff;
+  border-color: var(--border-strong);
+}
+
+[data-theme="light"] .hud-prayer-card.is-done {
+  background: rgba(22, 163, 74, 0.16);
+  border-color: rgba(22, 163, 74, 0.45);
+}
+
+[data-theme="light"] .hud-prayer-card.is-next:not(.is-done) {
+  background: rgba(240, 90, 40, 0.16);
+  border-color: rgba(240, 90, 40, 0.52);
+}
+
+[data-theme="light"] .hud-prayer-card.is-done .hud-status-badge {
+  color: #ffffff;
+}
+
+[data-theme="light"] .sq-btn,
+[data-theme="light"] .hud-btn,
+[data-theme="light"] .step-btn,
+[data-theme="light"] .boost-pill,
+[data-theme="light"] .school-toggle {
+  background: #f1f6f3;
+  border-color: var(--border);
+  color: var(--text-soft);
+}
+
+[data-theme="light"] .hud-btn-accent {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #ffffff;
+}
+
+[data-theme="light"] .mini-mode-btn.is-active {
+  background: #ffffff;
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(17, 34, 27, 0.12);
+}
+
+[data-theme="light"] .scrubber-track {
+  background: rgba(17, 34, 27, 0.14);
+}
+
+[data-theme="light"] .scrub-tick {
+  background: rgba(17, 34, 27, 0.4);
+}
+
+/* Light Mode Bento Charts & Gauges */
+[data-theme="light"] .l-white {
+  background: var(--green);
+}
+
+[data-theme="light"] .spark-track,
+[data-theme="light"] .bd-track {
+  background: rgba(17, 34, 27, 0.09);
+}
+
+[data-theme="light"] .spark-needle,
+[data-theme="light"] .bd-fill {
+  background: #167b60;
+}
+
+[data-theme="light"] .spark-needle.is-focus,
+[data-theme="light"] .spark-needle.is-today-bar {
+  background: var(--orange);
+}
+
+[data-theme="light"] .spark-needle.is-gym-bar {
+  background: var(--green);
+}
+
+[data-theme="light"] .spark-needle.is-rest-bar {
+  background: rgba(17, 34, 27, 0.16);
+}
+
+[data-theme="light"] .arc-gauge-svg path:first-child {
+  stroke: rgba(17, 34, 27, 0.14);
+}
+
+[data-theme="light"] #gauge-arc-active {
+  stroke: #167b60;
+}
+
+/* Light Mode Timetable, Heatmap & Settings */
+[data-theme="light"] .timetable thead th,
+[data-theme="light"] .exercise-list-head {
+  background: #edf4f0;
+  color: var(--text-muted);
+}
+
+[data-theme="light"] .timetable tbody td,
+[data-theme="light"] .exercise-row {
+  border-bottom-color: rgba(17, 34, 27, 0.08);
+}
+
+[data-theme="light"] .timetable tbody td.t-time {
+  color: var(--text);
+}
+
+[data-theme="light"] .timetable tbody tr:hover,
+[data-theme="light"] .exercise-row:hover {
+  background: rgba(22, 123, 96, 0.05);
+}
+
+[data-theme="light"] .timetable tbody tr.is-today-row {
+  background: rgba(240, 90, 40, 0.12);
+}
+
+[data-theme="light"] .timetable tbody tr.is-today-row td {
+  color: var(--text);
+}
+
+[data-theme="light"] .tag-jumuah {
+  background: rgba(22, 123, 96, 0.12);
+  color: #0f5e49;
+}
+
+[data-theme="light"] .cell.lvl-0 {
+  background: rgba(17, 34, 27, 0.08);
+}
+
+[data-theme="light"] .cell.is-today {
+  outline-color: var(--text);
+}
+
+[data-theme="light"] .dark-select,
+[data-theme="light"] .dark-input {
+  background: #f5f9f7;
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+[data-theme="light"] .city-btn,
+[data-theme="light"] .preset-chip,
+[data-theme="light"] .tiny-step {
+  background: #f1f6f3;
+  border-color: var(--border);
+  color: var(--text-soft);
+}
+
+[data-theme="light"] .city-btn.is-selected,
+[data-theme="light"] .preset-chip.is-selected {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #ffffff;
+}
+
+/* Light Mode Fitness Controls */
+[data-theme="light"] .add-exercise-form,
+[data-theme="light"] .workout-notes-bar {
+  background: #f8fbf9;
+}
+
+[data-theme="light"] .gym-check-btn {
+  background: #f1f6f3;
+  color: var(--text-soft);
+}
+
+[data-theme="light"] .gym-check-btn.is-active {
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.5);
+  color: #0e5a2b;
+}
+
+[data-theme="light"] .gym-check-btn.is-active .gym-check-circle,
+[data-theme="light"] .exercise-row.is-done .ex-check-btn {
+  color: #ffffff;
+}
+
+[data-theme="light"] .tooltip {
+  background: #11221b;
+  color: #ffffff;
 }
 
 /* Responsive */
