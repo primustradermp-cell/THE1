@@ -107,6 +107,7 @@
 }
 
 .hud-nav {
+  width: fit-content;
   box-shadow: var(--shadow-sm);
 }
 
@@ -2367,8 +2368,576 @@
 }
 
 /* ==========================================================================
-   8. RESPONSIVE BREAKPOINTS (1120px / 860px / 640px) & PRINT
+   7B. HOME LANDING PAGE — MOBILE-FIRST EXECUTIVE OVERVIEW
    ========================================================================== */
+.home-viewport {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 68% 36% at 50% 0%, var(--bronze-glow), transparent 64%),
+    var(--bg-canvas);
+}
+
+.home-shell {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: var(--shell-pad-y) var(--shell-pad-x) var(--space-10);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* 1. Compact Header & Next Prayer Countdown Strip */
+.home-header-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.home-date-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.home-date-title {
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+}
+
+.home-hijri-sub {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.home-next-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  background: var(--bg-panel);
+  border: 1px solid var(--orange-border);
+  text-decoration: none;
+  color: var(--text);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.home-next-pill:hover {
+  background: var(--orange-soft);
+  transform: translateY(-1px);
+}
+
+.home-next-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 8px var(--orange-border);
+  flex-shrink: 0;
+}
+
+.home-next-label {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.home-next-countdown {
+  color: var(--orange-text);
+  font-weight: 600;
+}
+
+/* Responsive 2-Column Desktop / Single-Column Mobile Grid */
+.home-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.home-col-main,
+.home-col-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+/* 2. Dual Discipline Rings Hero Card */
+.home-rings-card {
+  padding: 0;
+}
+
+.home-rings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-6) var(--card-pad-x) var(--space-5);
+}
+
+.home-ring-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+}
+
+.ring-visual {
+  position: relative;
+  width: 124px;
+  height: 124px;
+  display: grid;
+  place-items: center;
+}
+
+.ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-track {
+  fill: none;
+  stroke: var(--surface-track);
+  stroke-width: 8;
+}
+
+.ring-arc {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 301.59;
+  stroke-dashoffset: 301.59;
+  transition: stroke-dashoffset var(--dur-slow) var(--ease);
+}
+
+.ring-arc-emerald {
+  stroke: var(--green);
+}
+
+.ring-arc-orange {
+  stroke: var(--orange);
+}
+
+.ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.ring-val {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-snug);
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.ring-unit {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.ring-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ring-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ring-sub {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.home-rings-footer {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  align-items: center;
+  padding: 14px var(--card-pad-x);
+  background: var(--surface-band);
+  border-top: 1px solid var(--border);
+}
+
+.home-footer-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+}
+
+.home-footer-stat:first-child {
+  padding-left: 0;
+}
+
+.home-footer-stat:last-child {
+  padding-right: 0;
+}
+
+.home-footer-val {
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.home-footer-sep {
+  width: 1px;
+  height: 22px;
+  background: var(--border);
+}
+
+/* 3. Quick-Toggle 5-Prayer Strip */
+.home-prayer-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.home-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+
+.home-micro-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.home-micro-hint {
+  font-size: var(--text-2xs);
+  color: var(--text-muted);
+  opacity: 0.65;
+}
+
+.home-prayer-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.hp-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 12px 6px;
+  border-radius: var(--r-md);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 150ms var(--ease),
+    border-color 150ms var(--ease),
+    background-color 150ms var(--ease);
+}
+
+.hp-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  background: var(--bg-elevated);
+}
+
+.hp-tile:active {
+  transform: scale(0.97);
+}
+
+.hp-tile.is-done {
+  background: var(--green-soft);
+  border-color: var(--green-border);
+}
+
+.hp-tile.is-current:not(.is-done) {
+  background: var(--bronze-soft);
+  border-color: var(--bronze-border);
+}
+
+.hp-tile.is-next:not(.is-done) {
+  background: var(--orange-soft);
+  border-color: var(--orange-border);
+}
+
+[data-theme="light"] .hp-tile.is-done {
+  background: rgba(218, 245, 228, 0.96);
+}
+
+[data-theme="light"] .hp-tile.is-current:not(.is-done) {
+  background: rgba(252, 241, 222, 0.96);
+}
+
+[data-theme="light"] .hp-tile.is-next:not(.is-done) {
+  background: rgba(255, 232, 222, 0.96);
+}
+
+.hp-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: transparent;
+}
+
+.hp-tile.is-done .hp-check {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--green-ink);
+}
+
+.hp-tile.is-current:not(.is-done) .hp-check {
+  border-color: var(--bronze-text);
+  color: var(--bronze-text);
+}
+
+.hp-tile.is-next:not(.is-done) .hp-check {
+  border-color: var(--orange-text);
+  color: var(--orange-text);
+}
+
+.hp-name {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.hp-tile.is-done .hp-name {
+  color: var(--green-text);
+}
+
+.hp-time {
+  font-size: var(--text-2xs);
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.hp-tile.is-done .hp-time {
+  color: var(--green-text);
+}
+
+.hp-tile.is-current:not(.is-done) .hp-time {
+  color: var(--bronze-text);
+}
+
+.hp-tile.is-next:not(.is-done) .hp-time {
+  color: var(--orange-text);
+}
+
+/* 4. Today's Training Action Card */
+.home-training-card {
+  padding: var(--card-pad-y) var(--card-pad-x);
+  gap: var(--space-4);
+}
+
+.home-training-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.home-training-title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: var(--tracking-snug);
+  color: var(--text);
+}
+
+.home-training-meta {
+  margin-top: 6px;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.home-training-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.home-gym-btn,
+.home-open-workout {
+  width: 100%;
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* 5A. Combined 30-Day Consistency Grid */
+.home-consistency-card {
+  padding: var(--card-pad-y) var(--card-pad-x);
+  gap: var(--space-4);
+}
+
+.home-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.hc-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.hc-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hc-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.hc-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 46px;
+  border-radius: var(--r-sm);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.hc-tile.is-today {
+  border-color: var(--orange-border);
+  background: var(--orange-soft);
+}
+
+.hc-tile.is-both {
+  border-color: var(--green-border);
+}
+
+.hc-day {
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  color: var(--text-soft);
+  line-height: 1;
+}
+
+.hc-tile.is-today .hc-day {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.hc-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hc-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--surface-track);
+}
+
+.hc-dot-prayer.is-partial {
+  background: var(--bronze);
+  opacity: 0.65;
+}
+
+.hc-dot-prayer.is-on {
+  background: var(--green);
+}
+
+.hc-dot-gym.is-on {
+  background: var(--orange);
+}
+
+/* 5B. Daily Reflection Card */
+.home-reflection-card {
+  padding: var(--card-pad-y) var(--card-pad-x);
+  gap: var(--space-2);
+}
+
+.home-cycle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  background: transparent;
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.home-cycle-btn:hover {
+  color: var(--text);
+  background: var(--surface-subtle-hover);
+}
+
+.home-ref-source {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--bronze-text);
+}
+
+.home-ref-quote {
+  margin: 0;
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--text-soft);
+}
+
+/* ==========================================================================
+   8. RESPONSIVE BREAKPOINTS (1120px / 960px / 860px / 640px) & PRINT
+   ========================================================================== */
+@media (max-width: 960px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 1120px) {
   .viewport-frame {
     grid-template-columns: 1fr;
@@ -2446,6 +3015,61 @@
   .theme-opt,
   .subnav-link {
     height: 36px;
+  }
+
+  .hud-tab,
+  .hud-page-link {
+    padding: 0 11px;
+    font-size: var(--text-xs);
+  }
+
+  .theme-opt {
+    padding: 0 9px;
+  }
+
+  .home-shell {
+    gap: var(--space-4);
+    padding-bottom: var(--space-6);
+  }
+
+  .home-next-pill {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .home-rings-grid {
+    padding: var(--space-4) var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .ring-visual {
+    width: 104px;
+    height: 104px;
+  }
+
+  .ring-val {
+    font-size: 18px;
+  }
+
+  .home-prayer-grid {
+    gap: 5px;
+  }
+
+  .hp-tile {
+    padding: 10px 3px;
+    gap: 4px;
+  }
+
+  .hp-name {
+    font-size: 11px;
+  }
+
+  .hp-time {
+    font-size: 10.5px;
+  }
+
+  .hc-tile {
+    height: 42px;
   }
 
   .hud-btn,

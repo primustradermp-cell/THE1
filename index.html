@@ -7,33 +7,33 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="SalahSync" />
   <meta name="theme-color" content="#0b0b0c" />
-  <title>SalahSync · Preston Prayer Dashboard</title>
-  <meta name="description" content="Minimalist Preston, Lancashire prayer times dashboard, live countdown, daily salah tracker, and monthly timetable powered by AlAdhan API." />
+  <title>Home · Daily Prayer &amp; Training Dashboard</title>
+  <meta name="description" content="Unified daily dashboard tracking prayer completion, live countdown, weekly training split, and 30-day consistency." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css?v=28" />
-  <link rel="stylesheet" href="styles.css?v=28" />
-  <script src="theme.js?v=28"></script>
+  <link rel="stylesheet" href="tokens.css?v=29" />
+  <link rel="stylesheet" href="styles.css?v=29" />
+  <script src="theme.js?v=29"></script>
 </head>
-<body class="prayer-page">
-  <div class="viewport-frame">
-    <!-- LEFT MAIN WORKSPACE -->
-    <div class="left-column">
-      <!-- Unified Single-Row Top Bar -->
+<body class="home-page">
+  <div class="home-viewport">
+    <div class="home-shell">
+      <!-- Unified Single-Row Top Bar (Full Pill Controls) -->
       <header class="hud-topbar">
         <div class="hud-left">
           <div class="status-cluster">
-            <span class="pill-dot is-loading" id="api-dot"></span>
-            <span id="api-status-text">Syncing…</span>
+            <span class="pill-dot is-loading" id="home-api-dot"></span>
+            <span id="home-status-city">Madina Masjid</span>
             <span class="cluster-sep" aria-hidden="true">·</span>
-            <span class="mono cluster-clock" id="widget-clock">--:--:--</span>
+            <span class="mono cluster-clock" id="home-clock">--:--:--</span>
           </div>
         </div>
 
         <nav class="hud-nav" aria-label="Site navigation">
-          <a class="hud-tab hud-page-link is-active" href="index.html?v=28" aria-current="page">Prayer</a>
-          <a class="hud-tab hud-page-link" href="fitness.html?v=28">Fitness</a>
+          <a class="hud-tab hud-page-link is-active" href="index.html?v=29" aria-current="page">Home</a>
+          <a class="hud-tab hud-page-link" href="prayer.html?v=29">Prayer</a>
+          <a class="hud-tab hud-page-link" href="fitness.html?v=29">Fitness</a>
         </nav>
 
         <div class="hud-right">
@@ -50,436 +50,155 @@
         </div>
       </header>
 
-      <!-- Focused Prayer Section Switcher -->
-      <nav class="subnav-bar" role="tablist" aria-label="Prayer sections">
-        <button type="button" class="subnav-link is-active" role="tab" aria-selected="true" data-prayer-view="overview">Overview</button>
-        <button type="button" class="subnav-link" role="tab" aria-selected="false" data-prayer-view="timetable">Timetable</button>
-        <button type="button" class="subnav-link" role="tab" aria-selected="false" data-prayer-view="activity">Activity</button>
-        <button type="button" class="subnav-link" role="tab" aria-selected="false" data-prayer-view="calculation">Calculation</button>
-      </nav>
+      <!-- 1. COMPACT HEADER & LIVE NEXT PRAYER STRIP -->
+      <section class="home-header-strip" aria-label="Today's date and next prayer">
+        <div class="home-date-stack">
+          <h1 class="home-date-title ds-h1" id="home-date-title">—</h1>
+          <div class="home-hijri-sub mono" id="home-hijri-sub">Syncing Hijri date…</div>
+        </div>
 
-      <!-- =================================================================
-           VIEW 1: MINIMALIST PRAYER OVERVIEW
-           ================================================================= -->
-      <div class="prayer-view is-active" id="view-overview" role="tabpanel">
-        <!-- Primary Hero Stage: 3D Kaaba Backdrop + Next Prayer Focal Point + 5-Prayer Timeline -->
-        <section class="hud-stage prayer-hero" id="hud-stage">
-          <img class="stage-kaaba-bg" id="stage-kaaba-bg" src="./kaaba-3d.jpg" alt="" aria-hidden="true" />
-          <div class="kaaba-3d-canvas" id="kaaba-3d-canvas" aria-label="Interactive 3D Kaaba Model"></div>
-          <div class="stage-vignette prayer-hero-vignette" aria-hidden="true"></div>
+        <a class="home-next-pill" href="prayer.html?v=29" aria-label="Open Prayer dashboard">
+          <span class="home-next-dot" aria-hidden="true"></span>
+          <span class="home-next-label" id="home-next-label">Next: —</span>
+          <span class="cluster-sep" aria-hidden="true">·</span>
+          <span class="home-next-countdown mono" id="home-next-countdown">in --:--:--</span>
+        </a>
+      </section>
 
-          <!-- Top Quiet Context Row: Hijri Date · Location · Sunrise + 3D Controls -->
-          <div class="hero-context-row">
-            <div class="hero-quiet-meta mono">
-              <span id="hero-hijri-line">Loading Hijri…</span>
-              <span class="meta-dot" aria-hidden="true">·</span>
-              <span id="hero-location-meta">Preston</span>
-              <span class="meta-dot" aria-hidden="true">·</span>
-              <span id="sunrise-pill">Sunrise --:--</span>
-            </div>
-
-            <div class="btns-3d">
-              <button type="button" class="btn-3d is-active" id="btn-3d-spin">Orbit</button>
-              <button type="button" class="btn-3d" id="btn-3d-reset">Reset</button>
-            </div>
-          </div>
-
-          <!-- Primary Focal Point: Active Window Pill + Next Upcoming Prayer + Live Countdown -->
-          <div class="hero-focal is-loading" id="hero-focal">
-            <div class="focal-window-pill mono" id="focal-window-pill" hidden>
-              <span class="focal-window-dot" aria-hidden="true"></span>
-              <span id="focal-window-text">CURRENT WINDOW: —</span>
-            </div>
-            <div class="focal-kicker ds-kicker" id="focal-kicker">NEXT PRAYER</div>
-            <div class="focal-headline">
-              <h1 class="focal-prayer-name ds-display" id="focal-prayer-name">—</h1>
-              <span class="focal-prayer-time mono" id="focal-prayer-time">--:--</span>
-            </div>
-            <div class="focal-countdown-row">
-              <span class="focal-countdown-prefix">in</span>
-              <span class="focal-countdown mono" id="focal-countdown">--:--:--</span>
-            </div>
-          </div>
-
-          <!-- 5 Daily Prayers Horizontal Timeline -->
-          <div class="prayer-timeline-wrap">
-            <div class="timeline-rail" aria-hidden="true">
-              <div class="timeline-rail-fill" id="timeline-rail-fill"></div>
-            </div>
-            <div class="timeline-meta-row">
-              <span class="timeline-endpoint mono" id="timeline-start-label">—</span>
-              <span class="timeline-hint">Click card to toggle</span>
-              <span class="timeline-endpoint mono" id="timeline-end-label">—</span>
-            </div>
-            <div class="prayer-timeline-grid" id="hud-prayer-grid" role="group" aria-label="Today's five prayers">
-              <!-- Populated by script.js -->
-            </div>
-          </div>
-        </section>
-
-        <!-- Single Consolidated Daily Progress Card (Zero Duplication) -->
-        <section class="panel-dark daily-progress-card" aria-label="Daily prayer progress">
-          <div class="dp-left">
-            <div class="dp-head">
-              <div>
-                <div class="dp-label">Daily Progress</div>
-                <div class="dp-headline">
-                  <span class="dp-count mono" id="dp-count">0 of 5</span>
-                  <span class="dp-sub" id="dp-sub">prayers completed today</span>
+      <!-- MAIN RESPONSIVE GRID (Mobile-First Single Column -> Balanced 2-Col Desktop) -->
+      <main class="home-grid">
+        <!-- PRIMARY COLUMN: Rings -> Quick Prayer Strip -> Today's Training -->
+        <div class="home-col-main">
+          <!-- 2. DUAL DISCIPLINE RINGS HERO CARD -->
+          <section class="panel-dark home-rings-card" aria-label="Daily discipline progress">
+            <div class="home-rings-grid">
+              <!-- Left Ring (Emerald): Prayer Today -->
+              <div class="home-ring-item">
+                <div class="ring-visual">
+                  <svg class="ring-svg" viewBox="0 0 120 120" aria-hidden="true">
+                    <circle class="ring-track" cx="60" cy="60" r="48" />
+                    <circle class="ring-arc ring-arc-emerald" id="ring-prayer-arc" cx="60" cy="60" r="48" />
+                  </svg>
+                  <div class="ring-center">
+                    <span class="ring-val mono" id="ring-prayer-val">0 / 5</span>
+                    <span class="ring-unit mono">TODAY</span>
+                  </div>
+                </div>
+                <div class="ring-meta">
+                  <div class="ring-title">Prayer Today</div>
+                  <div class="ring-sub mono" id="ring-prayer-window">Window · —</div>
                 </div>
               </div>
-              <span class="dp-pct mono" id="dp-pct">0%</span>
-            </div>
-            <div class="dp-segments" id="dp-segments" aria-hidden="true"></div>
-          </div>
 
-          <div class="dp-divider" aria-hidden="true"></div>
+              <!-- Right Ring (Burnt Orange): Weekly Split -->
+              <div class="home-ring-item">
+                <div class="ring-visual">
+                  <svg class="ring-svg" viewBox="0 0 120 120" aria-hidden="true">
+                    <circle class="ring-track" cx="60" cy="60" r="48" />
+                    <circle class="ring-arc ring-arc-orange" id="ring-gym-arc" cx="60" cy="60" r="48" />
+                  </svg>
+                  <div class="ring-center">
+                    <span class="ring-val mono" id="ring-gym-val">0 / 7</span>
+                    <span class="ring-unit mono">WEEK</span>
+                  </div>
+                </div>
+                <div class="ring-meta">
+                  <div class="ring-title">Weekly Split</div>
+                  <div class="ring-sub mono" id="ring-gym-split">—</div>
+                </div>
+              </div>
+            </div>
 
-          <div class="dp-metrics">
-            <div class="dp-metric">
-              <span class="m-lbl">Streak</span>
-              <span class="dp-metric-val mono" id="dp-streak">0 d</span>
+            <!-- Compact Footer Row: Prayer Streak & Gym Days This Month -->
+            <div class="home-rings-footer">
+              <div class="home-footer-stat">
+                <span class="m-lbl">Prayer Streak</span>
+                <span class="home-footer-val mono" id="home-prayer-streak">0 d</span>
+              </div>
+              <div class="home-footer-sep" aria-hidden="true"></div>
+              <div class="home-footer-stat">
+                <span class="m-lbl">Gym Days This Month</span>
+                <span class="home-footer-val mono" id="home-gym-month">0 d</span>
+              </div>
             </div>
-            <div class="dp-metric">
-              <span class="m-lbl">This Week</span>
-              <span class="dp-metric-val mono" id="dp-week">0 / 35</span>
-            </div>
-            <div class="dp-metric">
-              <span class="m-lbl">30-Day Rate</span>
-              <span class="dp-metric-val mono" id="dp-rate">0%</span>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        <!-- Monthly Prayer Log Calendar & Past-Day Catch-Up -->
-        <section class="panel-dark prayer-log-card" aria-label="Monthly prayer log calendar">
-          <!-- Left: Monthly Calendar Grid -->
-          <div class="plog-cal-col">
-            <div class="plog-cal-header">
+          <!-- 3. QUICK-TOGGLE 5-PRAYER STRIP -->
+          <section class="home-prayer-section" aria-label="Quick toggle today's five prayers">
+            <div class="home-section-head">
+              <span class="home-micro-label mono">TODAY'S PRAYERS</span>
+              <span class="home-micro-hint">Tap to toggle</span>
+            </div>
+            <div class="home-prayer-grid" id="home-prayer-grid" role="group" aria-label="Today's five prayers">
+              <!-- Populated by home.js -->
+            </div>
+          </section>
+
+          <!-- 4. TODAY'S TRAINING ACTION CARD -->
+          <section class="panel-dark home-training-card" aria-label="Today's scheduled workout">
+            <div class="home-training-top">
               <div>
-                <div class="panel-heading">Monthly Prayer Log</div>
-                <div class="panel-sub">Select any past day to mark missed prayers completed</div>
-              </div>
-              <div class="plog-cal-nav">
-                <button type="button" class="sq-btn" id="pcal-prev" aria-label="Previous month">
-                  <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-                </button>
-                <span class="mono plog-month-label" id="pcal-month-label">Month Year</span>
-                <button type="button" class="sq-btn" id="pcal-next" aria-label="Next month">
-                  <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-                </button>
-                <button type="button" class="hud-btn" id="pcal-today">Today</button>
+                <div class="home-micro-label mono">TODAY'S TRAINING</div>
+                <div class="home-training-title-row">
+                  <h2 class="home-training-title" id="home-workout-title">Today’s Workout</h2>
+                  <span class="badge badge-accent" id="home-workout-cat">STRENGTH</span>
+                </div>
+                <div class="home-training-meta" id="home-workout-meta">Loading routine…</div>
               </div>
             </div>
 
-            <div class="plog-weekdays mono">
-              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-            </div>
-            <div class="plog-grid" id="pcal-grid"></div>
-          </div>
-
-          <!-- Right: Selected Day Prayer Catch-Up Editor -->
-          <div class="plog-day-col">
-            <div class="plog-day-head">
-              <div>
-                <div class="m-lbl">Selected Day</div>
-                <div class="plog-day-title" id="pcal-selected-title">Today</div>
-              </div>
-              <span class="mono plog-day-badge" id="pcal-selected-count">0 / 5</span>
-            </div>
-
-            <div class="plog-day-prayers" id="pcal-day-prayers">
-              <!-- Populated by script.js -->
-            </div>
-
-            <div class="plog-day-footer">
-              <button type="button" class="hud-btn" id="pcal-mark-all">Mark All 5 Done</button>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <!-- =================================================================
-           VIEW 2: DEDICATED PRESTON MONTHLY TIMETABLE
-           ================================================================= -->
-      <div class="prayer-view" id="view-timetable" role="tabpanel">
-        <section class="panel-dark timetable-panel">
-          <div class="panel-toolbar">
-            <div>
-              <div class="panel-heading" id="tt-heading">Preston Monthly Timetable</div>
-              <div class="panel-sub" id="tt-subtitle">Tap Today to highlight the current date or export to CSV</div>
-            </div>
-            <div class="toolbar-btns">
-              <button class="sq-btn" id="tt-prev" type="button" aria-label="Previous month">
-                <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            <div class="home-training-actions">
+              <button type="button" class="gym-check-btn home-gym-btn" id="home-btn-mark-gym" aria-pressed="false">
+                <span class="gym-check-circle" aria-hidden="true">✓</span>
+                <span id="home-btn-mark-gym-text">Mark Gym Day</span>
               </button>
-              <span class="month-readout mono" id="tt-month">Loading…</span>
-              <button class="sq-btn" id="tt-next" type="button" aria-label="Next month">
-                <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              <a class="btn btn-primary btn-lg home-open-workout" href="fitness.html?v=29">
+                <span>Open Workout</span>
+                <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+            </div>
+          </section>
+        </div>
+
+        <!-- SECONDARY COLUMN: 30-Day Dual-Dot Consistency Grid & Daily Reflection -->
+        <div class="home-col-side">
+          <!-- 5A. COMBINED 30-DAY CONSISTENCY GRID -->
+          <section class="panel-dark home-consistency-card" aria-label="30-day consistency grid">
+            <div class="home-card-head">
+              <div>
+                <h2 class="panel-heading">30-Day Consistency</h2>
+                <div class="panel-sub" id="home-consistency-sub">Last 30 days · Prayer &amp; Training</div>
+              </div>
+              <div class="hc-legend mono">
+                <span class="hc-legend-item"><span class="hc-dot hc-dot-prayer is-on"></span>5/5 Prayer</span>
+                <span class="hc-legend-item"><span class="hc-dot hc-dot-gym is-on"></span>Gym</span>
+              </div>
+            </div>
+
+            <div class="hc-grid" id="home-consistency-grid">
+              <!-- Populated by home.js -->
+            </div>
+          </section>
+
+          <!-- 5B. DAILY REFLECTION CARD -->
+          <section class="panel-dark home-reflection-card" aria-label="Daily reflection">
+            <div class="home-card-head">
+              <span class="home-micro-label mono">DAILY REFLECTION</span>
+              <button type="button" class="home-cycle-btn" id="home-ref-next" aria-label="Next reflection">
+                <span>Next</span>
+                <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></svg>
               </button>
-              <button class="hud-btn" id="tt-today" type="button">Today</button>
-              <button class="hud-btn" id="tt-print" type="button">Print</button>
-              <button class="hud-btn hud-btn-accent" id="tt-csv" type="button">Export CSV</button>
             </div>
-          </div>
-
-          <div class="table-scroll table-scroll-tall">
-            <table class="timetable" aria-label="Preston Lancashire monthly prayer timetable">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Hijri</th>
-                  <th>Fajr</th>
-                  <th>Sunrise</th>
-                  <th>Dhuhr</th>
-                  <th>Asr</th>
-                  <th>Maghrib</th>
-                  <th>Isha</th>
-                </tr>
-              </thead>
-              <tbody id="tt-body">
-                <tr>
-                  <td colspan="8" class="table-loading">
-                    <div class="loading-state">
-                      <span class="spinner" aria-hidden="true"></span>
-                      <span>Loading monthly timetable…</span>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
-
-      <!-- =================================================================
-           VIEW 3: DEDICATED 52-WEEK ACTIVITY & BREAKDOWN
-           ================================================================= -->
-      <div class="prayer-view" id="view-activity" role="tabpanel">
-        <section class="panel-dark analytics-panel">
-          <div class="panel-toolbar">
-            <div class="panel-heading">52-Week Activity</div>
-            <div class="mono panel-sub" id="analytics-best-streak">Best streak · 0 days</div>
-          </div>
-
-          <div class="heatmap-scroll">
-            <div class="heatmap-months" id="heatmap-months"></div>
-            <div class="heatmap-body">
-              <div class="heatmap-days">
-                <span>Mon</span>
-                <span>Wed</span>
-                <span>Fri</span>
-              </div>
-              <div class="heatmap-grid" id="heatmap-grid"></div>
-            </div>
-          </div>
-
-          <div class="heatmap-legend mono">
-            <span>Less</span>
-            <span class="cell lvl-0"></span>
-            <span class="cell lvl-1"></span>
-            <span class="cell lvl-2"></span>
-            <span class="cell lvl-3"></span>
-            <span class="cell lvl-4"></span>
-            <span>More</span>
-          </div>
-
-          <div class="breakdown-section-title">30-Day Breakdown by Prayer</div>
-          <div class="breakdown-table" id="breakdown-list"></div>
-        </section>
-      </div>
-
-      <!-- =================================================================
-           VIEW 4: DEDICATED CALCULATION & LOCATION SETTINGS
-           ================================================================= -->
-      <div class="prayer-view" id="view-calculation" role="tabpanel">
-        <section class="panel-dark settings-panel">
-          <div class="panel-toolbar">
-            <div class="panel-heading">Calculation &amp; Location</div>
-          </div>
-
-          <div class="settings-list">
-            <div class="setting-item">
-              <div class="setting-label">Method</div>
-              <select class="dark-select" id="setting-method" aria-label="Calculation method">
-                <option value="99">Custom Angles</option>
-                <option value="15">Moonsighting Committee</option>
-                <option value="3">Muslim World League (MWL)</option>
-                <option value="2">ISNA</option>
-                <option value="1">Karachi</option>
-                <option value="5">Egyptian</option>
-                <option value="4">Umm Al-Qura</option>
-              </select>
-            </div>
-
-            <div class="setting-item" id="row-fajr-angle">
-              <div class="setting-label">Fajr Angle</div>
-              <div class="mini-stepper">
-                <button type="button" class="step-btn" data-step="fajr" data-delta="-0.5">−</button>
-                <span class="step-val mono" id="val-fajr-angle">15.5°</span>
-                <button type="button" class="step-btn" data-step="fajr" data-delta="0.5">+</button>
-              </div>
-            </div>
-
-            <div class="setting-item" id="row-isha-angle">
-              <div class="setting-label">Isha Angle</div>
-              <div class="mini-stepper">
-                <button type="button" class="step-btn" data-step="isha" data-delta="-0.5">−</button>
-                <span class="step-val mono" id="val-isha-angle">15.0°</span>
-                <button type="button" class="step-btn" data-step="isha" data-delta="0.5">+</button>
-              </div>
-            </div>
-
-            <div class="setting-item">
-              <div class="setting-label">Madhab (Asr)</div>
-              <select class="dark-select" id="setting-school" aria-label="Madhab for Asr">
-                <option value="1">Hanafi</option>
-                <option value="0">Standard (Shafi / Maliki / Hanbali)</option>
-              </select>
-            </div>
-
-            <div class="setting-item">
-              <div class="setting-label">High Latitude</div>
-              <select class="dark-select" id="setting-lat-adj" aria-label="High latitude rule">
-                <option value="3">Angle-Based</option>
-                <option value="2">One Seventh of Night</option>
-                <option value="1">Middle of the Night</option>
-              </select>
-            </div>
-
-            <div class="setting-item setting-item-col">
-              <div class="tune-head-row">
-                <div class="setting-label">Minute Offsets (Madina Masjid Calibration)</div>
-                <button type="button" class="hud-btn hud-btn-sm" id="btn-reset-madina">Reset to Madina Masjid</button>
-              </div>
-              <div class="tune-grid">
-                <div class="tune-box">
-                  <span class="m-lbl">Fajr</span>
-                  <div class="mini-stepper">
-                    <button type="button" class="step-btn" data-tune-prayer="Fajr" data-delta="-1">−</button>
-                    <span class="step-val mono" id="val-tune-fajr">+6m</span>
-                    <button type="button" class="step-btn" data-tune-prayer="Fajr" data-delta="1">+</button>
-                  </div>
-                </div>
-                <div class="tune-box">
-                  <span class="m-lbl">Dhuhr</span>
-                  <div class="mini-stepper">
-                    <button type="button" class="step-btn" data-tune-prayer="Dhuhr" data-delta="-1">−</button>
-                    <span class="step-val mono" id="val-tune-dhuhr">+5m</span>
-                    <button type="button" class="step-btn" data-tune-prayer="Dhuhr" data-delta="1">+</button>
-                  </div>
-                </div>
-                <div class="tune-box">
-                  <span class="m-lbl">Asr</span>
-                  <div class="mini-stepper">
-                    <button type="button" class="step-btn" data-tune-prayer="Asr" data-delta="-1">−</button>
-                    <span class="step-val mono" id="val-tune-asr">0m</span>
-                    <button type="button" class="step-btn" data-tune-prayer="Asr" data-delta="1">+</button>
-                  </div>
-                </div>
-                <div class="tune-box">
-                  <span class="m-lbl">Maghrib</span>
-                  <div class="mini-stepper">
-                    <button type="button" class="step-btn" data-tune-prayer="Maghrib" data-delta="-1">−</button>
-                    <span class="step-val mono" id="val-tune-maghrib">+3m</span>
-                    <button type="button" class="step-btn" data-tune-prayer="Maghrib" data-delta="1">+</button>
-                  </div>
-                </div>
-                <div class="tune-box">
-                  <span class="m-lbl">Isha</span>
-                  <div class="mini-stepper">
-                    <button type="button" class="step-btn" data-tune-prayer="Isha" data-delta="-1">−</button>
-                    <span class="step-val mono" id="val-tune-isha">-1m</span>
-                    <button type="button" class="step-btn" data-tune-prayer="Isha" data-delta="1">+</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="setting-item setting-item-col">
-              <div class="setting-label" id="settings-city-label">Location · Madina Masjid, Preston</div>
-              <div class="city-row" id="city-chips">
-                <button class="city-btn is-selected" data-city="Madina Masjid, Preston" data-lat="53.7632" data-lng="-2.7031" type="button">Madina Masjid (Preston)</button>
-                <button class="city-btn" data-city="Blackburn, Lancashire" data-lat="53.7488" data-lng="-2.4820" type="button">Blackburn</button>
-                <button class="city-btn" data-city="Burnley, Lancashire" data-lat="53.7893" data-lng="-2.2480" type="button">Burnley</button>
-                <button class="city-btn" data-city="Lancaster, Lancashire" data-lat="54.0466" data-lng="-2.8007" type="button">Lancaster</button>
-                <button class="city-btn" data-city="Manchester, UK" data-lat="53.4808" data-lng="-2.2426" type="button">Manchester</button>
-                <button class="city-btn" data-city="London, UK" data-lat="51.5074" data-lng="-0.1278" type="button">London</button>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
+            <div class="home-ref-source" id="home-ref-source">Qur’an 13:28</div>
+            <blockquote class="home-ref-quote" id="home-ref-quote">
+              “Verily, in the remembrance of Allah do hearts find rest.”
+            </blockquote>
+          </section>
+        </div>
+      </main>
     </div>
-
-    <!-- SIMPLIFIED RIGHT INFORMATION SIDEBAR (Zero Duplicated KPIs) -->
-    <aside class="inspector-sidebar prayer-sidebar" aria-label="Qibla and Daily Reflection">
-      <div class="inspector-body">
-        <!-- Module 1: Qibla Compass & Makkah Time -->
-        <div class="sidebar-block">
-          <div class="insp-label">Qibla Direction</div>
-          <div class="qibla-card-row">
-            <div>
-              <div class="insp-big mono" id="insp-qibla-deg">117.7°</div>
-              <div class="insp-unit" id="insp-qibla-sub">ESE from Preston</div>
-              <div class="makkah-time mono" id="makkah-clock">Makkah · --:--</div>
-            </div>
-            <div class="wireframe-compass" aria-hidden="true">
-              <svg viewBox="0 0 110 110" class="compass-svg">
-                <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="3 3" />
-                <circle cx="55" cy="55" r="30" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
-                <line x1="55" y1="7" x2="55" y2="103" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
-                <line x1="7" y1="55" x2="103" y2="55" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
-                <g id="wire-needle" transform="rotate(117.7 55 55)">
-                  <line x1="55" y1="55" x2="55" y2="18" stroke="#e56a35" stroke-width="2.2" stroke-linecap="round" />
-                  <polygon points="55,12 51,21 59,21" fill="#e56a35" />
-                </g>
-                <circle cx="55" cy="55" r="3.5" fill="#ffffff" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <hr class="divider" />
-
-        <!-- Module 2: Daily Reflection -->
-        <div class="sidebar-block">
-          <div class="insp-label">Daily Reflection</div>
-          <div class="insp-info-title" id="ref-source">Qur’an 13:28</div>
-          <p class="insp-info-body reflection-body" id="ref-quote">
-            “Verily, in the remembrance of Allah do hearts find rest.”
-          </p>
-          <button class="insp-cycle-btn" id="ref-next-btn" type="button">
-            <span>Next reflection</span>
-            <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></svg>
-          </button>
-        </div>
-
-        <hr class="divider" />
-
-        <!-- Module 3: Active Calculation Summary -->
-        <div class="sidebar-block">
-          <div class="insp-label">Calculation Profile</div>
-          <div class="calc-summary-line" id="sidebar-calc-summary">Custom Angles (15.5° / 15.0°)</div>
-          <div class="insp-unit" id="sidebar-school-summary">Hanafi Asr · Preston, Lancashire</div>
-          <button class="insp-cycle-btn" id="btn-open-calc" type="button">
-            <span>Adjust calculation</span>
-            <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Pinned Bottom CTA -->
-      <button class="inspector-cta" id="inspector-cta-btn" type="button">
-        View Monthly Timetable
-      </button>
-    </aside>
   </div>
 
-  <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
-  <script src="kaaba3d.js?v=28"></script>
-  <script src="script.js?v=28"></script>
+  <script src="home.js?v=29"></script>
 </body>
 </html>
