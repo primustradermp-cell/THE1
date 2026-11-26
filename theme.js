@@ -6,6 +6,7 @@
   const LIGHT_META = "#ebf0ed";
 
   function getSavedTheme() {
+    if (window.AppStorage) return window.AppStorage.loadTheme();
     try {
       return localStorage.getItem(STORAGE_KEY) === "light" ? "light" : "dark";
     } catch {
@@ -27,10 +28,14 @@
     syncThemeColorMeta(theme);
 
     if (persist) {
-      try {
-        localStorage.setItem(STORAGE_KEY, theme);
-      } catch {
-        // Ignore storage errors
+      if (window.AppStorage) {
+        window.AppStorage.saveTheme(theme);
+      } else {
+        try {
+          localStorage.setItem(STORAGE_KEY, theme);
+        } catch {
+          // Ignore storage errors
+        }
       }
     }
 

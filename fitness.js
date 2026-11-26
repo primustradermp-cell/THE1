@@ -1,27 +1,10 @@
 /* GymSync — Minimalist Weekly Routine, Per-Set Logger & Training Summary */
 
-const FITNESS_LOGS_KEY = "salahsync_fitness_logs_v1";
-const FITNESS_PLAN_KEY = "salahsync_fitness_plan_v1";
-
-const WEEKDAYS = [
-  { id: 1, short: "Mon", full: "Monday" },
-  { id: 2, short: "Tue", full: "Tuesday" },
-  { id: 3, short: "Wed", full: "Wednesday" },
-  { id: 4, short: "Thu", full: "Thursday" },
-  { id: 5, short: "Fri", full: "Friday" },
-  { id: 6, short: "Sat", full: "Saturday" },
-  { id: 0, short: "Sun", full: "Sunday" },
-];
-
-const DEFAULT_PLAN = {
-  1: { title: "Push", exercises: [] },
-  2: { title: "Pull", exercises: [] },
-  3: { title: "Legs", exercises: [] },
-  4: { title: "Upper", exercises: [] },
-  5: { title: "Full Body", exercises: [] },
-  6: { title: "Arms & Cardio", exercises: [] },
-  0: { title: "Rest", exercises: [] },
-};
+const Store = window.AppStorage;
+const FITNESS_LOGS_KEY = Store.KEYS.FITNESS_LOGS;
+const FITNESS_PLAN_KEY = Store.KEYS.FITNESS_PLAN;
+const WEEKDAYS = Store.WEEKDAYS;
+const DEFAULT_PLAN = Store.DEFAULT_FITNESS_PLAN;
 
 const fitnessState = {
   selectedDate: toDateKey(new Date()),
@@ -29,91 +12,31 @@ const fitnessState = {
   splitEditorOpen: false,
   calYear: new Date().getFullYear(),
   calMonth: new Date().getMonth(),
-  logs: loadJSON(FITNESS_LOGS_KEY, {}),
-  plan: loadPlan(),
+  logs: Store.loadFitnessLogs(),
+  plan: Store.loadFitnessPlan(),
 };
 
-/* ---------- Storage & Backwards-Compatible Migration ---------- */
-
-function loadJSON(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return fallback;
-    const parsed = JSON.parse(raw);
-    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-      return parsed;
-    }
-    return fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function safeWriteJSON(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-    return true;
-  } catch {
-    return false;
-  }
-}
+/* ---------- Centralized Persistence via AppStorage ---------- */
 
 function makeId() {
-  return `ex_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+  return Store.makeExerciseId();
 }
 
 function normalizeExercise(ex, resetDone = false) {
-  let setList;
-  if (Array.isArray(ex.setList) && ex.setList.length > 0) {
-    setList = ex.setList.map((s) => ({
-      reps: String(s.reps ?? "10"),
-      weight: String(s.weight ?? ""),
-      done: resetDone ? false : Boolean(s.done),
-    }));
-  } else {
-    const count = Math.max(1, Math.min(30, Number(ex.sets) || 3));
-    const reps = String(ex.reps ?? "10");
-    const weight = String(ex.weight ?? "");
-    const done = resetDone ? false : Boolean(ex.done);
-    setList = Array.from({ length: count }, () => ({ reps, weight, done }));
-  }
-
-  const allDone = setList.length > 0 && setList.every((s) => s.done);
-  return {
-    id: ex.id || makeId(),
-    name: String(ex.name || "Exercise"),
-    done: resetDone ? false : Boolean(ex.done || allDone),
-    setList,
-  };
-}
-
-function loadPlan() {
-  const saved = loadJSON(FITNESS_PLAN_KEY, null);
-  const merged = {};
-  for (const w of WEEKDAYS) {
-    const src = saved && saved[w.id] ? saved[w.id] : DEFAULT_PLAN[w.id];
-    const exList = Array.isArray(src.exercises)
-      ? src.exercises.map((ex) => normalizeExercise(ex, true))
-      : [];
-    merged[w.id] = {
-      title: src.title || "",
-      exercises: exList,
-    };
-  }
-  return merged;
+  return Store.normalizeExercise(ex, resetDone);
 }
 
 function saveLogs() {
-  safeWriteJSON(FITNESS_LOGS_KEY, fitnessState.logs);
+  Store.saveFitnessLogs(fitnessState.logs);
 }
 
 function savePlan() {
-  safeWriteJSON(FITNESS_PLAN_KEY, fitnessState.plan);
+  Store.saveFitnessPlan(fitnessState.plan);
 }
 
 function rehydrateFitnessFromStorage() {
-  fitnessState.logs = loadJSON(FITNESS_LOGS_KEY, {});
-  fitnessState.plan = loadPlan();
+  fitnessState.logs = Store.loadFitnessLogs();
+  fitnessState.plan = Store.loadFitnessPlan();
   renderAll();
 }
 
@@ -661,8 +584,8 @@ function shiftSelectedDay(delta) {
 }
 
 function exportFitnessCSV() {
-  // Always read latest persisted workout history from localStorage
-  const persistedLogs = loadJSON(FITNESS_LOGS_KEY, fitnessState.logs);
+  // Always read latest persisted workout history directly from localStorage
+  const persistedLogs = Store.loadFitnessLogs();
   const keys = Object.keys(persistedLogs)
     .filter((k) => {
       const d = persistedLogs[k];
@@ -741,8 +664,8 @@ function bindEvents() {
     renderAll();
   });
 
-  // Split title updates preset & current log
-  document.getElementById("workout-title-input").addEventListener("input", (e) => {
+  // Split title updates preset & current log immediately on input & change
+  const handleTitleChange = (e) => {
     const wd = getWeekdayForDate(fitnessState.selectedDate);
     fitnessState.plan[wd].title = e.target.value;
     savePlan();
@@ -758,7 +681,9 @@ function bindEvents() {
     catPill.classList.toggle("is-rest", cat.isRest);
     renderWeekdayBar();
     renderRecentWorkouts();
-  });
+  };
+  document.getElementById("workout-title-input").addEventListener("input", handleTitleChange);
+  document.getElementById("workout-title-input").addEventListener("change", handleTitleChange);
 
   document.querySelectorAll(".preset-chip").forEach((chip) => {
     chip.addEventListener("click", () => {
@@ -795,12 +720,14 @@ function bindEvents() {
     renderAll();
   });
 
-  // Session notes
-  document.getElementById("workout-notes-input").addEventListener("input", (e) => {
+  // Session notes (persist on every keystroke and change/autofill)
+  const handleNotesChange = (e) => {
     const day = ensureDayLog(fitnessState.selectedDate);
     day.notes = e.target.value;
     saveLogs();
-  });
+  };
+  document.getElementById("workout-notes-input").addEventListener("input", handleNotesChange);
+  document.getElementById("workout-notes-input").addEventListener("change", handleNotesChange);
 
   // Exercise & per-set actions
   const exList = document.getElementById("exercise-list");
@@ -941,8 +868,8 @@ function bindEvents() {
     }
   });
 
-  // Live typing inside per-set inputs
-  exList.addEventListener("input", (e) => {
+  // Live typing & change inside per-set inputs
+  const handleSetInput = (e) => {
     const input = e.target.closest(".dd-input");
     if (!input) return;
     const idx = Number(input.dataset.index);
@@ -967,7 +894,9 @@ function bindEvents() {
     renderCalendar();
     renderWeeklyProgress();
     renderRecentWorkouts();
-  });
+  };
+  exList.addEventListener("input", handleSetInput);
+  exList.addEventListener("change", handleSetInput);
 
   // Calendar navigation & day selection
   document.getElementById("cal-prev").addEventListener("click", () => {
@@ -1005,16 +934,13 @@ function bindEvents() {
 
   document.getElementById("btn-export-fitness").addEventListener("click", exportFitnessCSV);
 
-  // Keep synced across browser tabs and iOS Safari bfcache restores
-  window.addEventListener("storage", rehydrateFitnessFromStorage);
-  window.addEventListener("pageshow", (e) => {
-    if (e.persisted) rehydrateFitnessFromStorage();
-  });
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") rehydrateFitnessFromStorage();
+  // Keep synced across browser tabs, iOS Safari bfcache, and app backgrounding
+  Store.subscribeSync(rehydrateFitnessFromStorage, () => {
+    savePlan();
+    saveLogs();
   });
 }
 
-if (!loadJSON(FITNESS_PLAN_KEY, null)) savePlan();
+if (!Store.hasKey(FITNESS_PLAN_KEY)) savePlan();
 renderAll();
 bindEvents();

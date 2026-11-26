@@ -41,30 +41,10 @@ const REFLECTIONS = [
   },
 ];
 
-const STORAGE_LOGS_KEY = "preston_prayer_logs_v1";
-const STORAGE_SETTINGS_KEY = "preston_prayer_settings_v2";
-const STORAGE_META_KEY = "preston_prayer_meta_v1";
-
-// Calibrated to Madina Masjid (27 William Henry St, Preston PR1 4XH) on Masjid247
-const DEFAULT_SETTINGS = {
-  city: "Madina Masjid, Preston",
-  lat: 53.7632,
-  lng: -2.7031,
-  tz: "Europe/London",
-  method: 99,
-  fajrAngle: 15.5,
-  ishaAngle: 15.0,
-  school: 1, // Hanafi
-  latAdj: 3, // Angle-based for northern UK
-  tune: {
-    Fajr: 6,
-    Sunrise: 0,
-    Dhuhr: 5,
-    Asr: 0,
-    Maghrib: 3,
-    Isha: -1,
-  },
-};
+const Store = window.AppStorage;
+const STORAGE_LOGS_KEY = Store.KEYS.PRAYER_LOGS;
+const STORAGE_SETTINGS_KEY = Store.KEYS.PRAYER_SETTINGS;
+const DEFAULT_SETTINGS = Store.DEFAULT_PRAYER_SETTINGS;
 
 const state = {
   activeView: "overview",
@@ -81,88 +61,22 @@ const state = {
   reflectionIndex: 0,
 };
 
-/* ---------- Safe Persistence ---------- */
-
-function safeReadJSON(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return fallback;
-    const parsed = JSON.parse(raw);
-    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-      return parsed;
-    }
-    return fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function safeWriteJSON(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-    return true;
-  } catch {
-    return false;
-  }
-}
+/* ---------- Centralized Persistence via AppStorage ---------- */
 
 function loadSettings() {
-  const parsed = safeReadJSON(STORAGE_SETTINGS_KEY, null);
-  if (!parsed) return { ...DEFAULT_SETTINGS, tune: { ...DEFAULT_SETTINGS.tune } };
-  return {
-    ...DEFAULT_SETTINGS,
-    ...parsed,
-    tune: { ...DEFAULT_SETTINGS.tune, ...(parsed.tune || {}) },
-  };
+  return Store.loadPrayerSettings();
 }
 
 function saveSettings() {
-  safeWriteJSON(STORAGE_SETTINGS_KEY, state.settings);
+  Store.savePrayerSettings(state.settings);
 }
 
 function loadLogs() {
-  return safeReadJSON(STORAGE_LOGS_KEY, {});
-}
-
-function computeStreakStats() {
-  const now = new Date();
-  let currentStreak = 0;
-  for (let i = 0; i < 365; i++) {
-    const d = new Date(now);
-    d.setDate(now.getDate() - i);
-    const c = countDayPrayers(toDateKey(d));
-    if (c === 5) currentStreak++;
-    else if (i === 0) continue;
-    else break;
-  }
-
-  const sortedKeys = Object.keys(state.logs).sort();
-  let bestStreak = currentStreak;
-  let run = 0;
-  let prev = null;
-  for (const k of sortedKeys) {
-    if (countDayPrayers(k) === 5) {
-      const dt = new Date(k + "T00:00:00");
-      run = prev && (dt - prev) / 86400000 === 1 ? run + 1 : 1;
-      if (run > bestStreak) bestStreak = run;
-      prev = dt;
-    } else {
-      run = 0;
-      prev = null;
-    }
-  }
-
-  return { currentStreak, bestStreak };
+  return Store.loadPrayerLogs();
 }
 
 function saveLogs() {
-  safeWriteJSON(STORAGE_LOGS_KEY, state.logs);
-  const { currentStreak, bestStreak } = computeStreakStats();
-  safeWriteJSON(STORAGE_META_KEY, {
-    currentStreak,
-    bestStreak,
-    updatedAt: new Date().toISOString(),
-  });
+  Store.savePrayerLogs(state.logs);
 }
 
 function rehydrateFromStorage() {
@@ -1145,20 +1059,17 @@ function refreshAllFromApi() {
 
 function init() {
   // Ensure initial settings exist in storage without overwriting saved user preferences
-  if (!safeReadJSON(STORAGE_SETTINGS_KEY, null)) saveSettings();
+  if (!Store.hasKey(STORAGE_SETTINGS_KEY)) saveSettings();
   syncSettingsUI();
   bindEvents();
   renderAll();
   refreshAllFromApi();
   window.setInterval(updateLiveClocks, 1000);
 
-  // Keep synced across browser tabs and iOS Safari bfcache restores
-  window.addEventListener("storage", rehydrateFromStorage);
-  window.addEventListener("pageshow", (e) => {
-    if (e.persisted) rehydrateFromStorage();
-  });
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") rehydrateFromStorage();
+  // Keep synced across browser tabs, iOS Safari bfcache, and app backgrounding
+  Store.subscribeSync(rehydrateFromStorage, () => {
+    saveLogs();
+    saveSettings();
   });
 }
 
