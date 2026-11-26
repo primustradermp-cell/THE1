@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=7" />
 </head>
 <body>
   <div class="viewport-frame">
@@ -43,6 +43,14 @@
           </div>
         </div>
       </header>
+
+      <!-- Prayer Page Subheadings Bar -->
+      <nav class="subnav-bar" aria-label="Prayer sections">
+        <a class="subnav-link is-active" href="#section-overview">Overview</a>
+        <a class="subnav-link" href="#section-timetable">Timetable</a>
+        <a class="subnav-link" href="#section-activity">Activity</a>
+        <a class="subnav-link" href="#section-settings">Calculation</a>
+      </nav>
 
       <!-- SECTION 1: LIVE 3D KAABA STAGE + 3-CARD BENTO -->
       <div class="prayer-section" id="section-overview">
@@ -203,6 +211,11 @@
 
       <!-- SECTION 2: PRESTON, LANCASHIRE MONTHLY TIMETABLE -->
       <div class="prayer-section" id="section-timetable">
+        <div class="section-subheading">
+          <span class="sub-index mono">01</span>
+          <h2 class="sub-title">Timetable</h2>
+          <span class="sub-line" aria-hidden="true"></span>
+        </div>
         <section class="panel-dark timetable-panel">
           <div class="panel-toolbar">
             <div>
@@ -243,6 +256,11 @@
 
       <!-- SECTION 3: YEARLY ACTIVITY HEATMAP & STREAK -->
       <div class="prayer-section" id="section-activity">
+        <div class="section-subheading">
+          <span class="sub-index mono">02</span>
+          <h2 class="sub-title">Activity</h2>
+          <span class="sub-line" aria-hidden="true"></span>
+        </div>
         <section class="panel-dark analytics-panel">
           <div class="panel-toolbar">
             <div>
@@ -280,6 +298,11 @@
 
       <!-- SECTION 4: CALCULATION & LOCATION SETTINGS -->
       <div class="prayer-section" id="section-settings">
+        <div class="section-subheading">
+          <span class="sub-index mono">03</span>
+          <h2 class="sub-title">Calculation</h2>
+          <span class="sub-line" aria-hidden="true"></span>
+        </div>
         <section class="panel-dark settings-panel">
           <div class="panel-toolbar">
             <div>
@@ -479,7 +502,7 @@
   <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
-  <script src="kaaba3d.js?v=6"></script>
-  <script src="script.js?v=6"></script>
+  <script src="kaaba3d.js?v=7"></script>
+  <script src="script.js?v=7"></script>
 </body>
 </html>

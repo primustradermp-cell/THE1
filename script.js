@@ -620,6 +620,37 @@ function scrollToTimetable() {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function initSubnavSpy() {
+  const links = Array.from(document.querySelectorAll(".subnav-link"));
+  if (!links.length) return;
+
+  links.forEach((link) => {
+    link.addEventListener("click", () => {
+      links.forEach((l) => l.classList.remove("is-active"));
+      link.classList.add("is-active");
+    });
+  });
+
+  if (typeof IntersectionObserver === "undefined") return;
+  const sections = links
+    .map((l) => document.querySelector(l.getAttribute("href")))
+    .filter(Boolean);
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      const id = `#${visible.target.id}`;
+      links.forEach((l) => l.classList.toggle("is-active", l.getAttribute("href") === id));
+    },
+    { rootMargin: "-18% 0px -65% 0px", threshold: [0.1, 0.4] }
+  );
+
+  sections.forEach((sec) => observer.observe(sec));
+}
+
 function updateQibla() {
   const toRad = (deg) => (deg * Math.PI) / 180;
   const toDeg = (rad) => (rad * 180) / Math.PI;
@@ -768,6 +799,7 @@ function refreshAllFromApi() {
 function init() {
   syncSettingsUI();
   bindEvents();
+  initSubnavSpy();
   renderAll();
   refreshAllFromApi();
   window.setInterval(updateLiveTelemetry, 1000);
