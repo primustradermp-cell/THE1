@@ -299,10 +299,18 @@ async function fetchMonthlyCalendar(year = state.calendarYear, month = state.cal
 /* ---------- Prayer Window Logic (Current vs. Next vs. Upcoming) ---------- */
 
 function getPrayerPhaseInfo() {
-  if (!state.todayTimings) return { currentKey: null, next: null, progressPct: 0 };
+  if (!state.todayTimings) {
+    return {
+      currentKey: null,
+      activeWindowKey: null,
+      next: null,
+      progressPct: 0,
+    };
+  }
   const nowSec = getTimeInZone(state.settings.tz).totalSeconds;
 
   let currentKey = null;
+  let currentSec = null;
   let next = null;
 
   for (let i = 0; i < PRAYERS.length; i++) {
@@ -311,11 +319,13 @@ function getPrayerPhaseInfo() {
     if (pSec === null) continue;
     if (pSec <= nowSec) {
       currentKey = p.key;
+      currentSec = pSec;
     } else if (!next) {
       next = {
         index: i,
         key: p.key,
         time: cleanTime(state.todayTimings[p.key]),
+        sec: pSec,
         remainingSec: pSec - nowSec,
         tomorrow: false,
       };
@@ -329,17 +339,27 @@ function getPrayerPhaseInfo() {
         index: 0,
         key: "Fajr",
         time: cleanTime(state.todayTimings.Fajr),
+        sec: fajrSec,
         remainingSec: 86400 - nowSec + fajrSec,
         tomorrow: true,
       };
     }
   }
 
-  const fajrSec = parseSeconds(state.todayTimings.Fajr) ?? 5 * 3600;
-  const ishaSec = parseSeconds(state.todayTimings.Isha) ?? 19 * 3600;
-  const progressPct = Math.min(100, Math.max(0, ((nowSec - fajrSec) / Math.max(1, ishaSec - fajrSec)) * 100));
+  // Active window falls back to Isha during pre-Fajr night hours
+  const activeWindowKey = currentKey || "Isha";
+  const startSec = currentSec !== null ? currentSec : (parseSeconds(state.todayTimings.Isha) ?? 19 * 3600);
+  const endSec = next ? next.sec : (parseSeconds(state.todayTimings.Fajr) ?? 5 * 3600);
 
-  return { currentKey, next, progressPct };
+  let windowTotal = endSec - startSec;
+  if (windowTotal <= 0) windowTotal += 86400;
+
+  let elapsed = nowSec - startSec;
+  if (elapsed < 0) elapsed += 86400;
+
+  const progressPct = Math.min(100, Math.max(0, (elapsed / Math.max(1, windowTotal)) * 100));
+
+  return { currentKey, activeWindowKey, next, progressPct };
 }
 
 function getDayLog(key) {
@@ -365,7 +385,20 @@ function updateLiveClocks() {
 
   if (!state.todayTimings) return;
 
-  const { next, progressPct } = getPrayerPhaseInfo();
+  const { currentKey, activeWindowKey, next, progressPct } = getPrayerPhaseInfo();
+  const todayLog = getDayLog(todayKey());
+
+  const winPill = document.getElementById("focal-window-pill");
+  const winText = document.getElementById("focal-window-text");
+  if (winPill && winText && activeWindowKey) {
+    const isWindowLogged = Boolean(currentKey && todayLog[currentKey]);
+    winPill.hidden = false;
+    winPill.classList.toggle("is-logged", isWindowLogged);
+    winText.textContent = isWindowLogged
+      ? `CURRENT WINDOW: ${activeWindowKey.toUpperCase()} · LOGGED`
+      : `CURRENT WINDOW: ${activeWindowKey.toUpperCase()}`;
+  }
+
   if (next) {
     document.getElementById("focal-kicker").textContent = next.tomorrow ? "NEXT PRAYER · TOMORROW" : "NEXT PRAYER";
     document.getElementById("focal-prayer-name").textContent = next.key;
@@ -375,6 +408,11 @@ function updateLiveClocks() {
 
   const railFill = document.getElementById("timeline-rail-fill");
   if (railFill) railFill.style.width = `${progressPct.toFixed(1)}%`;
+
+  const startLbl = document.getElementById("timeline-start-label");
+  const endLbl = document.getElementById("timeline-end-label");
+  if (startLbl && activeWindowKey) startLbl.textContent = activeWindowKey;
+  if (endLbl && next) endLbl.textContent = next.key;
 
   // Refresh timeline state right when a minute rolls over (catches prayer transitions cleanly)
   if (uk.s === 0) {
@@ -426,14 +464,22 @@ function renderTimeline() {
       .filter(Boolean)
       .join(" ");
 
+    const isActiveUnlogged = isCurrent && !isDone;
+    const checkHtml = isActiveUnlogged
+      ? `<span class="tl-check-default">○</span><span class="tl-check-hover">✓</span>`
+      : checkGlyph;
+    const badgeHtml = isActiveUnlogged
+      ? `<span class="tl-badge-default">${badgeText}</span><span class="tl-badge-hover">Mark done</span>`
+      : badgeText;
+
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = cls;
     btn.setAttribute("aria-pressed", String(isDone));
     btn.innerHTML = `
       <div class="tl-top">
-        <span class="tl-check" aria-hidden="true">${checkGlyph}</span>
-        <span class="tl-badge">${badgeText}</span>
+        <span class="tl-check" aria-hidden="true">${checkHtml}</span>
+        <span class="tl-badge">${badgeHtml}</span>
       </div>
       <div>
         <div class="tl-name">${p.label}</div>

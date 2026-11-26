@@ -485,12 +485,15 @@
   const motes = new THREE.Points(pGeo, pMat);
   root.add(motes);
 
-  /* ---------- GymSync Warm Charcoal & Khaki-Taupe Cinematic Lighting ---------- */
-  const hemiLight = new THREE.HemisphereLight(0xd9ceb7, 0x1c1a15, 0.65);
+  /* ---------- Warm Charcoal & Golden-Bronze Cinematic Lighting ---------- */
+  const ambientLight = new THREE.AmbientLight(0xf3e4c8, 0.34);
+  scene.add(ambientLight);
+
+  const hemiLight = new THREE.HemisphereLight(0xe2d6be, 0x1e1c17, 0.85);
   scene.add(hemiLight);
 
   // Main warm golden-khaki key light illuminating the Door & Hizam
-  const keyLight = new THREE.DirectionalLight(0xffebd0, 2.2);
+  const keyLight = new THREE.DirectionalLight(0xffebd0, 2.25);
   keyLight.position.set(5.5, 7.5, 4.8);
   keyLight.castShadow = true;
   keyLight.shadow.mapSize.set(1024, 1024);
@@ -498,13 +501,20 @@
   keyLight.shadow.camera.far = 20;
   scene.add(keyLight);
 
-  // Warm rim light behind the Kaaba matching the khaki-taupe sidebar glow
-  const rimLight = new THREE.PointLight(0xd8b473, 2.4, 18);
-  rimLight.position.set(-4.5, 4.2, -3.8);
+  // Soft warm fill/rim light aimed toward the left face of the Kaaba & Kiswah calligraphy
+  const leftFillLight = new THREE.DirectionalLight(0xf6d89e, 1.2);
+  leftFillLight.position.set(-6.4, 4.8, 5.2);
+  leftFillLight.target.position.set(0, 1.5, 0);
+  scene.add(leftFillLight);
+  scene.add(leftFillLight.target);
+
+  // Warm rim light sweeping across the back-left Kaaba edge & background colonnade pillars
+  const rimLight = new THREE.PointLight(0xe2be7a, 3.0, 24);
+  rimLight.position.set(-4.8, 4.4, -4.4);
   scene.add(rimLight);
 
-  // Subtle warm burnt-orange floor reflection accent (GymSync signature touch)
-  const accentLight = new THREE.PointLight(0xe85d2a, 0.75, 10);
+  // Subtle warm burnt-orange floor reflection accent
+  const accentLight = new THREE.PointLight(0xe85d2a, 0.78, 11);
   accentLight.position.set(3.2, 0.9, 2.4);
   scene.add(accentLight);
 
@@ -512,12 +522,16 @@
     if (isLight) {
       scene.fog.color.setHex(0xeef3f0);
       scene.fog.density = 0.036;
+      ambientLight.color.setHex(0xfffaf0);
+      ambientLight.intensity = 0.45;
       hemiLight.color.setHex(0xfff9ee);
       hemiLight.groundColor.setHex(0xd8e4df);
       hemiLight.intensity = 1.25;
       keyLight.intensity = 2.6;
+      leftFillLight.color.setHex(0xffe8bd);
+      leftFillLight.intensity = 0.95;
       rimLight.color.setHex(0xffe0a3);
-      rimLight.intensity = 1.8;
+      rimLight.intensity = 2.1;
       accentLight.intensity = 0.5;
       floorMat.color.setHex(0xdbe6e1);
       archMat.color.setHex(0xc8d4ce);
@@ -526,16 +540,20 @@
       pMat.opacity = 0.32;
     } else {
       scene.fog.color.setHex(0x171612);
-      scene.fog.density = 0.052;
-      hemiLight.color.setHex(0xd9ceb7);
-      hemiLight.groundColor.setHex(0x1c1a15);
-      hemiLight.intensity = 0.65;
-      keyLight.intensity = 2.2;
-      rimLight.color.setHex(0xd8b473);
-      rimLight.intensity = 2.4;
-      accentLight.intensity = 0.75;
+      scene.fog.density = 0.048;
+      ambientLight.color.setHex(0xf3e4c8);
+      ambientLight.intensity = 0.34;
+      hemiLight.color.setHex(0xe2d6be);
+      hemiLight.groundColor.setHex(0x1e1c17);
+      hemiLight.intensity = 0.85;
+      keyLight.intensity = 2.25;
+      leftFillLight.color.setHex(0xf6d89e);
+      leftFillLight.intensity = 1.2;
+      rimLight.color.setHex(0xe2be7a);
+      rimLight.intensity = 3.0;
+      accentLight.intensity = 0.78;
       floorMat.color.setHex(0xffffff);
-      archMat.color.setHex(0x3b372e);
+      archMat.color.setHex(0x464136);
       marbleMat.color.setHex(0x8f8878);
       pMat.color.setHex(0xe6cfa0);
       pMat.opacity = 0.45;
