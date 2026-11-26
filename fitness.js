@@ -92,7 +92,8 @@ function renderDayPanel() {
   const went = isGymDay(key);
 
   document.getElementById("selected-date-title").textContent = formatReadableDate(key);
-  document.getElementById("selected-date-key").textContent = key;
+  const keyEl = document.getElementById("selected-date-key");
+  if (keyEl) keyEl.textContent = key;
 
   const toggleBtn = document.getElementById("btn-toggle-gym");
   const toggleText = document.getElementById("btn-toggle-gym-text");

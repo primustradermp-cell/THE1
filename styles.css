@@ -2374,8 +2374,39 @@ body {
 /* Light Mode Timetable, Heatmap & Settings */
 [data-theme="light"] .timetable thead th,
 [data-theme="light"] .exercise-list-head {
-  background: #edf4f0;
-  color: var(--text-muted);
+  background: #e6f0eb;
+  color: var(--text);
+  font-weight: 600;
+}
+
+[data-theme="light"] .fitness-date-title,
+[data-theme="light"] .ex-name,
+[data-theme="light"] .ex-sets-reps,
+[data-theme="light"] .ex-weight,
+[data-theme="light"] .week-spark-scale {
+  color: var(--text);
+  font-weight: 600;
+}
+
+[data-theme="light"] .empty-exercises {
+  color: var(--text-soft);
+  font-weight: 500;
+}
+
+[data-theme="light"] .dark-input {
+  font-weight: 500;
+}
+
+[data-theme="light"] .dark-input::placeholder {
+  color: #4a6358;
+}
+
+[data-theme="light"] .preset-chip,
+[data-theme="light"] .gym-check-btn,
+[data-theme="light"] .hud-btn,
+[data-theme="light"] .sq-btn {
+  color: var(--text);
+  font-weight: 600;
 }
 
 [data-theme="light"] .timetable tbody td,

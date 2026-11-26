@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=10" />
-  <script src="theme.js?v=10"></script>
+  <link rel="stylesheet" href="styles.css?v=11" />
+  <script src="theme.js?v=11"></script>
 </head>
 <body>
   <div class="viewport-frame">
@@ -23,8 +23,8 @@
             <span>Fitness Log</span>
           </span>
           <nav class="hud-nav" aria-label="Site navigation">
-            <a class="hud-tab hud-page-link" href="index.html">Prayer</a>
-            <a class="hud-tab hud-page-link is-active" href="fitness.html" aria-current="page">Fitness</a>
+            <a class="hud-tab hud-page-link" href="index.html?v=11">Prayer</a>
+            <a class="hud-tab hud-page-link is-active" href="fitness.html?v=11" aria-current="page">Fitness</a>
           </nav>
           <div class="theme-switch" role="group" aria-label="Theme switcher">
             <button type="button" class="theme-opt is-active" data-set-theme="dark" aria-pressed="true">☾ Dark</button>
@@ -63,7 +63,6 @@
             </div>
             <div>
               <h1 class="fitness-date-title" id="selected-date-title">Today</h1>
-              <div class="panel-sub mono" id="selected-date-key">YYYY-MM-DD</div>
             </div>
           </div>
 
@@ -164,11 +163,6 @@
               <div><span class="m-lbl">All-Time</span><span class="mono" id="stat-all-days">0 d</span></div>
             </div>
           </div>
-          <div class="legend-row">
-            <span class="m-lbl">Calendar</span>
-            <span class="legend-item"><span class="l-dot l-green"></span>Gym Day</span>
-            <span class="legend-item"><span class="l-dot l-orange"></span>Selected</span>
-          </div>
         </div>
 
         <!-- Card 2: Weekly Gym Rhythm -->
@@ -265,6 +259,6 @@
     </aside>
   </div>
 
-  <script src="fitness.js?v=8"></script>
+  <script src="fitness.js?v=11"></script>
 </body>
 </html>
