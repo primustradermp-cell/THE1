@@ -42,10 +42,11 @@ const REFLECTIONS = [
 ];
 
 const STORAGE_LOGS_KEY = "preston_prayer_logs_v1";
-const STORAGE_SETTINGS_KEY = "preston_prayer_settings_v1";
+const STORAGE_SETTINGS_KEY = "preston_prayer_settings_v2";
 
+// Calibrated to Madina Masjid (27 William Henry St, Preston PR1 4XH) on Masjid247
 const DEFAULT_SETTINGS = {
-  city: "Preston, Lancashire",
+  city: "Madina Masjid, Preston",
   lat: 53.7632,
   lng: -2.7031,
   tz: "Europe/London",
@@ -54,6 +55,14 @@ const DEFAULT_SETTINGS = {
   ishaAngle: 15.0,
   school: 1, // Hanafi
   latAdj: 3, // Angle-based for northern UK
+  tune: {
+    Fajr: 6,
+    Sunrise: 0,
+    Dhuhr: 5,
+    Asr: 0,
+    Maghrib: 3,
+    Isha: -1,
+  },
 };
 
 const state = {
@@ -76,9 +85,15 @@ const state = {
 function loadSettings() {
   try {
     const raw = localStorage.getItem(STORAGE_SETTINGS_KEY);
-    return raw ? { ...DEFAULT_SETTINGS, ...JSON.parse(raw) } : { ...DEFAULT_SETTINGS };
+    if (!raw) return { ...DEFAULT_SETTINGS, tune: { ...DEFAULT_SETTINGS.tune } };
+    const parsed = JSON.parse(raw);
+    return {
+      ...DEFAULT_SETTINGS,
+      ...parsed,
+      tune: { ...DEFAULT_SETTINGS.tune, ...(parsed.tune || {}) },
+    };
   } catch {
-    return { ...DEFAULT_SETTINGS };
+    return { ...DEFAULT_SETTINGS, tune: { ...DEFAULT_SETTINGS.tune } };
   }
 }
 
@@ -158,12 +173,27 @@ function formatHMS(totalSec) {
 
 function buildAlAdhanQuery() {
   const s = state.settings;
+  const t = s.tune || DEFAULT_SETTINGS.tune;
+  // tune order: Imsak,Fajr,Sunrise,Dhuhr,Asr,Maghrib,Sunset,Isha,Midnight
+  const tuneStr = [
+    0,
+    Number(t.Fajr) || 0,
+    Number(t.Sunrise) || 0,
+    Number(t.Dhuhr) || 0,
+    Number(t.Asr) || 0,
+    Number(t.Maghrib) || 0,
+    0,
+    Number(t.Isha) || 0,
+    0,
+  ].join(",");
+
   const params = new URLSearchParams({
     latitude: String(s.lat),
     longitude: String(s.lng),
     method: String(s.method),
     school: String(s.school),
     latitudeAdjustmentMethod: String(s.latAdj),
+    tune: tuneStr,
   });
   if (Number(s.method) === 99) {
     params.set("methodSettings", `${s.fajrAngle},0 min,${s.ishaAngle}`);
@@ -778,6 +808,16 @@ function syncSettingsUI() {
   document.getElementById("sidebar-calc-summary").textContent = calcDetail;
   document.getElementById("sidebar-school-summary").textContent = `${schoolName} · ${s.city}`;
 
+  // Sync fine-tune minute displays
+  const t = s.tune || DEFAULT_SETTINGS.tune;
+  ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"].forEach((pKey) => {
+    const el = document.getElementById(`val-tune-${pKey.toLowerCase()}`);
+    if (el) {
+      const v = Number(t[pKey]) || 0;
+      el.textContent = v > 0 ? `+${v}m` : `${v}m`;
+    }
+  });
+
   document.querySelectorAll(".city-btn").forEach((btn) => {
     btn.classList.toggle("is-selected", btn.dataset.city === s.city);
   });
@@ -865,6 +905,30 @@ function bindEvents() {
       refreshAllFromApi();
     });
   });
+
+  // Fine-tune minute offset steppers
+  document.querySelectorAll("[data-tune-prayer]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const pKey = btn.dataset.tunePrayer;
+      const delta = Number(btn.dataset.delta);
+      if (!state.settings.tune) state.settings.tune = { ...DEFAULT_SETTINGS.tune };
+      const cur = Number(state.settings.tune[pKey]) || 0;
+      state.settings.tune[pKey] = Math.min(30, Math.max(-30, cur + delta));
+      saveSettings();
+      syncSettingsUI();
+      refreshAllFromApi();
+    });
+  });
+
+  const resetMadinaBtn = document.getElementById("btn-reset-madina");
+  if (resetMadinaBtn) {
+    resetMadinaBtn.addEventListener("click", () => {
+      state.settings = { ...DEFAULT_SETTINGS, tune: { ...DEFAULT_SETTINGS.tune } };
+      saveSettings();
+      syncSettingsUI();
+      refreshAllFromApi();
+    });
+  }
 
   document.getElementById("ref-next-btn").addEventListener("click", () => {
     state.reflectionIndex = (state.reflectionIndex + 1) % REFLECTIONS.length;

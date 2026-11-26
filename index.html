@@ -12,8 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=22" />
-  <script src="theme.js?v=22"></script>
+  <link rel="stylesheet" href="styles.css?v=23" />
+  <script src="theme.js?v=23"></script>
 </head>
 <body class="prayer-page">
   <div class="viewport-frame">
@@ -31,8 +31,8 @@
         </div>
 
         <nav class="hud-nav" aria-label="Site navigation">
-          <a class="hud-tab hud-page-link is-active" href="index.html?v=22" aria-current="page">Prayer</a>
-          <a class="hud-tab hud-page-link" href="fitness.html?v=22">Fitness</a>
+          <a class="hud-tab hud-page-link is-active" href="index.html?v=23" aria-current="page">Prayer</a>
+          <a class="hud-tab hud-page-link" href="fitness.html?v=23">Fitness</a>
         </nav>
 
         <div class="hud-right">
@@ -317,9 +317,58 @@
             </div>
 
             <div class="setting-item setting-item-col">
-              <div class="setting-label" id="settings-city-label">Location · Preston, Lancashire</div>
+              <div class="tune-head-row">
+                <div class="setting-label">Minute Offsets (Madina Masjid Calibration)</div>
+                <button type="button" class="hud-btn hud-btn-sm" id="btn-reset-madina">Reset to Madina Masjid</button>
+              </div>
+              <div class="tune-grid">
+                <div class="tune-box">
+                  <span class="m-lbl">Fajr</span>
+                  <div class="mini-stepper">
+                    <button type="button" class="step-btn" data-tune-prayer="Fajr" data-delta="-1">−</button>
+                    <span class="step-val mono" id="val-tune-fajr">+6m</span>
+                    <button type="button" class="step-btn" data-tune-prayer="Fajr" data-delta="1">+</button>
+                  </div>
+                </div>
+                <div class="tune-box">
+                  <span class="m-lbl">Dhuhr</span>
+                  <div class="mini-stepper">
+                    <button type="button" class="step-btn" data-tune-prayer="Dhuhr" data-delta="-1">−</button>
+                    <span class="step-val mono" id="val-tune-dhuhr">+5m</span>
+                    <button type="button" class="step-btn" data-tune-prayer="Dhuhr" data-delta="1">+</button>
+                  </div>
+                </div>
+                <div class="tune-box">
+                  <span class="m-lbl">Asr</span>
+                  <div class="mini-stepper">
+                    <button type="button" class="step-btn" data-tune-prayer="Asr" data-delta="-1">−</button>
+                    <span class="step-val mono" id="val-tune-asr">0m</span>
+                    <button type="button" class="step-btn" data-tune-prayer="Asr" data-delta="1">+</button>
+                  </div>
+                </div>
+                <div class="tune-box">
+                  <span class="m-lbl">Maghrib</span>
+                  <div class="mini-stepper">
+                    <button type="button" class="step-btn" data-tune-prayer="Maghrib" data-delta="-1">−</button>
+                    <span class="step-val mono" id="val-tune-maghrib">+3m</span>
+                    <button type="button" class="step-btn" data-tune-prayer="Maghrib" data-delta="1">+</button>
+                  </div>
+                </div>
+                <div class="tune-box">
+                  <span class="m-lbl">Isha</span>
+                  <div class="mini-stepper">
+                    <button type="button" class="step-btn" data-tune-prayer="Isha" data-delta="-1">−</button>
+                    <span class="step-val mono" id="val-tune-isha">-1m</span>
+                    <button type="button" class="step-btn" data-tune-prayer="Isha" data-delta="1">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-item setting-item-col">
+              <div class="setting-label" id="settings-city-label">Location · Madina Masjid, Preston</div>
               <div class="city-row" id="city-chips">
-                <button class="city-btn is-selected" data-city="Preston, Lancashire" data-lat="53.7632" data-lng="-2.7031" type="button">Preston</button>
+                <button class="city-btn is-selected" data-city="Madina Masjid, Preston" data-lat="53.7632" data-lng="-2.7031" type="button">Madina Masjid (Preston)</button>
                 <button class="city-btn" data-city="Blackburn, Lancashire" data-lat="53.7488" data-lng="-2.4820" type="button">Blackburn</button>
                 <button class="city-btn" data-city="Burnley, Lancashire" data-lat="53.7893" data-lng="-2.2480" type="button">Burnley</button>
                 <button class="city-btn" data-city="Lancaster, Lancashire" data-lat="54.0466" data-lng="-2.8007" type="button">Lancaster</button>
@@ -393,7 +442,7 @@
   <div class="tooltip" id="heatmap-tooltip" role="tooltip" hidden></div>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
-  <script src="kaaba3d.js?v=21"></script>
-  <script src="script.js?v=21"></script>
+  <script src="kaaba3d.js?v=23"></script>
+  <script src="script.js?v=23"></script>
 </body>
 </html>

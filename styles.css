@@ -2267,6 +2267,36 @@ textarea:focus-visible {
   gap: 8px;
 }
 
+.tune-head-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tune-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(124px, 1fr));
+  gap: 10px;
+}
+
+.tune-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+}
+
+[data-theme="light"] .tune-box {
+  background: #f6faf8;
+}
+
 .city-btn {
   height: 32px;
   padding: 0 13px;
